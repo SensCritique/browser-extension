@@ -1,4 +1,4 @@
-import Manager from './src/dom/Manager';
+import Manager from './dom/Manager';
 
 const observerConfig = {
   childList: true,

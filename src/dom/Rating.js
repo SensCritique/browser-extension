@@ -52,30 +52,3 @@ export default class Rating {
   }
 
 }
-
-/*
-// progressbar.js@1.0.0 version is used
-// Docs: http://progressbarjs.readthedocs.org/en/1.0.0/
-
-var bar = new ProgressBar.Circle(container, {
-  strokeWidth: 10,
-  easing: 'easeInOut',
-  duration: 1400,
-  color: '#fecc00',
-  trailColor: '#eee',
-  trailWidth: 1,
-  svgStyle: null,
-   text: {
-    autoStyleContainer: false
-  },
-  step: function(state, circle) {
-   var value = Math.round(circle.value() * 100);
-
-
-		circle.setText(value);
-  }
-});
-bar.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
-bar.text.style.fontSize = '2rem';
-bar.animate(0.9);  // Number from 0.0 to 1.0
- */

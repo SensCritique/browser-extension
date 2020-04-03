@@ -1,0 +1,14 @@
+{
+  "name": "NoteFlix",
+  "version": "1.0.0",
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.0",
+    "@babel/preset-es2015": "^7.0.0-beta.53",
+    "babel-loader": "^8.1.0",
+    "babel-preset-es2015": "^6.24.1",
+    "progressbar.js": "latest",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
+  }
+}

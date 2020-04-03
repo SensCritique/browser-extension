@@ -9,7 +9,8 @@ Exemple:
 - 1.5/5 devient 30 (orange)
 - 1/5 devient 20 (rouge)
 
-# Screenshots
+# Screenshots
+
 ![](images/screenshots/1.png)
 ![](images/screenshots/2.png)
 ![](images/screenshots/3.png)

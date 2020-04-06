@@ -10,6 +10,9 @@ Exemple:
 - 2,5/5 devient 50 (jaune)
 - 1.5/5 devient 30 (orange)
 - 1/5 devient 20 (rouge)
+Le score est clickable et renvoi directement vers la fiche de critique du film ou de la série.
+
+Si le score n'est pas trouvé, un point d'interrogation sera affiché, l'indicateur est clickable et renvoi vers la recherche de film ou série pré-rempli.
 
 # Screenshots
 

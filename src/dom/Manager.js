@@ -44,7 +44,6 @@ export default class Manager {
         });
       }
       if (this.cache.exists(videoName)) {
-        console.log(this.cache.get(videoName));
         this.addRating(videoName, item, true).then(videoInfo => {
             console.log(`Note allociné pour '${videoInfo.name}' récupérée en cache.`)
           },

@@ -4,10 +4,10 @@ import Rating from './Rating';
 const cssForDiv =
   'color: #fecc00; ' +
   'z-index: 100; ' +
-  'padding-top:.2em; ' +
-  'position:absolute;' +
-  'height: 45px;' +
-  'width: 45px';
+  'margin-bottom:1em;' +
+  'position: relative;' +
+  'height: 3em;' +
+  'width: 3em';
 
 export default class Manager {
   constructor() {
@@ -78,7 +78,7 @@ export default class Manager {
     div.appendChild(a);
     const videoElement = document.getElementById(id);
     if(!videoElement) {
-      element.getElementsByClassName('jawbone-overview-info')[0].appendChild(div);
+      element.getElementsByClassName('jawbone-overview-info')[0].prepend(div);
     }
     const ratingElement = new Rating(videoInfo.rating);
     ratingElement.createProgressBar(a);

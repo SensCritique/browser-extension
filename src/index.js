@@ -17,9 +17,6 @@ const findRatings = async (mutations) => {
   manager.refreshRatings();
 };
 
-
-
 const observer = new MutationObserver(findRatings);
 observer.observe(document.getElementsByClassName('mainView')[0], observerConfig);
-
 

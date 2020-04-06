@@ -3,10 +3,17 @@
   "version": "1.0.0",
   "description": "Permet d'avoir les scores Allociné.fr sur Netflix",
   "author": "bt0r",
-  "keywords": ["netflix", "allocine", "score", "avis", "rating", "allocine.fr"],
+  "keywords": [
+    "netflix",
+    "allocine",
+    "score",
+    "avis",
+    "rating",
+    "allocine.fr"
+  ],
   "scripts": {
     "build-production": "./node_modules/.bin/webpack --mode=production",
-    "watch" : "./node_modules/.bin/webpack --mode=development --watch"
+    "watch": "./node_modules/.bin/webpack --mode=development --watch"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
@@ -18,5 +25,8 @@
     "web-ext": "^4.1.0",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11"
+  },
+  "dependencies": {
+    "blueimp-md5": "^2.13.0"
   }
 }

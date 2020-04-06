@@ -3,6 +3,7 @@ export default class AllocineClient {
     this.searchUrl = 'https://www.allocine.fr/_/autocomplete/';
     this.movieRatingUrl  = 'http://www.allocine.fr/film/fichefilm-%id%/critiques/spectateurs/';
     this.serieRatingUrl = 'http://www.allocine.fr/series/ficheserie-%id%/critiques/';
+    this.failRedirectUrl = 'http://www.allocine.fr/recherche/?q=%s';
   }
   async getVideoInfo(search) {
     if (search) {
@@ -19,6 +20,12 @@ export default class AllocineClient {
           };
         }
       }
+
+      return {
+        name: search,
+        id: null,
+        type: null
+      }
     }
   }
 
@@ -29,8 +36,9 @@ export default class AllocineClient {
       const html = await response.text();
       const parser = new DOMParser();
       const dom = parser.parseFromString(html, 'text/html');
+      const note = dom.documentElement.querySelector('.note');
 
-      return dom.documentElement.querySelector('.note').innerText;
+      return note ? note.innerText : null;
     }
 
     return null;
@@ -46,4 +54,8 @@ export default class AllocineClient {
 
     return null;
   };
+
+  buildRedirectUrl(videoName) {
+    return this.failRedirectUrl.replace('%s', encodeURI(videoName));
+  }
 }

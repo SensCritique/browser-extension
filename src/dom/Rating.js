@@ -9,7 +9,7 @@ export default class Rating {
     let bar = new ProgressBar.Circle(element, {
       strokeWidth: 10,
       easing: 'easeInOut',
-      duration: 1400,
+      duration: 500,
       color: this.getColor(),
       trailColor: '#eee',
       trailWidth: 1,

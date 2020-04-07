@@ -17,37 +17,16 @@ export default class Manager {
     this.cache = new Cache();
   }
 
-  supports(mutationsRecords) {
-    let isSupported = false;
-    for (const mutationsRecord of mutationsRecords) {
-      if (mutationsRecord.target.classList.contains('jawBoneContainer')) {
-        isSupported = true;
-        break;
-      }
-    }
-
-    return isSupported;
-  }
-
   refreshRatings() {
     const items = this.getJawbones();
     console.log('Finding movies/series...');
     for (const item of items) {
       const videoName = this.getVideoName(item);
       if (videoName && !this.cache.exists(videoName)) {
-        this.addRating(videoName, item).then(videoInfo => {
-          if(videoInfo.rating != null) {
-            console.log(`Note allociné pour '${videoInfo.name}' ajoutée.`);
-          } else {
-            console.log(`Note allociné pour '${videoInfo.name}' introuvable.`);
-          }
-        });
+        this.addRating(videoName, item);
       }
       if (this.cache.exists(videoName)) {
-        this.addRating(videoName, item, true).then(videoInfo => {
-            console.log(`Note allociné pour '${videoInfo.name}' récupérée en cache.`)
-          },
-        );
+        this.addRating(videoName, item, true);
       }
     }
   }
@@ -120,6 +99,7 @@ export default class Manager {
     let ratingElement;
     const videoElement = document.getElementById(videoInfo.hashId);
     if(!videoElement) {
+      console.log('on render');
       videoInfo = this.cache.save(videoInfo);
       if (isFailed) {
         ratingElement = this.renderFailedRating(element, videoInfo);
@@ -128,7 +108,6 @@ export default class Manager {
       }
       element.getElementsByClassName('jawbone-overview-info')[0].prepend(ratingElement);
     }
-
   }
 
   renderSucceedRating(element, videoInfo) {

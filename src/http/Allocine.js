@@ -12,19 +12,22 @@ export default class AllocineClient {
       if (response.ok) {
         const body = await response.json();
         if (!body.error && body.results.length > 0) {
-          const firstResult = body.results[0];
-          return {
-            name: search,
-            id: firstResult.entity_id,
-            type: firstResult.entity_type,
-          };
+          for(const result of body.results) {
+            if(result.entity_type === 'series' || result.entity_type === 'movie') {
+              return {
+                name: search,
+                id: result.entity_id,
+                type: result.entity_type,
+              };
+            }
+          }
         }
       }
 
       return {
         name: search,
         id: null,
-        type: null
+        type: null,
       }
     }
   }

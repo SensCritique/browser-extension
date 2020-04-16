@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "build-production": "./node_modules/.bin/webpack --mode=production",
-    "watch": "./node_modules/.bin/webpack --mode=development --watch"
+    "watch": "./node_modules/.bin/webpack --mode=production --watch"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",

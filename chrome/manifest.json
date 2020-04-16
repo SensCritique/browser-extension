@@ -8,14 +8,17 @@
     "64": "images/logo-64.png",
     "128": "images/logo-128.png"
   },
+  "background" : {
+    "scripts" : ["background/index.js"],
+    "persistent": false
+  },
   "content_scripts": [
     {
       "matches": ["*://*.netflix.com/*"],
-      "js": ["./index.js"]
+      "js": ["index/index.js"]
     }
   ],
   "permissions": [
     "*://www.allocine.fr/*",
-    "webRequest"
   ]
 }

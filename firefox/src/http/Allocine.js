@@ -1,13 +1,14 @@
 export default class AllocineClient {
   constructor() {
     this.searchUrl = 'https://www.allocine.fr/_/autocomplete/';
-    this.movieRatingUrl  = 'http://www.allocine.fr/film/fichefilm-%id%/critiques/spectateurs/';
-    this.serieRatingUrl = 'http://www.allocine.fr/series/ficheserie-%id%/critiques/';
-    this.failRedirectUrl = 'http://www.allocine.fr/recherche/?q=%s';
+    this.movieRatingUrl  = 'https://www.allocine.fr/film/fichefilm-%id%/critiques/spectateurs/';
+    this.serieRatingUrl = 'https://www.allocine.fr/series/ficheserie-%id%/critiques/';
+    this.failRedirectUrl = 'https://www.allocine.fr/recherche/?q=%s';
   }
   async getVideoInfo(search) {
     if (search) {
       const url = this.searchUrl + encodeURI(search);
+      console.log(url);
       const response = await fetch(url);
       if (response.ok) {
         const body = await response.json();

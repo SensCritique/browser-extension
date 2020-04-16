@@ -99,7 +99,6 @@ export default class Manager {
     let ratingElement;
     const videoElement = document.getElementById(videoInfo.hashId);
     if(!videoElement) {
-      console.log('on render');
       videoInfo = this.cache.save(videoInfo);
       if (isFailed) {
         ratingElement = this.renderFailedRating(element, videoInfo);

@@ -19,3 +19,11 @@ Si le score n'est pas trouvé, un point d'interrogation sera affiché, l'indicat
 ![](images/screenshots/1.png)
 ![](images/screenshots/2.png)
 ![](images/screenshots/3.png)
+
+# Téléchargement
+- [Chrome](https://chrome.google.com/webstore/detail/noteflix/ahoplkcmcgpbkimjhncpnnllgikapjoj)
+- [Firefox](https://addons.mozilla.org/en-US/firefox/addon/noteflix/)
+
+
+# Contribuer
+Si vous désirez contribuer au projet [veuillez lire la charte de contribution](CONTRIB.md)

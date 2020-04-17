@@ -9,5 +9,6 @@ build-chrome:
 watch-chrome:
 	./node_modules/.bin/webpack --mode=production --config=webpack_chrome.config.js --watch
 build-all:
+	@echo "Did you edit the version on manifest*.json and package.json ? [y/n]" && read ans && [ $${ans:-N} = y ]
 	$(MAKE) build-firefox
 	$(MAKE) build-chrome

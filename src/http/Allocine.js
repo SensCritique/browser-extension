@@ -1,11 +1,14 @@
+import VideoTypeEnum from './VideoTypeEnum';
+
 export default class AllocineClient {
   constructor() {
     this.searchUrl = 'https://www.allocine.fr/_/autocomplete/';
-    this.movieRatingUrl  = 'http://www.allocine.fr/film/fichefilm-%id%/critiques/spectateurs/';
-    this.serieRatingUrl = 'http://www.allocine.fr/series/ficheserie-%id%/critiques/';
-    this.failRedirectUrl = 'http://www.allocine.fr/recherche/?q=%s';
+    this.movieRatingUrl  = 'https://www.allocine.fr/film/fichefilm-%id%/critiques/spectateurs/';
+    this.serieRatingUrl = 'https://www.allocine.fr/series/ficheserie-%id%/critiques/';
+    this.failRedirectUrl = 'https://www.allocine.fr/recherche/?q=%s';
   }
-  async getVideoInfo(search) {
+
+  async getVideoInfo(search, year = null, type) {
     if (search) {
       const url = this.searchUrl + encodeURI(search);
       const response = await fetch(url);
@@ -13,11 +16,13 @@ export default class AllocineClient {
         const body = await response.json();
         if (!body.error && body.results.length > 0) {
           for(const result of body.results) {
-            if(result.entity_type === 'series' || result.entity_type === 'movie') {
+            if(result.entity_type === type &&
+              ((type === VideoTypeEnum.SERIE) ||
+                type === VideoTypeEnum.MOVIE && result.data.year === year)) {
               return {
                 name: search,
                 id: result.entity_id,
-                type: result.entity_type,
+                type: type
               };
             }
           }

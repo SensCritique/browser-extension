@@ -1,7 +1,9 @@
-import Allocine from '../http/Allocine';
 import Rating from './Rating';
 import FailedRating from './FailedRating';
 import Cache from '../storage/Cache';
+import MessageEventEnum from './MessageEventEnum';
+import Allocine from '../http/Allocine';
+import VideoTypeEnum from '../http/VideoTypeEnum';
 
 const cssForDiv =
   'color: #fecc00; ' +
@@ -13,8 +15,16 @@ const cssForDiv =
 
 export default class Manager {
   constructor() {
-    this.client = new Allocine;
     this.cache = new Cache();
+    this.client = new Allocine();
+  }
+
+  getVideoInfo(videoName, videoYear, videoType, callback) {
+    chrome.runtime.sendMessage({type: MessageEventEnum.INFO, videoName, videoYear, videoType}, callback);
+  }
+
+  getRating(videoInfo, callback) {
+    chrome.runtime.sendMessage({type: MessageEventEnum.RATING, value: videoInfo}, callback);
   }
 
   refreshRatings() {
@@ -35,37 +45,49 @@ export default class Manager {
     return document.getElementsByClassName('jawBone');
   }
 
-  getVideoName(element) {
-    return element.querySelector('.logo').getAttribute('alt');
+  getVideoName(jawbone) {
+    return jawbone.querySelector('.logo').getAttribute('alt');
   }
 
+  getVideoYear(jawbone) {
+    const yearElement = jawbone.querySelector('.year');
+    return yearElement == null ? null : yearElement.innerText;
+  }
+
+  getVideoType(jawbone) {
+    const episodesElement = jawbone.querySelector('.Episodes');
+
+    return episodesElement == null ? VideoTypeEnum.MOVIE : VideoTypeEnum.SERIE;
+  }
 
   async addRating(videoName, element, useCache = false) {
     let videoInfo;
     if (!useCache) {
-      videoInfo = await this.client.getVideoInfo(videoName);
-      if(!videoInfo.type) {
-        // The movie/serie is not recognized
-        this.renderRating(element, videoInfo, true);
+      const year = this.getVideoYear(element);
+      const videoType = this.getVideoType(element);
 
-        return videoInfo;
-      }
-      const rating = await this.client.getRating(videoInfo);
-      if (!rating) {
-        // There is no rating available
-        this.renderRating(element, videoInfo, true);
+      this.getVideoInfo(videoName, year, videoType, videoInfo => {
+        if (!videoInfo.type) {
+          // The movie/serie is not recognized
+          this.renderRating(element, videoInfo, true);
 
-        return videoInfo;
-      }
-      videoInfo.rating = rating;
-      this.renderRating(element, videoInfo);
+          return videoInfo;
+        }
+        this.getRating(videoInfo, rating => {
+          if (!rating) {
+            // There is no rating available
+            this.renderRating(element, videoInfo, true);
+
+            return videoInfo;
+          }
+          videoInfo.rating = rating;
+          this.renderRating(element, videoInfo);
+        });
+      });
     } else {
       videoInfo = this.cache.get(videoName);
       this.renderRating(element, videoInfo, videoInfo.rating == null);
     }
-
-
-    return videoInfo;
   }
 
   createRatingElements(videoInfo) {
@@ -98,7 +120,7 @@ export default class Manager {
   renderRating(element, videoInfo, isFailed = false) {
     let ratingElement;
     const videoElement = document.getElementById(videoInfo.hashId);
-    if(!videoElement) {
+    if (!videoElement) {
       videoInfo = this.cache.save(videoInfo);
       if (isFailed) {
         ratingElement = this.renderFailedRating(element, videoInfo);

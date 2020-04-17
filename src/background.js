@@ -6,7 +6,7 @@ const allocine = new Allocine();
 const fetchInfo = async (message, callback) => {
   switch (message.type) {
     case MessageEventEnum.INFO:
-      return allocine.getVideoInfo(message.value, callback);
+      return allocine.getVideoInfo(message.videoName, message.videoYear, message.videoType, callback);
     case MessageEventEnum.RATING:
       return allocine.getRating(message.value, callback);
   }

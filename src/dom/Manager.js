@@ -70,7 +70,6 @@ export default class Manager {
 
   getAllocineRating (videoName, jawbone) {
     const videoInfoFound = this.cache.get(videoName, ServiceEnum.ALLOCINE)
-    console.log(videoInfoFound)
     if (!videoInfoFound) {
       this.getVideoInfo(ServiceEnum.ALLOCINE, videoName, this.getVideoYear(jawbone), this.getVideoType(jawbone), videoInfo => {
         this.renderRating(ServiceEnum.ALLOCINE, jawbone, videoInfo)

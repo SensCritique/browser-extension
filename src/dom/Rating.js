@@ -1,54 +1,42 @@
-import {default as ProgressBar} from 'progressbar.js';
-
-export default class Rating {
-  constructor(rating) {
-    this.rating = this.convertRatingInPercent(rating);
-  }
-
-  createProgressBar(element){
-    let bar = new ProgressBar.Circle(element, {
-      strokeWidth: 10,
-      easing: 'easeInOut',
-      duration: 500,
-      color: this.getColor(),
-      trailColor: '#eee',
-      trailWidth: 1,
-      svgStyle: null,
-      text: {
-        autoStyleContainer: false,
-      },
-      step: function (state, circle) {
-        const value = Math.round(circle.value() * 100);
-        circle.setText(value);
-      },
-    });
-    bar.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
-    bar.text.style.fontSize = '1.5rem';
-    bar.animate(this.rating);
-
-    return bar;
-  }
-
-  convertRatingInPercent(rating) {
-    rating = parseFloat(rating.replace(',', '.'));
-
-    return parseFloat((rating / 5).toFixed(2));
-  }
-
-  getColor() {
-    const rating = this.rating * 100;
-    if (rating > 0 && rating < 25) {
-      return '#B3302A';
+export const Rating = class Rating {
+  get color () {
+    if (!this.rating) {
+      return '#82837f'
     }
-    if (rating >= 25 && rating < 50) {
-      return '#c95400';
+    if (this.rating >= 0 && this.rating < 25) {
+      return '#B3302A'
     }
-    if (rating >= 50 && rating < 75) {
-      return '#fecc00';
+    if (this.rating >= 25 && this.rating < 50) {
+      return '#c95400'
     }
-    if (rating >= 75) {
-      return '#2EB33B';
+    if (this.rating >= 50 && this.rating < 75) {
+      return '#fecc00'
+    }
+    if (this.rating >= 75) {
+      return '#2EB33B'
     }
   }
 
+  render () {
+    const a = document.createElement('a')
+    a.setAttribute('id', this.videoInfo.hashId)
+    a.setAttribute('href', this.videoInfo.redirect)
+    a.setAttribute('target', '_blank')
+
+    const logo = document.createElement('img')
+    logo.src = this.logo
+    logo.width = 26
+    logo.height = 26
+    const ratingElement = document.createElement('span')
+    ratingElement.innerText = this.rating ? this.rating.toString() : '??'
+    a.style.color = this.color
+    a.style.fontWeight = 'bold'
+    a.style.display = 'flex'
+    a.style.alignItems = 'center'
+    a.style.maxWidth = '50px'
+    a.appendChild(logo)
+    a.appendChild(ratingElement)
+
+    return a
+  }
 }

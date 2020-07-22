@@ -8,6 +8,8 @@ build-chrome:
 	cd dist/chrome/main && zip -r ../latest.zip *
 watch-chrome:
 	./node_modules/.bin/webpack --mode=production --config=webpack_chrome.config.js --watch
+fix:
+	npx eslint --fix src/*
 build-all:
 	@echo "Did you edit the version on manifest*.json and package.json ? [y/n]" && read ans && [ $${ans:-N} = y ]
 	$(MAKE) build-firefox

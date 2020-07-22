@@ -1,4 +1,4 @@
 export default {
-  INFO: "info",
-  RATING: "rating",
+  INFO: 'info',
+  RATING: 'rating'
 }

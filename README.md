@@ -1,3 +1,5 @@
+<img src="/images/logo-128.png" height=50/>
+
 # NoteFlix
 Permet d'avoir un score Allociné et SensCritique sur les pages de descriptions Netflix
 

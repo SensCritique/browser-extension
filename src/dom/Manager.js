@@ -1,149 +1,87 @@
-import Rating from './Rating';
-import FailedRating from './FailedRating';
-import Cache from '../storage/Cache';
-import MessageEventEnum from './MessageEventEnum';
-import Allocine from '../http/Allocine';
-import VideoTypeEnum from '../http/VideoTypeEnum';
-
-const cssForDiv =
-  'color: #fecc00; ' +
-  'z-index: 100; ' +
-  'margin-bottom:1em;' +
-  'position: relative;' +
-  'height: 3em;' +
-  'width: 3em';
+import Cache from '../storage/Cache'
+import MessageEventEnum from './MessageEventEnum'
+import VideoTypeEnum from '../http/VideoTypeEnum'
+import Ratings from './Ratings'
+import * as md5 from 'blueimp-md5'
+import RatingFactory from './RatingFactory'
+import { ServiceEnum } from '../http/ServiceEnum'
 
 export default class Manager {
-  constructor() {
-    this.cache = new Cache();
-    this.client = new Allocine();
+  constructor () {
+    this.cache = new Cache()
   }
 
-  getVideoInfo(videoName, videoYear, videoType, callback) {
-    chrome.runtime.sendMessage({type: MessageEventEnum.INFO, videoName, videoYear, videoType}, callback);
+  getVideoInfo (service, videoName, videoYear, videoType, callback) {
+    chrome.runtime.sendMessage({ type: MessageEventEnum.INFO, service, videoName, videoYear, videoType }, callback)
   }
 
-  getRating(videoInfo, callback) {
-    chrome.runtime.sendMessage({type: MessageEventEnum.RATING, value: videoInfo}, callback);
-  }
+  refreshRatings () {
+    const jawbones = this.getJawbones()
 
-  refreshRatings() {
-    const items = this.getJawbones();
-    console.log('Finding movies/series...');
-    for (const item of items) {
-      const videoName = this.getVideoName(item);
-      if (videoName && !this.cache.exists(videoName)) {
-        this.addRating(videoName, item);
+    for (const jawbone of jawbones) {
+      const videoName = this.getVideoName(jawbone)
+      // Create main div for Ratings
+      const jawboneOverviewInfo = jawbone.getElementsByClassName('jawbone-overview-info')[0]
+      const hash = md5(videoName)
+      if (jawboneOverviewInfo && jawbone.getElementsByClassName(hash).length === 0) {
+        const ratingsElement = Ratings.render(hash)
+        jawboneOverviewInfo.prepend(ratingsElement)
       }
-      if (this.cache.exists(videoName)) {
-        this.addRating(videoName, item, true);
-      }
+
+      this.getAllocineRating(videoName, jawbone)
+      this.getSensCritiqueRating(videoName, jawbone)
     }
   }
 
-  getJawbones() {
-    return document.getElementsByClassName('jawBone');
+  getJawbones () {
+    return document.getElementsByClassName('jawBone')
   }
 
-  getVideoName(jawbone) {
-    return jawbone.querySelector('.logo').getAttribute('alt');
+  getVideoName (jawbone) {
+    return jawbone.querySelector('.logo').getAttribute('alt')
   }
 
-  getVideoYear(jawbone) {
-    const yearElement = jawbone.querySelector('.year');
-    return yearElement == null ? null : yearElement.innerText;
+  getVideoYear (jawbone) {
+    const yearElement = jawbone.querySelector('.year')
+    return yearElement == null ? null : yearElement.innerText
   }
 
-  getVideoType(jawbone) {
-    const episodesElement = jawbone.querySelector('.Episodes');
+  getVideoType (jawbone) {
+    const episodesElement = jawbone.querySelector('.Episodes')
 
-    return episodesElement == null ? VideoTypeEnum.MOVIE : VideoTypeEnum.SERIE;
+    return episodesElement == null ? VideoTypeEnum.MOVIE : VideoTypeEnum.SERIE
   }
 
-  async addRating(videoName, element, useCache = false) {
-    let videoInfo;
-    if (!useCache) {
-      const year = this.getVideoYear(element);
-      const videoType = this.getVideoType(element);
-
-      this.getVideoInfo(videoName, year, videoType, videoInfo => {
-        if (!videoInfo.type) {
-          // The movie/serie is not recognized
-          this.renderRating(element, videoInfo, true);
-
-          return videoInfo;
-        }
-        this.getRating(videoInfo, rating => {
-          if (!rating) {
-            // There is no rating available
-            this.renderRating(element, videoInfo, true);
-
-            return videoInfo;
-          }
-          videoInfo.rating = rating;
-          this.renderRating(element, videoInfo);
-        });
-      });
-    } else {
-      videoInfo = this.cache.get(videoName);
-      this.renderRating(element, videoInfo, videoInfo.rating == null);
+  getSensCritiqueRating (videoName, jawbone) {
+    const videoInfoFound = this.cache.get(videoName, ServiceEnum.SENSCRITIQUE)
+    if (!videoInfoFound) {
+      this.getVideoInfo(ServiceEnum.SENSCRITIQUE, videoName, this.getVideoYear(jawbone), this.getVideoType(jawbone), videoInfo => {
+        this.renderRating(ServiceEnum.SENSCRITIQUE, jawbone, videoInfo)
+      })
+    }
+    if (videoInfoFound) {
+      this.renderRating(ServiceEnum.SENSCRITIQUE, jawbone, videoInfoFound)
     }
   }
 
-  createRatingElements(videoInfo) {
-    let div = document.createElement('div');
-    div.setAttribute('style', cssForDiv);
-    let a = document.createElement('a');
-    a.setAttribute('id', videoInfo.hashId);
-    a.setAttribute('href', videoInfo.link);
-    a.setAttribute('target', '_blank');
-    div.appendChild(a);
-
-    return {
-      div,
-      a,
-    };
-  }
-
-  createSucceedRatingElement(videoInfo) {
-    videoInfo.link = this.client.buildRatingUrl(videoInfo);
-
-    return this.createRatingElements(videoInfo);
-  }
-
-  createFailedRatingElement(videoInfo) {
-    videoInfo.link = this.client.buildRedirectUrl(videoInfo.name);
-
-    return this.createRatingElements(videoInfo);
-  }
-
-  renderRating(element, videoInfo, isFailed = false) {
-    let ratingElement;
-    const videoElement = document.getElementById(videoInfo.hashId);
-    if (!videoElement) {
-      videoInfo = this.cache.save(videoInfo);
-      if (isFailed) {
-        ratingElement = this.renderFailedRating(element, videoInfo);
-      } else {
-        ratingElement = this.renderSucceedRating(element, videoInfo);
-      }
-      element.getElementsByClassName('jawbone-overview-info')[0].prepend(ratingElement);
+  getAllocineRating (videoName, jawbone) {
+    const videoInfoFound = this.cache.get(videoName, ServiceEnum.ALLOCINE)
+    if (!videoInfoFound) {
+      this.getVideoInfo(ServiceEnum.ALLOCINE, videoName, this.getVideoYear(jawbone), this.getVideoType(jawbone), videoInfo => {
+        this.renderRating(ServiceEnum.ALLOCINE, jawbone, videoInfo)
+      })
+    }
+    if (videoInfoFound) {
+      this.renderRating(ServiceEnum.ALLOCINE, jawbone, videoInfoFound)
     }
   }
 
-  renderSucceedRating(element, videoInfo) {
-    const {div, a} = this.createSucceedRatingElement(videoInfo);
-    const ratingElement = new Rating(videoInfo.rating);
-    ratingElement.createProgressBar(a);
+  renderRating (service, element, videoInfo) {
+    this.cache.save(videoInfo, service)
 
-    return div;
-  }
-
-  renderFailedRating(element, videoInfo) {
-    const {div, a} = this.createFailedRatingElement(videoInfo);
-    const ratingElement = new FailedRating();
-    ratingElement.createProgressBar(a);
-
-    return div;
+    const ratingElement = (new RatingFactory())
+      .create(service, videoInfo)
+      .render()
+    document.querySelectorAll(`.${service}_${md5(videoInfo.name)}`).forEach(serviceElement => serviceElement.innerHTML = ratingElement.outerHTML)
   }
 }

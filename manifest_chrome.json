@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "name": "NoteFlix",
-  "version": "1.2.0",
-  "description": "Permet d'avoir les scores et avis AlloCiné.fr sur Netflix",
+  "version": "1.2.1",
+  "description": "Permet d'avoir les scores et avis AlloCiné/SensCritique sur Netflix",
   "icons": {
     "48": "images/logo-48.png",
     "64": "images/logo-64.png",
@@ -19,6 +19,7 @@
     }
   ],
   "permissions": [
-    "*://www.allocine.fr/*"
+    "*://www.allocine.fr/*",
+    "*://www.senscritique.com/*"
   ]
 }

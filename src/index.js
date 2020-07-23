@@ -4,7 +4,7 @@ const manager = new Manager()
 
 const observerConfig = {
   childList: true,
-  subtree: true,
+  subtree: true
 }
 
 const clickedOnVideoJawBone = (mutation) => {
@@ -51,7 +51,3 @@ const observer = new MutationObserver((mutations) => {
   }
 })
 observer.observe(document.querySelector('.mainView'), observerConfig)
-
-// setInterval(() => {
-//   manager.refreshRatings();
-// }, 2000);

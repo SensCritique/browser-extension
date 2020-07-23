@@ -26,6 +26,7 @@ export default class AllocineClient {
                 id: result.entity_id,
                 type: type
               }
+              break
             }
           }
         }

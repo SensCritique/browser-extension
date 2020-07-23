@@ -4,7 +4,7 @@ const manager = new Manager()
 
 const observerConfig = {
   childList: true,
-  subtree: true
+  subtree: true,
 }
 
 const clickedOnVideoJawBone = (mutation) => {
@@ -31,10 +31,20 @@ const clickOnArrowsJawbone = (mutation) => {
     mutation.target.classList.contains('jawBone')
 }
 
+const isLoaded = (mutation) => {
+  return mutation.type === 'childList' &&
+    mutation.previousSibling &&
+    mutation.previousSibling.classList.contains('jawBoneContainer') &&
+    mutation.addedNodes.length > 0
+}
+
 const observer = new MutationObserver((mutations) => {
   // Only listen mutation of added jawBones
   const jawboneMutation = mutations.filter(mutation => {
-    return clickedOnVideoJawBone(mutation) || clickedOnImageJawBone(mutation) || clickOnArrowsJawbone(mutation)
+    return clickedOnVideoJawBone(mutation) ||
+      clickedOnImageJawBone(mutation) ||
+      clickOnArrowsJawbone(mutation) ||
+      isLoaded(mutation)
   })
   if (jawboneMutation.length > 0) {
     manager.refreshRatings()

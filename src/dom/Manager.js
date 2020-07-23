@@ -15,10 +15,6 @@ export default class Manager {
     chrome.runtime.sendMessage({ type: MessageEventEnum.INFO, service, videoName, videoYear, videoType }, callback)
   }
 
-  getRating (service, videoInfo, callback) {
-    chrome.runtime.sendMessage({ type: MessageEventEnum.RATING, service, value: videoInfo }, callback)
-  }
-
   refreshRatings () {
     const jawbones = this.getJawbones()
 

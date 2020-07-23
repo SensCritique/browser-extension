@@ -1,10 +1,10 @@
 # NoteFlix
-Permet d'avoir un score Allociné sur les pages de descriptions Netflix
+Permet d'avoir un score Allociné et SensCritique sur les pages de descriptions Netflix
 
 [Cliquez ici pour installer l'extension depuis le store firefox](https://addons.mozilla.org/fr/firefox/addon/noteflix/)
 
 ## Fonctionnement du score
-Le score correspond à la note globale des spectateurs allociné en pourcentage plutot qu'une note sur 5.
+Le score correspond à la note globale des spectateurs Allociné/SensCritique en pourcentage plutot qu'une note sur 5 ou sur 10.
 Exemple: 
 - 4,5/5 devient 90 (vert)
 - 2,5/5 devient 50 (jaune)

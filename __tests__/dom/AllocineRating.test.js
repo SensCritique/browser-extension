@@ -3,7 +3,7 @@ import { AllocineRating } from '../../src/dom/AllocineRating'
 
 // AllocinéNote / Expected
 const successDataset = [
-  ['2,3', 46],
+  ['2,3', 47],
   ['4.6', 92],
   ['5', 100],
   ['0,1', 2],

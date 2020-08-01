@@ -1,19 +1,27 @@
+export const COLOR = {
+  RED: '#B3302A',
+  ORANGE: '#c95400',
+  GREY: '#82837f',
+  YELLOW: '#fecc00',
+  GREEN: '#2EB33B'
+}
+
 export const Rating = class Rating {
   get color () {
     if (!this.rating) {
-      return '#82837f'
+      return COLOR.GREY
     }
     if (this.rating >= 0 && this.rating < 25) {
-      return '#B3302A'
+      return COLOR.RED
     }
     if (this.rating >= 25 && this.rating < 50) {
-      return '#c95400'
+      return COLOR.ORANGE
     }
     if (this.rating >= 50 && this.rating < 75) {
-      return '#fecc00'
+      return COLOR.YELLOW
     }
     if (this.rating >= 75) {
-      return '#2EB33B'
+      return COLOR.GREEN
     }
   }
 

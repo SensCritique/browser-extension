@@ -1,7 +1,8 @@
 module.exports = {
   env: {
     browser: true,
-    es2020: true
+    es2020: true,
+    jest: true
   },
   globals: {
     chrome: true

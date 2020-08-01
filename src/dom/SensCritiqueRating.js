@@ -9,6 +9,10 @@ export const SensCritiqueRating = class SensCritiqueRating extends Rating {
   }
 
   ratingInPercent (rating) {
+    if (rating === null || rating === undefined || !rating.match(/^(?:\d{1,2}[,.])?\d{1,2}$/) || rating > 10 || rating < 0) {
+      return null
+    }
+
     rating = parseFloat(rating.replace(',', '.'))
 
     return rating * 10

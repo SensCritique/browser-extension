@@ -18,8 +18,7 @@ export default class AllocineClient {
         if (!body.error && body.results.length > 0) {
           for (const result of body.results) {
             if (result.entity_type === type &&
-              ((type === VideoTypeEnum.SERIE) ||
-                type === VideoTypeEnum.MOVIE && result.data.year === year)) {
+              ((type === VideoTypeEnum.SERIE) || (type === VideoTypeEnum.MOVIE && result.data.year === year))) {
               videoInfo = {
                 name: search,
                 redirect: this.buildRatingUrl(result.entity_id, result.entity_type),

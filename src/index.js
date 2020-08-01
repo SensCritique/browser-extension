@@ -39,7 +39,6 @@ const isLoaded = (mutation) => {
 }
 
 const observer = new MutationObserver((mutations) => {
-  console.log(mutations)
   // Only listen mutation of added jawBones
   const jawboneMutation = mutations.filter(mutation => {
     return clickedOnVideoJawBone(mutation) ||

@@ -82,6 +82,8 @@ export default class Manager {
     const ratingElement = (new RatingFactory())
       .create(service, videoInfo)
       .render()
-    document.querySelectorAll(`.${service}_${md5(videoInfo.name)}`).forEach(serviceElement => serviceElement.innerHTML = ratingElement.outerHTML)
+    document.querySelectorAll(`.${service}_${md5(videoInfo.name)}`).forEach(serviceElement => {
+      serviceElement.innerHTML = ratingElement.outerHTML
+    })
   }
 }

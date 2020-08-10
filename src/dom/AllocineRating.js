@@ -1,10 +1,11 @@
 import { Rating } from './Rating'
+import AllocineLogo from '../../images/services/allocine'
 
 export const AllocineRating = class AllocineRating extends Rating {
   constructor (videoInfo) {
     super()
     this.videoInfo = videoInfo
-    this.logo = 'https://assets.allocine.fr/favicon/allocine.ico'
+    this.logo = AllocineLogo
     this.rating = videoInfo.rating ? this.ratingInPercent(videoInfo.rating) : null
   }
 

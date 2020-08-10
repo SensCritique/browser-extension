@@ -32,7 +32,7 @@ export const Rating = class Rating {
     a.setAttribute('target', '_blank')
 
     const logo = document.createElement('img')
-    logo.src = this.logo
+    logo.src = 'data:image/png;base64, ' + this.logo
     logo.width = 26
     logo.height = 26
     const ratingElement = document.createElement('span')

@@ -22,16 +22,18 @@ export default class Manager {
 
     for (const jawbone of jawbones) {
       const videoName = this.getVideoName(jawbone)
-      // Create main div for Ratings
-      const jawboneOverviewInfo = jawbone.getElementsByClassName('jawbone-overview-info')[0]
-      const hash = md5(videoName)
-      if (jawboneOverviewInfo && jawbone.getElementsByClassName(hash).length === 0) {
-        const ratingsElement = Ratings.render(hash)
-        jawboneOverviewInfo.prepend(ratingsElement)
-      }
+      if (videoName) {
+        // Create main div for Ratings
+        const jawboneOverviewInfo = jawbone.getElementsByClassName('jawbone-overview-info')[0]
+        const hash = md5(videoName)
+        if (jawboneOverviewInfo && jawbone.getElementsByClassName(hash).length === 0) {
+          const ratingsElement = Ratings.render(hash)
+          jawboneOverviewInfo.prepend(ratingsElement)
+        }
 
-      this.getRating(videoName, jawbone, ServiceEnum.SENSCRITIQUE)
-      this.getRating(videoName, jawbone, ServiceEnum.ALLOCINE)
+        this.getRating(videoName, jawbone, ServiceEnum.SENSCRITIQUE)
+        this.getRating(videoName, jawbone, ServiceEnum.ALLOCINE)
+      }
     }
   }
 
@@ -40,7 +42,8 @@ export default class Manager {
   }
 
   getVideoName (jawbone) {
-    return jawbone.querySelector('.logo').getAttribute('alt')
+    const element = jawbone.querySelector('.logo')
+    return element ? element.getAttribute('alt') : null
   }
 
   getVideoYear (jawbone) {

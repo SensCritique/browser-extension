@@ -1,5 +1,25 @@
 import Manager from './dom/Manager'
 
+/*
+ * Try to init/log something before everything
+ */
+import { datadogLogs } from '@datadog/browser-logs';
+
+console.log('BEFORE DATADOG');
+datadogLogs.init({
+  clientToken: 'pubc30aa1ecd1610ba9063d923d909eedc5',
+  datacenter: 'eu',
+  forwardErrorsToLogs: true,
+  sampleRate: 100
+});
+
+datadogLogs.logger.info('TEST', { name: 'POUET' });
+console.log('AFTER DATADOG');
+/*
+ *
+ */
+
+
 const manager = new Manager()
 
 const observerConfig = {

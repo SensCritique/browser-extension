@@ -22,15 +22,15 @@ export default class Manager {
 
     for (const jawbone of jawbones) {
       const videoName = this.getVideoName(jawbone)
-      if (videoName) {
+      const hash = md5(videoName)
+
+      if (videoName && jawbone.getElementsByClassName(hash).length === 0) {
         // Create main div for Ratings
         const jawboneOverviewInfo = jawbone.getElementsByClassName('jawbone-overview-info')[0]
-        const hash = md5(videoName)
-        if (jawboneOverviewInfo && jawbone.getElementsByClassName(hash).length === 0) {
+        if (jawboneOverviewInfo) {
           const ratingsElement = Ratings.render(hash)
           jawboneOverviewInfo.prepend(ratingsElement)
         }
-
         this.getRating(videoName, jawbone, ServiceEnum.SENSCRITIQUE)
         this.getRating(videoName, jawbone, ServiceEnum.ALLOCINE)
       }

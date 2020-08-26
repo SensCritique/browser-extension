@@ -5,10 +5,12 @@ import Ratings from './Ratings'
 import * as md5 from 'blueimp-md5'
 import RatingFactory from './RatingFactory'
 import { ServiceEnum } from '../http/ServiceEnum'
+import Logger from '../logging/Logger'
 
 export default class Manager {
   constructor () {
     this.cache = new Cache()
+    this.logger = new Logger()
   }
 
   getVideoInfo (service, videoName, videoYear, videoType, callback) {
@@ -20,16 +22,18 @@ export default class Manager {
 
     for (const jawbone of jawbones) {
       const videoName = this.getVideoName(jawbone)
-      // Create main div for Ratings
-      const jawboneOverviewInfo = jawbone.getElementsByClassName('jawbone-overview-info')[0]
-      const hash = md5(videoName)
-      if (jawboneOverviewInfo && jawbone.getElementsByClassName(hash).length === 0) {
-        const ratingsElement = Ratings.render(hash)
-        jawboneOverviewInfo.prepend(ratingsElement)
-      }
+      if (videoName) {
+        // Create main div for Ratings
+        const jawboneOverviewInfo = jawbone.getElementsByClassName('jawbone-overview-info')[0]
+        const hash = md5(videoName)
+        if (jawboneOverviewInfo && jawbone.getElementsByClassName(hash).length === 0) {
+          const ratingsElement = Ratings.render(hash)
+          jawboneOverviewInfo.prepend(ratingsElement)
+        }
 
-      this.getAllocineRating(videoName, jawbone)
-      this.getSensCritiqueRating(videoName, jawbone)
+        this.getRating(videoName, jawbone, ServiceEnum.SENSCRITIQUE)
+        this.getRating(videoName, jawbone, ServiceEnum.ALLOCINE)
+      }
     }
   }
 
@@ -38,7 +42,8 @@ export default class Manager {
   }
 
   getVideoName (jawbone) {
-    return jawbone.querySelector('.logo').getAttribute('alt')
+    const element = jawbone.querySelector('.logo')
+    return element ? element.getAttribute('alt') : null
   }
 
   getVideoYear (jawbone) {
@@ -52,38 +57,51 @@ export default class Manager {
     return episodesElement == null ? VideoTypeEnum.MOVIE : VideoTypeEnum.SERIE
   }
 
-  getSensCritiqueRating (videoName, jawbone) {
-    const videoInfoFound = this.cache.get(videoName, ServiceEnum.SENSCRITIQUE)
+  getRating (videoName, jawbone, service) {
+    const videoInfoFound = this.cache.get(videoName, service)
     if (!videoInfoFound) {
-      this.getVideoInfo(ServiceEnum.SENSCRITIQUE, videoName, this.getVideoYear(jawbone), this.getVideoType(jawbone), videoInfo => {
-        this.renderRating(ServiceEnum.SENSCRITIQUE, jawbone, videoInfo)
+      this.getVideoInfo(service, videoName, this.getVideoYear(jawbone), this.getVideoType(jawbone), videoInfo => {
+        this.renderRating(service, jawbone, videoInfo)
       })
     }
     if (videoInfoFound) {
-      this.renderRating(ServiceEnum.SENSCRITIQUE, jawbone, videoInfoFound)
-    }
-  }
-
-  getAllocineRating (videoName, jawbone) {
-    const videoInfoFound = this.cache.get(videoName, ServiceEnum.ALLOCINE)
-    if (!videoInfoFound) {
-      this.getVideoInfo(ServiceEnum.ALLOCINE, videoName, this.getVideoYear(jawbone), this.getVideoType(jawbone), videoInfo => {
-        this.renderRating(ServiceEnum.ALLOCINE, jawbone, videoInfo)
-      })
-    }
-    if (videoInfoFound) {
-      this.renderRating(ServiceEnum.ALLOCINE, jawbone, videoInfoFound)
+      this.renderRating(service, jawbone, videoInfoFound)
     }
   }
 
   renderRating (service, element, videoInfo) {
     this.cache.save(videoInfo, service)
 
-    const ratingElement = (new RatingFactory())
-      .create(service, videoInfo)
-      .render()
+    const serviceRating = (new RatingFactory()).create(service, videoInfo)
+    const ratingElement = serviceRating.render()
+
     document.querySelectorAll(`.${service}_${md5(videoInfo.name)}`).forEach(serviceElement => {
-      serviceElement.innerHTML = ratingElement.outerHTML
+      if (serviceElement.childNodes.length === 0) {
+        serviceElement.innerHTML = ratingElement.outerHTML
+        this.logVideoInfo(videoInfo.name, serviceRating.rating, service)
+      }
     })
+  }
+
+  logVideoInfo (videoName, rating, service) {
+    const urlQuery = new URL(window.location).pathname.split('/title/')
+    const firstJawboneId = urlQuery.length > 0 && !isNaN(parseInt(urlQuery[1])) ? urlQuery[1] : null
+    const secondJawboneId = new URLSearchParams(window.location.search).get('jbv')
+    const currentJawboneId = secondJawboneId || firstJawboneId
+
+    if (rating) {
+      this.logger.info(`Rating fetched for video ${videoName}`, {
+        name: videoName,
+        rating: rating,
+        service,
+        netflix_id: currentJawboneId
+      })
+    } else {
+      this.logger.error(`Cannot fetch rating for video ${videoName}`, {
+        name: videoName,
+        service,
+        netflix_id: currentJawboneId
+      })
+    }
   }
 }

@@ -110,11 +110,11 @@ export default class Manager {
   }
 
   showHelp () {
-    this.logger.error('Netflix GUI seems to be differents, maybe user is part of an AB Test')
     const cacheKey = 'noteflix_help_already_displayed'
     const helpModalAlreadyDisplayed = sessionStorage.getItem(cacheKey)
 
     if (document.getElementById(HelpModalId) == null && !helpModalAlreadyDisplayed) {
+      this.logger.error('Netflix GUI seems to be differents, maybe user is part of an AB Test')
       document.body.appendChild(HelpModal())
 
       setTimeout(() => {

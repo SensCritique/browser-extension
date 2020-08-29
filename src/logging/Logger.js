@@ -16,19 +16,19 @@ export default class Logger {
     })
   }
 
-  info (message, context = null) {
+  info (message, context = {}) {
     this.logger.info(message, context)
   }
 
-  error (message, context = null) {
+  error (message, context = {}) {
     this.logger.error(message, context)
   }
 
-  warning (message, context = null) {
+  warning (message, context = {}) {
     this.logger.warn(message, context)
   }
 
-  debug (message, context = null) {
+  debug (message, context = {}) {
     this.logger.debug(message, context)
   }
 }

@@ -1,6 +1,7 @@
 import Manager from './dom/Manager'
 
 const manager = new Manager()
+let jawboneEventFound = false
 
 const observerConfig = {
   childList: true,
@@ -47,8 +48,16 @@ const observer = new MutationObserver((mutations) => {
       isLoaded(mutation)
   })
   if (jawboneMutation.length > 0) {
+    jawboneEventFound = true
     manager.refreshRatings()
   }
 })
 
 observer.observe(document.getElementById('appMountPoint'), observerConfig)
+
+// Check every 5 seconds if current version of Netflix is supported
+setInterval(() => {
+  if (!jawboneEventFound && manager.currentVideoId() !== null) {
+    manager.showHelp()
+  }
+}, 5000)

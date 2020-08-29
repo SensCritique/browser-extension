@@ -6,6 +6,7 @@ import * as md5 from 'blueimp-md5'
 import RatingFactory from './RatingFactory'
 import { ServiceEnum } from '../http/ServiceEnum'
 import Logger from '../logging/Logger'
+import { HelpModal, HelpModalId } from './HelpModal'
 
 export default class Manager {
   constructor () {
@@ -84,24 +85,42 @@ export default class Manager {
   }
 
   logVideoInfo (videoName, rating, service) {
-    const urlQuery = new URL(window.location).pathname.split('/title/')
-    const firstJawboneId = urlQuery.length > 0 && !isNaN(parseInt(urlQuery[1])) ? urlQuery[1] : null
-    const secondJawboneId = new URLSearchParams(window.location.search).get('jbv')
-    const currentJawboneId = secondJawboneId || firstJawboneId
-
     if (rating) {
       this.logger.info(`Rating fetched for video ${videoName}`, {
         name: videoName,
         rating: rating,
         service,
-        netflix_id: currentJawboneId
+        netflix_id: this.currentVideoId()
       })
     } else {
       this.logger.error(`Cannot fetch rating for video ${videoName}`, {
         name: videoName,
         service,
-        netflix_id: currentJawboneId
+        netflix_id: this.currentVideoId()
       })
+    }
+  }
+
+  currentVideoId () {
+    const urlQuery = new URL(window.location).pathname.split('/title/')
+    const firstJawboneId = urlQuery.length > 0 && !isNaN(parseInt(urlQuery[1])) ? urlQuery[1] : null
+    const secondJawboneId = new URLSearchParams(window.location.search).get('jbv')
+
+    return secondJawboneId || firstJawboneId
+  }
+
+  showHelp () {
+    this.logger.error('Netflix GUI seems to be differents, maybe user is part of an AB Test')
+    const cacheKey = 'noteflix_help_already_displayed'
+    const helpModalAlreadyDisplayed = sessionStorage.getItem(cacheKey)
+
+    if (document.getElementById(HelpModalId) == null && !helpModalAlreadyDisplayed) {
+      document.body.appendChild(HelpModal())
+
+      setTimeout(() => {
+        document.getElementById(HelpModalId).remove()
+        sessionStorage.setItem(cacheKey, '1')
+      }, 10000)
     }
   }
 }

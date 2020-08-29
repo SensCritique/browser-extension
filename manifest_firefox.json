@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "NoteFlix",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "Permet d'avoir les scores et avis AlloCiné/SensCritique sur Netflix",
   "icons": {
     "48": "images/logo-48.png",

@@ -1,10 +1,11 @@
 import { Rating } from './Rating'
+import SensCritiqueLogo from '../../images/services/senscritique'
 
 export const SensCritiqueRating = class SensCritiqueRating extends Rating {
   constructor (videoInfo) {
     super()
     this.videoInfo = videoInfo
-    this.logo = 'https://www.senscritique.com/favicon-32x32.png'
+    this.logo = SensCritiqueLogo
     this.rating = videoInfo.rating ? this.ratingInPercent(videoInfo.rating) : null
   }
 

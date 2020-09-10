@@ -15,6 +15,7 @@ export const HelpModal = () => {
   modal.style.zIndex = '1000'
   modal.style.display = 'flex'
   modal.style.alignItems = 'center'
+  modal.style.cursor = 'pointer'
   modal.id = HelpModalId
 
   const logo = document.createElement('img')

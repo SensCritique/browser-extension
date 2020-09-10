@@ -7,6 +7,7 @@ import RatingFactory from './RatingFactory'
 import { ServiceEnum } from '../http/ServiceEnum'
 import Logger from '../logging/Logger'
 import { HelpModal, HelpModalId } from './HelpModal'
+import { Netflix } from '../config/Netflix'
 
 export default class Manager {
   constructor () {
@@ -109,18 +110,21 @@ export default class Manager {
     return secondJawboneId || firstJawboneId
   }
 
-  showHelp () {
+  async showHelp () {
     const cacheKey = 'noteflix_help_already_displayed'
     const helpModalAlreadyDisplayed = sessionStorage.getItem(cacheKey)
 
     if (document.getElementById(HelpModalId) == null && !helpModalAlreadyDisplayed) {
-      this.logger.error('Netflix GUI seems to be differents, maybe user is part of an AB Test')
+      const canAbTest = await Netflix.canABTest()
+      this.logger.error('Netflix GUI seems to be differents, maybe user is part of an AB Test', {
+        canABTest: canAbTest
+      })
       document.body.appendChild(HelpModal())
+      sessionStorage.setItem(cacheKey, '1')
 
-      setTimeout(() => {
+      document.getElementById(HelpModalId).addEventListener('click', () => {
         document.getElementById(HelpModalId).remove()
-        sessionStorage.setItem(cacheKey, '1')
-      }, 10000)
+      })
     }
   }
 }

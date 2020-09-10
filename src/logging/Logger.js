@@ -1,4 +1,5 @@
 import { datadogLogs } from '@datadog/browser-logs'
+import { Netflix } from '../config/Netflix'
 
 export default class Logger {
   constructor () {
@@ -11,7 +12,8 @@ export default class Logger {
 
     this.logger = datadogLogs.createLogger('main', {
       context: {
-        app_version: chrome.runtime.getManifest().version
+        app_version: chrome.runtime.getManifest().version,
+        netflix_ui_version: Netflix.getUiVersion()
       }
     })
   }

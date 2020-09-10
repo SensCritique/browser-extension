@@ -56,8 +56,8 @@ const observer = new MutationObserver((mutations) => {
 observer.observe(document.getElementById('appMountPoint'), observerConfig)
 
 // Check every 5 seconds if current version of Netflix is supported
-setInterval(() => {
+setInterval(async () => {
   if (!jawboneEventFound && manager.currentVideoId() !== null) {
-    manager.showHelp()
+    await manager.showHelp()
   }
 }, 5000)

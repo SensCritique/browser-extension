@@ -8,51 +8,21 @@ const observerConfig = {
   subtree: true
 }
 
-const clickedOnVideoJawBone = (mutation) => {
+const detailModalIsShown = (mutation) => {
   return mutation.type === 'childList' &&
-    mutation.addedNodes.length > 0 &&
-    mutation.target &&
-    (
-      mutation.target.classList.contains('jawBoneContent') ||
-      mutation.target.classList.contains('jawBoneContainer')
-    )
-}
-
-const clickedOnImageJawBone = (mutation) => {
-  return mutation.type === 'childList' &&
-    mutation.addedNodes.length > 0 &&
-    mutation.target &&
-    mutation.target.classList.contains('jawBoneOpenContainer')
-}
-
-const clickOnArrowsJawbone = (mutation) => {
-  return mutation.type === 'childList' &&
-    mutation.addedNodes.length > 0 &&
-    mutation.target &&
-    mutation.target.classList.contains('jawBone')
-}
-
-const isLoaded = (mutation) => {
-  return mutation.type === 'childList' &&
-    mutation.previousSibling &&
-    mutation.previousSibling.classList.contains('jawBoneContainer') &&
-    mutation.addedNodes.length > 0
+        mutation.addedNodes.length > 0 &&
+        mutation.addedNodes[0].classList.contains('detail-modal')
 }
 
 const observer = new MutationObserver((mutations) => {
-  // Only listen mutation of added jawBones
-  const jawboneMutation = mutations.filter(mutation => {
-    return clickedOnVideoJawBone(mutation) ||
-      clickedOnImageJawBone(mutation) ||
-      clickOnArrowsJawbone(mutation) ||
-      isLoaded(mutation)
-  })
-  if (jawboneMutation.length > 0) {
-    jawboneEventFound = true
-    manager.refreshRatings()
+  for (const mutation of mutations) {
+    if (detailModalIsShown(mutation)) {
+      jawboneEventFound = true
+      manager.refreshRatings()
+      break
+    }
   }
 })
-
 observer.observe(document.getElementById('appMountPoint'), observerConfig)
 
 // Check every 5 seconds if current version of Netflix is supported

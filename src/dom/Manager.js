@@ -6,7 +6,7 @@ import * as md5 from 'blueimp-md5'
 import RatingFactory from './RatingFactory'
 import { ServiceEnum } from '../http/ServiceEnum'
 import Logger from '../logging/Logger'
-import { HelpModal, HelpModalId } from './HelpModal'
+import { ABTestModal, AbTestModalId, NotSupportedModal, NotSupportedModalId } from './Modals'
 
 export default class Manager {
   constructor () {
@@ -19,41 +19,38 @@ export default class Manager {
   }
 
   refreshRatings () {
-    const jawbones = this.getJawbones()
+    const videoName = this.getVideoName()
+    const modal = document.querySelector('.detail-modal')
+    const hash = md5(videoName)
 
-    for (const jawbone of jawbones) {
-      const videoName = this.getVideoName(jawbone)
-      const hash = md5(videoName)
-
-      if (videoName && jawbone.getElementsByClassName(hash).length === 0) {
-        // Create main div for Ratings
-        const jawboneOverviewInfo = jawbone.getElementsByClassName('jawbone-overview-info')[0]
-        if (jawboneOverviewInfo) {
-          const ratingsElement = Ratings.render(hash)
-          jawboneOverviewInfo.prepend(ratingsElement)
-        }
-        this.getRating(videoName, jawbone, ServiceEnum.SENSCRITIQUE)
-        this.getRating(videoName, jawbone, ServiceEnum.ALLOCINE)
+    if (videoName && modal.getElementsByClassName(hash).length === 0) {
+      // Create main div for Ratings
+      const infoElement = modal.querySelector('.previewModal--detailsMetadata-info')
+      if (infoElement) {
+        const ratingsElement = Ratings.render(hash)
+        infoElement.prepend(ratingsElement)
       }
+      this.getRating(videoName, modal, ServiceEnum.SENSCRITIQUE)
+      this.getRating(videoName, modal, ServiceEnum.ALLOCINE)
     }
   }
 
-  getJawbones () {
-    return document.getElementsByClassName('jawBone')
+  getVideoName () {
+    const detailModalVideoName = document
+      .querySelector('.previewModal--player-titleTreatment-logo')
+      ?.getAttribute('alt')
+
+    return detailModalVideoName || null
   }
 
-  getVideoName (jawbone) {
-    const element = jawbone.querySelector('.logo')
-    return element ? element.getAttribute('alt') : null
+  getVideoYear () {
+    const yearElement = document.querySelector('.detail-modal .year')
+
+    return yearElement?.innerText
   }
 
-  getVideoYear (jawbone) {
-    const yearElement = jawbone.querySelector('.year')
-    return yearElement == null ? null : yearElement.innerText
-  }
-
-  getVideoType (jawbone) {
-    const episodesElement = jawbone.querySelector('.Episodes')
+  getVideoType () {
+    const episodesElement = document.querySelector('.detail-modal .episodeSelector')
 
     return episodesElement == null ? VideoTypeEnum.MOVIE : VideoTypeEnum.SERIE
   }
@@ -61,7 +58,7 @@ export default class Manager {
   getRating (videoName, jawbone, service) {
     const videoInfoFound = this.cache.get(videoName, service)
     if (!videoInfoFound) {
-      this.getVideoInfo(service, videoName, this.getVideoYear(jawbone), this.getVideoType(jawbone), videoInfo => {
+      this.getVideoInfo(service, videoName, this.getVideoYear(), this.getVideoType(), videoInfo => {
         this.renderRating(service, jawbone, videoInfo)
       })
     }
@@ -109,18 +106,33 @@ export default class Manager {
     return secondJawboneId || firstJawboneId
   }
 
-  showHelp () {
-    const cacheKey = 'noteflix_help_already_displayed'
+  showAbTestModal () {
+    const cacheKey = 'noteflix_help'
     const helpModalAlreadyDisplayed = sessionStorage.getItem(cacheKey)
 
-    if (document.getElementById(HelpModalId) == null && !helpModalAlreadyDisplayed) {
-      this.logger.error('Netflix GUI seems to be differents, maybe user is part of an AB Test')
-      document.body.appendChild(HelpModal())
+    if (document.getElementById(AbTestModalId) == null && !helpModalAlreadyDisplayed) {
+      this.logger.error('Netflix GUI seems to be differents, user is part of an AB Test')
+      document.body.appendChild(ABTestModal())
+      sessionStorage.setItem(cacheKey, '1')
 
-      setTimeout(() => {
-        document.getElementById(HelpModalId).remove()
-        sessionStorage.setItem(cacheKey, '1')
-      }, 10000)
+      document.getElementById(AbTestModalId).addEventListener('click', () => {
+        document.getElementById(AbTestModalId).remove()
+      })
+    }
+  }
+
+  showNotSupportedModal () {
+    const cacheKey = 'noteflix_not_supported'
+    const helpModalAlreadyDisplayed = sessionStorage.getItem(cacheKey)
+
+    if (document.getElementById(NotSupportedModalId) == null && !helpModalAlreadyDisplayed) {
+      this.logger.error('A newer GUI version seems available')
+      document.body.appendChild(NotSupportedModal())
+      sessionStorage.setItem(cacheKey, '1')
+
+      document.getElementById(NotSupportedModalId).addEventListener('click', () => {
+        document.getElementById(NotSupportedModalId).remove()
+      })
     }
   }
 }

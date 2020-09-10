@@ -1,8 +1,9 @@
 import logo64 from '../../images/logo'
 
-export const HelpModalId = 'noteflix_help_modal'
+export const AbTestModalId = 'noteflix_help_modal'
+export const NotSupportedModalId = 'noteflix_not_supported_modal'
 
-export const HelpModal = () => {
+const Modal = (id, text) => {
   const modal = document.createElement('div')
 
   modal.style.borderRadius = '5px'
@@ -16,12 +17,19 @@ export const HelpModal = () => {
   modal.style.display = 'flex'
   modal.style.alignItems = 'center'
   modal.style.cursor = 'pointer'
-  modal.id = HelpModalId
+  modal.id = id
 
   const logo = document.createElement('img')
   logo.src = 'data:image/png;base64, ' + logo64
   logo.style.height = '24px'
 
+  modal.append(logo)
+  modal.append(text)
+
+  return modal
+}
+
+export const ABTestModal = () => {
   const text = document.createElement('div')
   text.style.fontSize = '14px'
   text.style.lineHeight = '24px'
@@ -37,9 +45,18 @@ export const HelpModal = () => {
   Votre compte Netflix semble faire parti d'une phase de test, ce qui le rend incompatible avec NoteFlix.<br />
   ${button.outerHTML} pour que NoteFlix fonctionne. 
   `
+  return Modal(AbTestModalId, text)
+}
 
-  modal.append(logo)
-  modal.append(text)
+export const NotSupportedModal = () => {
+  const text = document.createElement('div')
+  text.style.fontSize = '14px'
+  text.style.lineHeight = '24px'
+  text.style.marginLeft = '10px'
 
-  return modal
+  text.innerHTML = `
+  L'interface de Netflix ne semble plus être supportée par Noteflix pour le moment. <br />
+  Aucune crainte, nous sommes déjà sur le coup...🚀 <br /> 
+  `
+  return Modal(NotSupportedModalId, text)
 }

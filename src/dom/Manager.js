@@ -6,8 +6,7 @@ import * as md5 from 'blueimp-md5'
 import RatingFactory from './RatingFactory'
 import { ServiceEnum } from '../http/ServiceEnum'
 import Logger from '../logging/Logger'
-import { HelpModal, HelpModalId } from './HelpModal'
-import { Netflix } from '../config/Netflix'
+import { ABTestModal, AbTestModalId, NotSupportedModal, NotSupportedModalId } from './Modals'
 
 export default class Manager {
   constructor () {
@@ -107,20 +106,32 @@ export default class Manager {
     return secondJawboneId || firstJawboneId
   }
 
-  async showHelp () {
-    const cacheKey = 'noteflix_help_already_displayed'
+  showAbTestModal () {
+    const cacheKey = 'noteflix_help'
     const helpModalAlreadyDisplayed = sessionStorage.getItem(cacheKey)
 
-    if (document.getElementById(HelpModalId) == null && !helpModalAlreadyDisplayed) {
-      const canAbTest = await Netflix.canABTest()
-      this.logger.error('Netflix GUI seems to be differents, maybe user is part of an AB Test', {
-        canABTest: canAbTest
-      })
-      document.body.appendChild(HelpModal())
+    if (document.getElementById(AbTestModalId) == null && !helpModalAlreadyDisplayed) {
+      this.logger.error('Netflix GUI seems to be differents, user is part of an AB Test')
+      document.body.appendChild(ABTestModal())
       sessionStorage.setItem(cacheKey, '1')
 
-      document.getElementById(HelpModalId).addEventListener('click', () => {
-        document.getElementById(HelpModalId).remove()
+      document.getElementById(AbTestModalId).addEventListener('click', () => {
+        document.getElementById(AbTestModalId).remove()
+      })
+    }
+  }
+
+  showNotSupportedModal () {
+    const cacheKey = 'noteflix_not_supported'
+    const helpModalAlreadyDisplayed = sessionStorage.getItem(cacheKey)
+
+    if (document.getElementById(NotSupportedModalId) == null && !helpModalAlreadyDisplayed) {
+      this.logger.error('A newer GUI version seems available')
+      document.body.appendChild(NotSupportedModal())
+      sessionStorage.setItem(cacheKey, '1')
+
+      document.getElementById(NotSupportedModalId).addEventListener('click', () => {
+        document.getElementById(NotSupportedModalId).remove()
       })
     }
   }

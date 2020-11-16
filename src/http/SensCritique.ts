@@ -2,6 +2,9 @@ import VideoTypeEnum from './VideoTypeEnum'
 import * as Levenshtein from 'fast-levenshtein'
 
 export default class SensCritique {
+  private searchUrl: string;
+  private errorSearchUrl: string;
+
   constructor () {
     this.searchUrl = 'https://www.senscritique.com/sc2/search/autocomplete.json?query=%search%'
     this.errorSearchUrl = 'https://www.senscritique.com/search?q=%search%'
@@ -45,7 +48,8 @@ export default class SensCritique {
             const html = await response.text()
             const parser = new DOMParser()
             const dom = parser.parseFromString(html, 'text/html')
-            videoInfo.rating = dom.documentElement.querySelector('[itemprop="ratingValue"]').innerText
+            const element: HTMLElement = dom.documentElement.querySelector('[itemprop="ratingValue"]')
+            videoInfo.rating = element.innerText
 
             return videoInfo
           }

@@ -8,9 +8,9 @@ const senscritique = new SensCritique()
 const fetchInfo = async (message, callback) => {
   switch (message.service) {
     case ServiceEnum.ALLOCINE:
-      return allocine.getVideoInfo(message.videoName, message.videoYear, message.videoType, callback)
+      return allocine.getVideoInfo(message.videoName, message.videoYear, message.videoType)
     case ServiceEnum.SENSCRITIQUE:
-      return senscritique.getVideoInfo(message.videoName, message.videoYear, message.videoType, callback)
+      return senscritique.getVideoInfo(message.videoName, message.videoYear, message.videoType)
   }
 }
 

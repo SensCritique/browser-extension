@@ -1,11 +1,13 @@
-import { datadogLogs } from '@datadog/browser-logs'
+import { datadogLogs, Logger as DatadogLogger, Datacenter } from '@datadog/browser-logs';
 import { Netflix } from '../config/Netflix'
 
 export default class Logger {
+  private logger: DatadogLogger;
+
   constructor () {
     datadogLogs.init({
       clientToken: 'pubfbf6abf237f445e8d52aaa35f5462964',
-      datacenter: 'us',
+      datacenter: Datacenter.US,
       forwardErrorsToLogs: false,
       sampleRate: 100
     })

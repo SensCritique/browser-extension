@@ -6,7 +6,11 @@ export const COLOR = {
   GREEN: '#2EB33B'
 }
 
-export const Rating = class Rating {
+export class Rating {
+  public rating: number;
+  protected videoInfo: any;
+  protected logo: string;
+
   get color () {
     if (!this.rating) {
       return COLOR.GREY

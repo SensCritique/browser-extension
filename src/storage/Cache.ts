@@ -1,6 +1,8 @@
 import md5 from 'blueimp-md5'
 
 export default class Cache {
+  private readonly prefix: string;
+
   constructor () {
     this.prefix = 'noteflix_'
   }

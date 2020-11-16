@@ -1,21 +1,24 @@
 import Cache from '../storage/Cache'
-import MessageEventEnum from './MessageEventEnum'
+import {MessageEvent} from './MessageEventEnum'
 import VideoTypeEnum from '../http/VideoTypeEnum'
 import Ratings from './Ratings'
-import * as md5 from 'blueimp-md5'
+import md5 from 'blueimp-md5'
 import RatingFactory from './RatingFactory'
 import { ServiceEnum } from '../http/ServiceEnum'
 import Logger from '../logging/Logger'
 import { ABTestModal, AbTestModalId, NotSupportedModal, NotSupportedModalId } from './Modals'
 
 export default class Manager {
+  private cache: Cache;
+  private logger: Logger;
+
   constructor () {
     this.cache = new Cache()
     this.logger = new Logger()
   }
 
   getVideoInfo (service, videoName, videoYear, videoType, callback) {
-    chrome.runtime.sendMessage({ type: MessageEventEnum.INFO, service, videoName, videoYear, videoType }, callback)
+    chrome.runtime.sendMessage({ type: MessageEvent.INFO, service, videoName, videoYear, videoType }, callback)
   }
 
   refreshRatings () {
@@ -44,7 +47,7 @@ export default class Manager {
   }
 
   getVideoYear () {
-    const yearElement = document.querySelector('.detail-modal .year')
+    const yearElement: HTMLElement = document.querySelector('.detail-modal .year')
 
     return yearElement?.innerText
   }
@@ -99,7 +102,7 @@ export default class Manager {
   }
 
   currentVideoId () {
-    const urlQuery = new URL(window.location).pathname.split('/title/')
+    const urlQuery = new URL(window.location.toString()).pathname.split('/title/')
     const firstJawboneId = urlQuery.length > 0 && !isNaN(parseInt(urlQuery[1])) ? urlQuery[1] : null
     const secondJawboneId = new URLSearchParams(window.location.search).get('jbv')
 

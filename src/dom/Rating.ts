@@ -1,3 +1,5 @@
+import {VideoInfo} from "../http/Client";
+
 export const COLOR = {
   RED: '#B3302A',
   ORANGE: '#c95400',
@@ -8,10 +10,10 @@ export const COLOR = {
 
 export class Rating {
   public rating: number;
-  protected videoInfo: any;
+  protected videoInfo: VideoInfo;
   protected logo: string;
 
-  get color () {
+  get color() {
     if (!this.rating) {
       return COLOR.GREY
     }
@@ -29,7 +31,7 @@ export class Rating {
     }
   }
 
-  render () {
+  render(): Element {
     const a = document.createElement('a')
     a.setAttribute('id', this.videoInfo.hashId)
     a.setAttribute('href', this.videoInfo.redirect)

@@ -1,15 +1,16 @@
-import { Rating } from './Rating'
+import {Rating} from './Rating'
 import AllocineLogo from '../../images/services/allocine'
+import {VideoInfo} from "../http/Client";
 
 export const AllocineRating = class AllocineRating extends Rating {
-  constructor (videoInfo) {
+  constructor(videoInfo: VideoInfo) {
     super()
     this.videoInfo = videoInfo
     this.logo = AllocineLogo
     this.rating = videoInfo.rating ? this.ratingInPercent(videoInfo.rating) : null
   }
 
-  ratingInPercent (rating) {
+  ratingInPercent(rating) {
     if (rating === null || rating === undefined || !rating.match(/^(?:\d[,.])?\d$/) || rating > 5 || rating < 0) {
       return null
     }

@@ -1,5 +1,5 @@
 import Manager from './dom/Manager'
-import { Netflix } from './config/Netflix'
+import {Netflix} from './config/Netflix'
 
 const manager = new Manager()
 let jawboneEventFound = false

@@ -1,21 +1,31 @@
 import Allocine from './http/Allocine'
-import { ServiceEnum } from './http/ServiceEnum'
+import {Service} from './http/Service'
 import SensCritique from './http/SensCritique'
+import {MessageEvent} from "./dom/MessageEvent";
+import {VideoType} from "./http/VideoType";
 
 const allocine = new Allocine()
 const senscritique = new SensCritique()
 
-const fetchInfo = async (message, callback) => {
+export interface Message {
+  type: MessageEvent,
+  service: string,
+  videoName: string,
+  videoYear: string,
+  videoType: VideoType,
+}
+
+const fetchInfo = async (message: Message) => {
   switch (message.service) {
-    case ServiceEnum.ALLOCINE:
-      return allocine.getVideoInfo(message.videoName, message.videoYear, message.videoType)
-    case ServiceEnum.SENSCRITIQUE:
-      return senscritique.getVideoInfo(message.videoName, message.videoYear, message.videoType)
+    case Service.ALLOCINE:
+      return allocine.getVideoInfo(message.videoName, message.videoType, message.videoYear)
+    case Service.SENSCRITIQUE:
+      return senscritique.getVideoInfo(message.videoName, message.videoType, message.videoYear)
   }
 }
 
 chrome.runtime.onMessage.addListener((message, sender, callback) => {
-  fetchInfo(message, callback).then(response => {
+  fetchInfo(message).then(response => {
     callback(response)
   })
 

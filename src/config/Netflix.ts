@@ -1,11 +1,11 @@
 export class Netflix {
-  static getUiVersion(): string {
+  static getUiVersion (): string {
     const headers = window.wrappedJSObject?.netflix?.reactContext?.models?.abContext?.data?.headers
 
     return headers?.['X-Netflix.uiVersion']
   }
 
-  static async canABTest(): Promise<boolean> {
+  static async canABTest (): Promise<boolean> {
     let url = 'https://www.netflix.com/api/shakti/%uiVersion%/account/donottest'
     const uiVersion = Netflix.getUiVersion()
     if (uiVersion) {
@@ -16,6 +16,6 @@ export class Netflix {
       return json?.canABTest != null ? json.canABTest : false
     }
 
-    return false;
+    return false
   }
 }

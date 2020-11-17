@@ -1,5 +1,5 @@
-import {Client, VideoInfo} from "./Client";
-import {VideoType} from "./VideoType";
+import { Client, VideoInfo } from './Client'
+import { VideoType } from './VideoType'
 
 export default class AllocineClient implements Client {
   private readonly searchUrl: string;
@@ -7,14 +7,14 @@ export default class AllocineClient implements Client {
   private serieRatingUrl: string;
   private failRedirectUrl: string;
 
-  constructor() {
+  constructor () {
     this.searchUrl = 'https://www.allocine.fr/_/autocomplete/'
     this.movieRatingUrl = 'https://www.allocine.fr/film/fichefilm-%id%/critiques/spectateurs/'
     this.serieRatingUrl = 'https://www.allocine.fr/series/ficheserie-%id%/critiques/'
     this.failRedirectUrl = 'https://www.allocine.fr/recherche/?q=%s'
   }
 
-  async getVideoInfo(search: string, type: VideoType, year: string = null): Promise<VideoInfo> {
+  async getVideoInfo (search: string, type: VideoType, year: string = null): Promise<VideoInfo> {
     if (search) {
       const url = this.searchUrl + encodeURI(search)
       const response = await fetch(url)
@@ -59,7 +59,7 @@ export default class AllocineClient implements Client {
     }
   }
 
-  buildRatingUrl(id: string, type: VideoType): string {
+  buildRatingUrl (id: string, type: VideoType): string {
     if (type === VideoType.MOVIE) {
       return this.movieRatingUrl.replace('%id%', id)
     }
@@ -67,7 +67,7 @@ export default class AllocineClient implements Client {
     return this.serieRatingUrl.replace('%id%', id)
   };
 
-  buildRedirectUrl(videoName: string): string {
+  buildRedirectUrl (videoName: string): string {
     return this.failRedirectUrl.replace('%s', encodeURI(videoName))
   }
 }

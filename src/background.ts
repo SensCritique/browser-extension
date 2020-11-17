@@ -1,8 +1,8 @@
 import Allocine from './http/Allocine'
-import {Service} from './http/Service'
+import { Service } from './http/Service'
 import SensCritique from './http/SensCritique'
-import {MessageEvent} from "./dom/MessageEvent";
-import {VideoType} from "./http/VideoType";
+import { MessageEvent } from './dom/MessageEvent'
+import { VideoType } from './http/VideoType'
 
 const allocine = new Allocine()
 const senscritique = new SensCritique()

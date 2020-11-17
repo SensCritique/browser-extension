@@ -1,26 +1,26 @@
-import {VideoType} from './VideoType'
+import { VideoType } from './VideoType'
 import * as Levenshtein from 'fast-levenshtein'
-import {Client, VideoInfo} from "./Client";
+import { Client, VideoInfo } from './Client'
 
 export default class SensCritique implements Client {
   private searchUrl: string;
   private errorSearchUrl: string;
 
-  constructor() {
+  constructor () {
     this.searchUrl = 'https://www.senscritique.com/sc2/search/autocomplete.json?query=%search%'
     this.errorSearchUrl = 'https://www.senscritique.com/search?q=%search%'
   }
 
-  buildErrorUrl(videoName: string): string {
+  buildErrorUrl (videoName: string): string {
     return this.errorSearchUrl.replace('%search%', videoName)
   }
 
-  async getVideoInfo(search: string, type: VideoType, year: string = null): Promise<VideoInfo> {
+  async getVideoInfo (search: string, type: VideoType, year: string = null): Promise<VideoInfo> {
     if (search) {
       const url = this.searchUrl.replace('%search%', encodeURI(search))
       const headers = new Headers()
       headers.append('x-requested-with', 'XMLHttpRequest')
-      const response = await fetch(url, {headers})
+      const response = await fetch(url, { headers })
       let videoInfo = null
       if (response.ok) {
         const body = await response.json()

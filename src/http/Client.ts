@@ -1,4 +1,4 @@
-import {VideoType} from "./VideoType";
+import { VideoType } from './VideoType'
 
 export interface VideoInfo {
   name: string,

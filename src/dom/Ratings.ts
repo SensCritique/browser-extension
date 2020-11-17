@@ -1,5 +1,5 @@
 export default class Ratings {
-  static render(hash: string): Element {
+  static render (hash: string): Element {
     const mainDiv = document.createElement('div')
     mainDiv.style.display = 'flex'
     mainDiv.style.marginBottom = '1em'

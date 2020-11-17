@@ -31,3 +31,6 @@ test:
 .PHONY: sh
 sh:
 	${RUN_NODE} sh
+.PHONY: lint
+lint:
+	${RUN_NODE} npx eslint --fix src/ --ext .ts

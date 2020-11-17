@@ -1,11 +1,11 @@
-import {datadogLogs, Logger as DatadogLogger, Datacenter} from '@datadog/browser-logs';
-import {Context} from '@datadog/browser-core';
-import {Netflix} from '../config/Netflix'
+import { datadogLogs, Logger as DatadogLogger, Datacenter } from '@datadog/browser-logs'
+import { Context } from '@datadog/browser-core'
+import { Netflix } from '../config/Netflix'
 
 export default class Logger {
   private logger: DatadogLogger;
 
-  constructor() {
+  constructor () {
     datadogLogs.init({
       clientToken: 'pubfbf6abf237f445e8d52aaa35f5462964',
       datacenter: Datacenter.US,
@@ -21,19 +21,19 @@ export default class Logger {
     })
   }
 
-  info(message: string, context: Context = {}) {
+  info (message: string, context: Context = {}) {
     this.logger.info(message, context)
   }
 
-  error(message: string, context: Context = {}) {
+  error (message: string, context: Context = {}) {
     this.logger.error(message, context)
   }
 
-  warning(message: string, context: Context = {}) {
+  warning (message: string, context: Context = {}) {
     this.logger.warn(message, context)
   }
 
-  debug(message: string, context: Context = {}) {
+  debug (message: string, context: Context = {}) {
     this.logger.debug(message, context)
   }
 }

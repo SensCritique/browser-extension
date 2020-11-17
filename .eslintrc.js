@@ -10,9 +10,15 @@ module.exports = {
   extends: [
     'standard'
   ],
+  parser: "@typescript-eslint/parser",
+  plugins: [
+    '@typescript-eslint'
+  ],
   parserOptions: {
     ecmaVersion: 11,
     sourceType: 'module'
   },
-  rules: {}
+  rules: {
+    "no-unused-vars": "off"
+  }
 }

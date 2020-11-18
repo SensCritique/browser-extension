@@ -1,4 +1,4 @@
-import { test } from '@jest/globals'
+import { test, expect } from '@jest/globals'
 import { SensCritiqueRating } from '../../src/dom/SensCritiqueRating'
 
 const successDataset = [
@@ -9,7 +9,10 @@ const successDataset = [
   ['0', 0]
 ]
 test.each(successDataset)('It should convert SensCritique note (%s) in percentage (%s)', (sensCritiqueNote, expected) => {
-  const sensCritiqueRating = new SensCritiqueRating({})
+  const sensCritiqueRating = new SensCritiqueRating({
+    name: 'test',
+    redirect: ''
+  })
   const noteflixScore = sensCritiqueRating.ratingInPercent(sensCritiqueNote)
 
   expect(noteflixScore).toBe(expected)
@@ -22,7 +25,10 @@ const errorDataset = [
   ['11', null]
 ]
 test.each(errorDataset)('It should convert wrong SensCritique note (%s) to null', (sensCritiqueNote, expected) => {
-  const sensCritiqueRating = new SensCritiqueRating({})
+  const sensCritiqueRating = new SensCritiqueRating({
+    name: 'test',
+    redirect: '',
+  })
   const noteflixScore = sensCritiqueRating.ratingInPercent(sensCritiqueNote)
 
   expect(noteflixScore).toBe(expected)
@@ -30,7 +36,9 @@ test.each(errorDataset)('It should convert wrong SensCritique note (%s) to null'
 
 test('It should create instance with rights rating', () => {
   const sensCritiqueRating = new SensCritiqueRating({
-    rating: '7'
+    rating: '7',
+    name: 'test',
+    redirect: ''
   })
 
   expect(sensCritiqueRating.rating).toBe(70)
@@ -40,12 +48,13 @@ test('It should render node with rights info', () => {
   const sensCritiqueRating = new SensCritiqueRating({
     rating: '8,5',
     redirect: 'https://google.fr',
-    hashId: 'XXX'
+    hashId: 'XXX',
+    name: 'test',
   })
   const sensCritiqueRatingRendered = sensCritiqueRating.render()
 
   expect(sensCritiqueRatingRendered).not.toBeNull()
   expect(sensCritiqueRatingRendered.getAttribute('href')).toBe('https://google.fr')
   expect(sensCritiqueRatingRendered.getAttribute('id')).toBe('XXX')
-  expect(sensCritiqueRatingRendered.childNodes[1].innerText).toBe('85')
+  expect((sensCritiqueRatingRendered.childNodes[1] as HTMLElement).innerText).toBe('85')
 })

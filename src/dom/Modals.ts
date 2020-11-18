@@ -3,7 +3,7 @@ import logo64 from '../../images/logo'
 export const AbTestModalId = 'noteflix_help_modal'
 export const NotSupportedModalId = 'noteflix_not_supported_modal'
 
-const Modal = (id, text) => {
+const Modal = (id: string, text: Element): Element => {
   const modal = document.createElement('div')
 
   modal.style.borderRadius = '5px'
@@ -29,7 +29,7 @@ const Modal = (id, text) => {
   return modal
 }
 
-export const ABTestModal = () => {
+export const ABTestModal = (): Element => {
   const text = document.createElement('div')
   text.style.fontSize = '14px'
   text.style.lineHeight = '24px'
@@ -48,7 +48,7 @@ export const ABTestModal = () => {
   return Modal(AbTestModalId, text)
 }
 
-export const NotSupportedModal = () => {
+export const NotSupportedModal = (): Element => {
   const text = document.createElement('div')
   text.style.fontSize = '14px'
   text.style.lineHeight = '24px'

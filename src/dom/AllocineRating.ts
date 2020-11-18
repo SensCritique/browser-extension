@@ -1,8 +1,9 @@
 import { Rating } from './Rating'
 import AllocineLogo from '../../images/services/allocine'
+import { VideoInfo } from '../http/Client'
 
 export const AllocineRating = class AllocineRating extends Rating {
-  constructor (videoInfo) {
+  constructor (videoInfo: VideoInfo) {
     super()
     this.videoInfo = videoInfo
     this.logo = AllocineLogo

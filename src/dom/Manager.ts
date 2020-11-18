@@ -1,21 +1,26 @@
 import Cache from '../storage/Cache'
-import MessageEventEnum from './MessageEventEnum'
-import VideoTypeEnum from '../http/VideoTypeEnum'
+import { MessageEvent } from './MessageEvent'
 import Ratings from './Ratings'
-import * as md5 from 'blueimp-md5'
+import md5 from 'blueimp-md5'
 import RatingFactory from './RatingFactory'
-import { ServiceEnum } from '../http/ServiceEnum'
+import { Service } from '../http/Service'
 import Logger from '../logging/Logger'
 import { ABTestModal, AbTestModalId, NotSupportedModal, NotSupportedModalId } from './Modals'
+import { VideoType } from '../http/VideoType'
+import { Message } from '../background'
+import { VideoInfo } from '../http/Client'
 
 export default class Manager {
+  private cache: Cache;
+  private logger: Logger;
+
   constructor () {
     this.cache = new Cache()
     this.logger = new Logger()
   }
 
   getVideoInfo (service, videoName, videoYear, videoType, callback) {
-    chrome.runtime.sendMessage({ type: MessageEventEnum.INFO, service, videoName, videoYear, videoType }, callback)
+    chrome.runtime.sendMessage({ type: MessageEvent.INFO, service, videoName, videoYear, videoType } as Message, callback)
   }
 
   refreshRatings () {
@@ -30,12 +35,12 @@ export default class Manager {
         const ratingsElement = Ratings.render(hash)
         infoElement.prepend(ratingsElement)
       }
-      this.getRating(videoName, modal, ServiceEnum.SENSCRITIQUE)
-      this.getRating(videoName, modal, ServiceEnum.ALLOCINE)
+      this.getRating(videoName, modal, Service.SENSCRITIQUE)
+      this.getRating(videoName, modal, Service.ALLOCINE)
     }
   }
 
-  getVideoName () {
+  getVideoName (): string | null {
     const detailModalVideoName = document
       .querySelector('.previewModal--player-titleTreatment-logo')
       ?.getAttribute('alt')
@@ -43,19 +48,19 @@ export default class Manager {
     return detailModalVideoName || null
   }
 
-  getVideoYear () {
-    const yearElement = document.querySelector('.detail-modal .year')
+  getVideoYear (): string {
+    const yearElement: HTMLElement = document.querySelector('.detail-modal .year')
 
     return yearElement?.innerText
   }
 
-  getVideoType () {
+  getVideoType (): VideoType {
     const episodesElement = document.querySelector('.detail-modal .episodeSelector')
 
-    return episodesElement == null ? VideoTypeEnum.MOVIE : VideoTypeEnum.SERIE
+    return episodesElement == null ? VideoType.MOVIE : VideoType.SERIE
   }
 
-  getRating (videoName, jawbone, service) {
+  getRating (videoName: string, jawbone: Element, service: Service) {
     const videoInfoFound = this.cache.get(videoName, service)
     if (!videoInfoFound) {
       this.getVideoInfo(service, videoName, this.getVideoYear(), this.getVideoType(), videoInfo => {
@@ -67,7 +72,7 @@ export default class Manager {
     }
   }
 
-  renderRating (service, element, videoInfo) {
+  renderRating (service: Service, element: Element, videoInfo: VideoInfo) {
     this.cache.save(videoInfo, service)
 
     const serviceRating = (new RatingFactory()).create(service, videoInfo)
@@ -81,7 +86,7 @@ export default class Manager {
     })
   }
 
-  logVideoInfo (videoName, rating, service) {
+  logVideoInfo (videoName: string, rating: number, service: Service) {
     if (rating) {
       this.logger.info(`Rating fetched for video ${videoName}`, {
         name: videoName,
@@ -98,15 +103,15 @@ export default class Manager {
     }
   }
 
-  currentVideoId () {
-    const urlQuery = new URL(window.location).pathname.split('/title/')
+  currentVideoId (): string {
+    const urlQuery = new URL(window.location.toString()).pathname.split('/title/')
     const firstJawboneId = urlQuery.length > 0 && !isNaN(parseInt(urlQuery[1])) ? urlQuery[1] : null
     const secondJawboneId = new URLSearchParams(window.location.search).get('jbv')
 
     return secondJawboneId || firstJawboneId
   }
 
-  showAbTestModal () {
+  showAbTestModal (): void {
     const cacheKey = 'noteflix_help'
     const helpModalAlreadyDisplayed = sessionStorage.getItem(cacheKey)
 
@@ -121,7 +126,7 @@ export default class Manager {
     }
   }
 
-  showNotSupportedModal () {
+  showNotSupportedModal (): void {
     const cacheKey = 'noteflix_not_supported'
     const helpModalAlreadyDisplayed = sessionStorage.getItem(cacheKey)
 

@@ -1,17 +1,21 @@
-import VideoTypeEnum from './VideoTypeEnum'
+import { VideoType } from './VideoType'
 import * as Levenshtein from 'fast-levenshtein'
+import { Client, VideoInfo } from './Client'
 
-export default class SensCritique {
+export default class SensCritique implements Client {
+  private searchUrl: string;
+  private errorSearchUrl: string;
+
   constructor () {
     this.searchUrl = 'https://www.senscritique.com/sc2/search/autocomplete.json?query=%search%'
     this.errorSearchUrl = 'https://www.senscritique.com/search?q=%search%'
   }
 
-  buildErrorUrl (videoName) {
+  buildErrorUrl (videoName: string): string {
     return this.errorSearchUrl.replace('%search%', videoName)
   }
 
-  async getVideoInfo (search, year = null, type) {
+  async getVideoInfo (search: string, type: VideoType, year: string = null): Promise<VideoInfo> {
     if (search) {
       const url = this.searchUrl.replace('%search%', encodeURI(search))
       const headers = new Headers()
@@ -24,8 +28,8 @@ export default class SensCritique {
           let previousLevenshteinDistance = 100
           for (const result of body.json) {
             // subtype_id = 4 => Serie / subtype_id = 1 => film
-            if ((result.subtype_id === 4 && type === VideoTypeEnum.SERIE) ||
-              (type === VideoTypeEnum.MOVIE && result.subtype_id === 1)) {
+            if ((result.subtype_id === 4 && type === VideoType.SERIE) ||
+              (type === VideoType.MOVIE && result.subtype_id === 1)) {
               const levenshteinDistance = Levenshtein.get(result.label, `${search} (${year})`)
               if (levenshteinDistance < previousLevenshteinDistance) {
                 previousLevenshteinDistance = levenshteinDistance
@@ -45,7 +49,8 @@ export default class SensCritique {
             const html = await response.text()
             const parser = new DOMParser()
             const dom = parser.parseFromString(html, 'text/html')
-            videoInfo.rating = dom.documentElement.querySelector('[itemprop="ratingValue"]').innerText
+            const element: HTMLElement = dom.documentElement.querySelector('[itemprop="ratingValue"]')
+            videoInfo.rating = element.innerText
 
             return videoInfo
           }

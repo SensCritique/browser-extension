@@ -16,7 +16,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm install
       - name: ESlint
-        run: npx eslint src/*
+        run: npx eslint src/* --ext .ts
       - run: npm test
         env:
           CI: true

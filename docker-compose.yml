@@ -1,7 +1,9 @@
 version: "3.7"
 services:
   node:
-    image: node:14.7.0-alpine3.12
+    build:
+      dockerfile: Dockerfile
+      context: docker/node
     volumes:
       - ./:/app
     working_dir: /app

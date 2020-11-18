@@ -1,13 +1,15 @@
 import { AllocineRating } from './AllocineRating'
-import { ServiceEnum } from '../http/ServiceEnum'
+import { Rating } from './Rating'
+import { Service } from '../http/Service'
 import { SensCritiqueRating } from './SensCritiqueRating'
+import { VideoInfo } from '../http/Client'
 
 export default class RatingFactory {
-  create (service, videoInfo) {
+  create (service: Service, videoInfo: VideoInfo): Rating {
     switch (service) {
-      case ServiceEnum.ALLOCINE:
+      case Service.ALLOCINE:
         return new AllocineRating(videoInfo)
-      case ServiceEnum.SENSCRITIQUE:
+      case Service.SENSCRITIQUE:
         return new SensCritiqueRating(videoInfo)
     }
     throw new Error(`Unknown service "${service}"`)

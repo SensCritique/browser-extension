@@ -2,7 +2,7 @@ import { VideoType } from './VideoType'
 
 export interface VideoInfo {
   name: string,
-  redirect: string,
+  redirect?: string,
   id?: string,
   url?: string,
   type?: VideoType,

@@ -1,5 +1,5 @@
 import { COLOR, Rating } from '../../src/dom/Rating'
-import { test } from '@jest/globals'
+import { test, expect } from '@jest/globals'
 
 test.each([[0], [null], [undefined], ['']])('Rating must be grey if score is %s', (score) => {
   const rating = new Rating()

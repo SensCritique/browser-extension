@@ -1,9 +1,9 @@
-import { Rating } from './Rating'
+import {Rating} from './Rating'
 import SensCritiqueLogo from '../../images/services/senscritique'
-import { VideoInfo } from '../http/Client'
+import {VideoInfo} from '../http/Client'
 
 export const SensCritiqueRating = class SensCritiqueRating extends Rating {
-  constructor (videoInfo: VideoInfo) {
+  constructor(videoInfo: VideoInfo) {
     super()
     this.videoInfo = videoInfo
     this.logo = SensCritiqueLogo
@@ -11,13 +11,17 @@ export const SensCritiqueRating = class SensCritiqueRating extends Rating {
     this.rating = videoInfo.rating ? this.ratingInPercent(videoInfo.rating) : null
   }
 
-  ratingInPercent (rawRating: string): number {
+  ratingInPercent(rawRating: string): number | null {
     if (rawRating === null || rawRating === undefined || !rawRating.match(/^(?:\d{1,2}[,.])?\d{1,2}$/)) {
       return null
     }
+    rawRating = rawRating.replace(',', '.')
 
-    const rating = parseFloat(rawRating.replace(',', '.'))
+    let rating = Number.parseFloat(rawRating);
+    if (!Number.isNaN(rating) && (rating >= 0 && rating <= 10)) {
+      return rating * 10
+    }
 
-    return rating * 10
+    return null;
   }
 }

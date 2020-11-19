@@ -25,6 +25,6 @@ module.exports = {
   ],
   output: {
     path: path.resolve(__dirname, 'dist/chrome/main'),
-    filename: '[name]/index.ts'
+    filename: '[name]/index.js'
   }
 }

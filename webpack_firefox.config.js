@@ -25,6 +25,6 @@ module.exports = {
   ],
   output: {
     path: path.resolve(__dirname, 'dist/firefox/main'),
-    filename: '[name]/index.ts'
+    filename: '[name]/index.js'
   }
 }

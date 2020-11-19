@@ -12,7 +12,7 @@ jobs:
       - uses: trmcnvn/firefox-addon@v1
         with:
           uuid: '{bd4be575-d5f1-4b24-9ec4-b7adea506dc8}'
-          xpi: /releases/latest_firefox.xpi
-          manifest: manifest_firefox.json
+          xpi: ../releases/latest_firefox.xpi
+          manifest: ../manifest_firefox.json
           api-key: ${{ secrets.FIREFOX_API_KEY }}
           api-secret: ${{ secrets.FIREFOX_API_SECRET }}

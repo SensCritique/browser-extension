@@ -3,14 +3,14 @@ RUN_NODE = docker-compose run --rm node
 .PHONY: build-firefox
 build-firefox:
 	${RUN_NODE} npx webpack --mode=production --config=webpack_firefox.config.js
-	cd dist/firefox/main && zip -r ../latest_firefox.zip *
+	cd dist/firefox/main && zip -r ../latest_firefox.xpi * && mv ../latest_firefox.xpi ../../../releases/
 .PHONY: watch-firefox
 watch-firefox:
 	${RUN_NODE} npx webpack --mode=development --config=webpack_firefox.config.js --watch
 .PHONY: build-chrome
 build-chrome:
 	${RUN_NODE} npx webpack --mode=production --config=webpack_chrome.config.js
-	cd dist/chrome/main && zip -r ../latest_chrome.zip *
+	cd dist/chrome/main && zip -r ../latest_chrome.zip * && mv ../latest_chrome.zip ../../../releases/
 .PHONY: watch-chrome
 watch-chrome:
 	${RUN_NODE} npx webpack --mode=development --config=webpack_chrome.config.js --watch

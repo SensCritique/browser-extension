@@ -1,0 +1,18 @@
+name: Deploy new firefox release
+on:
+  pull_request:
+    branches: master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.7.0]
+steps:
+  - uses: trmcnvn/firefox-addon@v1
+    with:
+      uuid: '{bd4be575-d5f1-4b24-9ec4-b7adea506dc8}'
+      xpi: build/my-addon.xpi
+      manifest: manifest.json
+      api-key: ${{ secrets.FIREFOX_API_KEY }}
+      api-secret: ${{ secrets.FIREFOX_API_SECRET }}

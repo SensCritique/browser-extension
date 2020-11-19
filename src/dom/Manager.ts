@@ -128,9 +128,9 @@ export default class Manager {
 
   showNotSupportedModal (): void {
     const cacheKey = 'noteflix_not_supported'
-    const helpModalAlreadyDisplayed = sessionStorage.getItem(cacheKey)
+    const NotSupportedModalIdDisplayed = sessionStorage.getItem(cacheKey)
 
-    if (document.getElementById(NotSupportedModalId) == null && !helpModalAlreadyDisplayed) {
+    if (document.getElementById(NotSupportedModalId) == null && !NotSupportedModalIdDisplayed) {
       this.logger.error('A newer GUI version seems available')
       document.body.appendChild(NotSupportedModal())
       sessionStorage.setItem(cacheKey, '1')

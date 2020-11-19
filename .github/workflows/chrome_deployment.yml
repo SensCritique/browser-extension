@@ -9,10 +9,12 @@ jobs:
       matrix:
         node-version: [14.7.0]
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
       - uses: trmcnvn/chrome-addon@v2
         with:
           extension: ahoplkcmcgpbkimjhncpnnllgikapjoj
-          zip: ../releases/latest_chrome.zip
+          zip: "releases/latest_chrome.zip"
           client-id: ${{ secrets.CHROME_CLIENT_ID }}
           client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
           refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}

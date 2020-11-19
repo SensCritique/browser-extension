@@ -1,6 +1,6 @@
 name: Deploy new chrome release
 on:
-  pull_request:
+  push:
     branches: master
 jobs:
   build:
@@ -8,11 +8,11 @@ jobs:
     strategy:
       matrix:
         node-version: [14.7.0]
-steps:
-  - uses: trmcnvn/chrome-addon@v2
-      with:
-        extension: ahoplkcmcgpbkimjhncpnnllgikapjoj
-        zip: releases/latest_chrome.zip
-        client-id: ${{ secrets.CHROME_CLIENT_ID }}
-        client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
-        refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}
+    steps:
+      - uses: trmcnvn/chrome-addon@v2
+        with:
+          extension: ahoplkcmcgpbkimjhncpnnllgikapjoj
+          zip: releases/latest_chrome.zip
+          client-id: ${{ secrets.CHROME_CLIENT_ID }}
+          client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+          refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}

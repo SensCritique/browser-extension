@@ -23,7 +23,7 @@ export default class AllocineClient implements Client {
         const body = await response.json()
         if (!body.error && body.results.length > 0) {
           for (const result of body.results) {
-            if (result.entity_type === type &&
+            if (result.entity_type === type && result.sponsored === false &&
               ((type === VideoType.SERIE) || (type === VideoType.MOVIE && result.data.year === year))) {
               videoInfo = {
                 name: search,

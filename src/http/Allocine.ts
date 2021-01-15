@@ -24,7 +24,7 @@ export default class AllocineClient implements Client {
         if (!body.error && body.results.length > 0) {
           for (const result of body.results) {
             if (result.entity_type === type && result.sponsored === false &&
-              ((type === VideoType.SERIE) || (type === VideoType.MOVIE && result.data.year == year))) {
+              ((type === VideoType.SERIE) || (type === VideoType.MOVIE && result.data.year === year))) {
               videoInfo = {
                 name: search,
                 redirect: this.buildRatingUrl(result.entity_id, result.entity_type),

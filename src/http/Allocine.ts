@@ -36,7 +36,6 @@ export default class AllocineClient implements Client {
           }
         }
       }
-      console.log('lll' )
 
       if (videoInfo) {
         const response = await fetch(this.buildRatingUrl(videoInfo.id, videoInfo.type))

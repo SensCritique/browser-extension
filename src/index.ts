@@ -7,7 +7,7 @@ let timer = 0
 
 setInterval(() => {
   manager.refreshRatings()
-}, 2000)
+}, 1000)
 
 // Check if user has accepted AB Tests
 setInterval(async () => {

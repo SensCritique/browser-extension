@@ -16,6 +16,7 @@ Seul le système d'évènement est propre à Chrome (`chrome.runtime.onMessage` 
 # Installation / Test
 ## Installation
 L'installation est la même pour chaque extension:
+- Avoir docker et docker-compose d'installé
 - `npm install`
 - `make watch-firefox` ou `make watch-chrome` pour lancer webpack en mode watch
 ## Tester l'extension en dev

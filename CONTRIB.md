@@ -1,35 +1,33 @@
 # Intro
-Ce repository contient deux extensions, une pour Firefox et une pour Chrome.
+This repository contains two extensions, one for firefox and one for Chrome but both extension shared the same code.
+All the code is the same for Chrome and Firefox except for the event system which is a Chrome event bus supported by Firefox too.
 
-#### Workflow 
-Le code est identique pour les deux extensions.
-Seul le système d'évènement est propre à Chrome (`chrome.runtime.onMessage` etc.) mais il est reste interprété par Firefox.
-
+# Workflow
 ##### Content_script
-- Netflix: Récupération du nom de la vidéo
+- Netflix: Fetch video info (name)
 ##### Background
-- Allociné (HTTP): Récupération de l'ID/Type de la vidéo
-- Allociné (HTTP): Récupération de la note de la vidéo
+- Allociné/SensCritique (HTTP): Fetch video ID and Type
+- Allociné/SensCritique (HTTP): Fetch video note
 ##### Content_script
-- Noteflix: Génération du DOM avec le score allociné de la vidéo.
+- Noteflix: Generate DOM with providers notes.
 
 # Installation / Test
 ## Installation
-L'installation est la même pour chaque extension:
-- Avoir docker et docker-compose d'installé
-- `npm install`
-- `make watch-firefox` ou `make watch-chrome` pour lancer webpack en mode watch
-## Tester l'extension en dev
+Same installation for both Firefox/Chrome: 
+- Require a working `docker` and `docker-compose` installation.
+- `make install`
+- `make watch-firefox` or `make watch-chrome` to run webpack in watch-mode.
+## Dev
 #### Chrome
-- Se rendre sur la page des extensions `chrome://extensions/`
-- `Charger l'extension non empaquetée` et choisir le répertoire `dist/main/chrome`
-- Pour chaque modification du code, cliquer sur l'icone `Actualiser`
+- Go to `chrome://extensions/`
+- `Load unpackaged extension` and choose `dist/main/chrome` folder
+- For every code changes, click on the `Refresh` button.
 
 #### Firefox
-- Se rendre sur la page des extensions de debug `about:debugging#/runtime/this-firefox`
-- `Charger un module complémentaire temporaire` et choisir le répertoire `dist/main/firefox`
-- Pour chaque modification du code, cliquer sur le bouton `Actualiser`
+- Go to the debug extensions page `about:debugging#/runtime/this-firefox`
+- `Load a temporary add-on module` and choose `dist/main/firefox`
+- For every code changes, click on the `Refresh` button.
 
-# Contribuer
-- Forker le repo et proposer une PR en respectant les normes de coding style du projet
-- Thats all !
+# Contribute
+- Use issues to report bugs and use the discussion tab for suggestions or help.
+- Fork this repository and create a PR 

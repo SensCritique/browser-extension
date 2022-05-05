@@ -49,8 +49,10 @@ export default class SensCritique implements Client {
             const html = await response.text()
             const parser = new DOMParser()
             const dom = parser.parseFromString(html, 'text/html')
-            const element: HTMLElement = dom.documentElement.querySelector('[itemprop="ratingValue"]')
-            videoInfo.rating = element.innerText
+            const microFormat = dom.documentElement.querySelector('script[type="application/ld+json"]')?.innerHTML
+            const nativeMicroFormat = JSON.parse(microFormat)
+
+            videoInfo.rating = nativeMicroFormat?.aggregateRating?.ratingValue
 
             return videoInfo
           }

@@ -15,11 +15,15 @@ setInterval(async () => {
   const ratingsHash = md5(videoName)
   const ratingsElements = document.getElementsByClassName(ratingsHash)
 
+  /*
+   * Temporary disable modals
+
   if (ratingsElements.length === 0 && timer > 3 && manager.currentVideoId() !== null && await Netflix.canABTest()) {
     manager.showAbTestModal()
   }
   if (ratingsElements.length === 0 && timer > 3 && manager.currentVideoId() !== null && !await Netflix.canABTest()) {
     manager.showNotSupportedModal()
   }
+   */
   timer = timer + 1
 }, 5000)

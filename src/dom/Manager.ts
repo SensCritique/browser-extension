@@ -91,13 +91,13 @@ export default class Manager {
       this.logger.info(`Rating fetched for video ${videoName}`, {
         name: videoName,
         rating: rating,
-        service,
+        serviceWebsite: service,
         netflix_id: this.currentVideoId()
       })
     } else {
       this.logger.error(`Cannot fetch rating for video ${videoName}`, {
         name: videoName,
-        service,
+        serviceWebsite: service,
         netflix_id: this.currentVideoId()
       })
     }

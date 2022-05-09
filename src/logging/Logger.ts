@@ -16,7 +16,8 @@ export default class Logger {
     this.logger = datadogLogs.createLogger('main', {
       context: {
         app_version: chrome.runtime.getManifest().version,
-        netflix_ui_version: Netflix.getUiVersion()
+        netflix_ui_version: Netflix.getUiVersion(),
+        service: 'noteflix'
       }
     })
   }

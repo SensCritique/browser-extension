@@ -5,7 +5,8 @@ export const COLOR = {
   ORANGE: '#c95400',
   GREY: '#82837f',
   YELLOW: '#fecc00',
-  GREEN: '#2EB33B'
+  GREEN: '#2EB33B',
+  BLUE: '#2083F6'
 }
 
 export class Rating {

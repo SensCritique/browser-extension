@@ -2,12 +2,14 @@ import { datadogLogs, Logger as DatadogLogger, Datacenter } from '@datadog/brows
 import { Context } from '@datadog/browser-core'
 import { Netflix } from '../config/Netflix'
 
+import { datadogClientToken } from '../conf'
+
 export default class Logger {
   private logger: DatadogLogger;
 
   constructor () {
     datadogLogs.init({
-      clientToken: 'pubfbf6abf237f445e8d52aaa35f5462964',
+      clientToken: datadogClientToken,
       datacenter: Datacenter.US,
       forwardErrorsToLogs: false,
       sampleRate: 100

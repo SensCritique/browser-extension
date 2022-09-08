@@ -1,5 +1,6 @@
 const path = require('path')
 const CopyPlugin = require('copy-webpack-plugin')
+const Dotenv = require('dotenv-webpack')
 
 module.exports = {
   devtool: 'source-map',
@@ -18,6 +19,7 @@ module.exports = {
     extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js']
   },
   plugins: [
+    new Dotenv(),
     new CopyPlugin([
       { from: 'images/logo*', to: '.' },
       { from: 'manifest_firefox.json', to: 'manifest.json' }

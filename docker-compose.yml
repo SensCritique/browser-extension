@@ -6,4 +6,6 @@ services:
       context: docker/node
     volumes:
       - ./:/app
+    env_file:
+      - .env
     working_dir: /app

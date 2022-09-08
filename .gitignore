@@ -107,4 +107,9 @@ dist/
 tmp/
 temp/
 
+#env
+.env
+
 # End of https://www.gitignore.io/api/node
+
+

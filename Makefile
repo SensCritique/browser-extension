@@ -24,6 +24,7 @@ build-all:
 	$(MAKE) build-chrome
 .PHONY: install
 install:
+	@echo "⚠️ Please make sure to copy .env.dist file to .env and edit it"
 	${RUN_NODE} npm install
 .PHONY: test
 test:

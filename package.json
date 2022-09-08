@@ -35,6 +35,7 @@
     "babel-loader": "^8.2.1",
     "babel-preset-es2015": "^6.24.1",
     "copy-webpack-plugin": "^5.1.2",
+    "dotenv-webpack": "^8.0.1",
     "eslint": "^7.13.0",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-import": "^2.22.1",
@@ -55,6 +56,8 @@
   "dependencies": {
     "@datadog/browser-logs": "^1.25.4",
     "blueimp-md5": "^2.18.0",
-    "fast-levenshtein": "^2.0.6"
+    "dotenv": "^16.0.2",
+    "fast-levenshtein": "^2.0.6",
+    "fs": "^0.0.1-security"
   }
 }

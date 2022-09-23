@@ -21,7 +21,7 @@ const fetchInfo = async (message: Message): Promise<VideoInfo> => {
   }
 }
 
-chrome.runtime.onMessage.addListener((message: Message, callback: Function): Boolean => {
+chrome.runtime.onMessage.addListener((message: Message, sender: void, callback: Function) => {
   fetchInfo(message).then(response => {
     callback(response)
   })

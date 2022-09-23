@@ -1,6 +1,8 @@
 import { VideoType } from './VideoType'
 import * as Levenshtein from 'fast-levenshtein'
 import { Client, VideoInfo } from './Client'
+import Logger from '../logging/Logger'
+
 const app = require('../../package.json')
 
 const searchQuery = [
@@ -33,6 +35,10 @@ export default class SensCritique implements Client {
   }
 
   async getVideoInfo (search: string, type: VideoType, year: string = null): Promise<VideoInfo> {
+    const logger = new Logger()
+
+    logger.info('test log audrey')
+    console.log('test log audrey')
     if (search) {
       const headers = new Headers()
       headers.append('User-Agent', `Noteflix v${app.version}`)

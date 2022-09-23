@@ -8,16 +8,9 @@ export default class Ratings {
     mainDiv.style.lineHeight = '36px'
     mainDiv.classList.add(hash)
 
-    // Allocine
-    const allocineElement = document.createElement('div')
-    allocineElement.style.padding = '0 .5em 0 .5em'
-    allocineElement.style.position = 'relative'
-    allocineElement.classList.add(`allocine_${hash}`)
-    mainDiv.appendChild(allocineElement)
-
     // SensCritique
     const senscritiqueElement = document.createElement('div')
-    senscritiqueElement.style.padding = '0 .5em 0 .5em'
+    senscritiqueElement.style.padding = '0 .5em 0 0'
     senscritiqueElement.style.position = 'relative'
     senscritiqueElement.classList.add(`senscritique_${hash}`)
     mainDiv.appendChild(senscritiqueElement)

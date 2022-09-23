@@ -19,7 +19,7 @@ export default class Manager {
     this.logger = new Logger()
   }
 
-  getVideoInfo (service, videoName, videoYear, videoType, callback) {
+  getVideoInfo (service: string, videoName: string, videoYear: string, videoType: string, callback: Function): void {
     chrome.runtime.sendMessage({ type: MessageEvent.INFO, service, videoName, videoYear, videoType } as Message, callback)
   }
 
@@ -36,7 +36,6 @@ export default class Manager {
         infoElement.prepend(ratingsElement)
       }
       this.getRating(videoName, modal, Service.SENSCRITIQUE)
-      this.getRating(videoName, modal, Service.ALLOCINE)
     }
   }
 
@@ -60,7 +59,7 @@ export default class Manager {
     return episodesElement == null ? VideoType.MOVIE : VideoType.SERIE
   }
 
-  getRating (videoName: string, jawbone: Element, service: Service) {
+  getRating (videoName: string, jawbone: Element, service: Service): void {
     const videoInfoFound = this.cache.get(videoName, service)
     if (!videoInfoFound) {
       this.getVideoInfo(service, videoName, this.getVideoYear(), this.getVideoType(), videoInfo => {
@@ -72,7 +71,7 @@ export default class Manager {
     }
   }
 
-  renderRating (service: Service, element: Element, videoInfo: VideoInfo) {
+  renderRating (service: Service, element: Element, videoInfo: VideoInfo): void {
     this.cache.save(videoInfo, service)
 
     const serviceRating = (new RatingFactory()).create(service, videoInfo)
@@ -86,7 +85,7 @@ export default class Manager {
     })
   }
 
-  logVideoInfo (videoName: string, rating: number, service: Service) {
+  logVideoInfo (videoName: string, rating: number, service: Service): void {
     if (rating) {
       this.logger.info(`Rating fetched for video ${videoName}`, {
         name: videoName,

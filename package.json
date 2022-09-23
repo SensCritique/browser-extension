@@ -4,7 +4,7 @@
   "description": "Permet d'avoir les scores Allociné / SensCritique sur Netflix",
   "author": "bt0r",
   "repository": {
-    "url": "https://github.com/bt0r/noteflix"
+    "url": "https://github.com/senscritique/noteflix"
   },
   "scripts": {
     "test": "jest"
@@ -12,13 +12,10 @@
   "license": "MIT",
   "keywords": [
     "netflix",
-    "allocine",
-    "allociné",
     "senscritique",
     "score",
     "avis",
-    "rating",
-    "allocine.fr"
+    "rating"
   ],
   "devDependencies": {
     "@babel/core": "^7.12.3",

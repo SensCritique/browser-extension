@@ -1,7 +1,7 @@
 <img src="/images/logo-128.png" height=50/>
 
-# NoteFlix
-Permet d'avoir un score Allociné et SensCritique sur les pages de descriptions Netflix
+# Sencritique
+Permet d'avoir un score SensCritique sur les pages de descriptions Netflix
 
 [Cliquez ici pour installer l'extension depuis le store firefox](https://addons.mozilla.org/fr/firefox/addon/noteflix/)
 

@@ -1,7 +1,7 @@
 import { test, expect } from '@jest/globals'
 import Ratings from '../../src/dom/Ratings'
 
-test('It should render two div, one for SensCritique, one for Allociné', () => {
+test('It should render one div for SensCritique', () => {
   const ratingsDiv = Ratings.render('XXX')
 
   expect(ratingsDiv).not.toBeNull()

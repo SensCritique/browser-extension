@@ -15,6 +15,7 @@
     "senscritique",
     "score",
     "avis",
+    "allocine.fr",
     "rating"
   ],
   "devDependencies": {

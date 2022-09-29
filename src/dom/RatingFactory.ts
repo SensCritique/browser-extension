@@ -5,9 +5,6 @@ import { VideoInfo } from '../http/Client'
 
 export default class RatingFactory {
   create (service: Service, videoInfo: VideoInfo): Rating {
-    switch (service) {
-      case Service.SENSCRITIQUE:
-        return new SensCritiqueRating(videoInfo)
-    }
+    return new SensCritiqueRating(videoInfo)
   }
 }

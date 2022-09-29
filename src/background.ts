@@ -14,12 +14,7 @@ export interface Message {
   videoType: VideoType,
 }
 
-const fetchInfo = async (message: Message): Promise<VideoInfo> => {
-  switch (message.service) {
-    case Service.SENSCRITIQUE:
-      return senscritique.getVideoInfo(message.videoName, message.videoType, message.videoYear)
-  }
-}
+const fetchInfo = async (message: Message): Promise<VideoInfo> => senscritique.getVideoInfo(message.videoName, message.videoType, message.videoYear)
 
 chrome.runtime.onMessage.addListener((message: Message, sender: void, callback: Function) => {
   fetchInfo(message).then(response => {

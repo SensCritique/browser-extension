@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
-  "name": "NoteFlix",
-  "version": "1.2.11",
+  "name": "SensCritique",
+  "version": "1.2.13",
   "description": "Permet d'avoir les scores et avis SensCritique sur Netflix",
   "icons": {
     "48": "images/logo-48.png",

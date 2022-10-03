@@ -1,10 +1,10 @@
 {
   "name": "noteflix",
-  "version": "1.2.11",
+  "version": "1.2.13",
   "description": "Permet d'avoir les scores SensCritique sur Netflix",
-  "author": "bt0r",
+  "author": "SensCritique",
   "repository": {
-    "url": "https://github.com/bt0r/noteflix"
+    "url": "https://github.com/senscritique/noteflix"
   },
   "scripts": {
     "test": "jest"

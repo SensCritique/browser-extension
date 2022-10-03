@@ -7,7 +7,7 @@ export default class Logger {
 
   constructor () {
     datadogLogs.init({
-      clientToken: 'pubfbf6abf237f445e8d52aaa35f5462964',
+      clientToken: 'pub1f890f3f4bba51239626c87fd4e723a4',
       datacenter: Datacenter.US,
       forwardErrorsToLogs: false,
       sampleRate: 100

@@ -1,6 +1,7 @@
 import { VideoType } from './VideoType'
 import * as Levenshtein from 'fast-levenshtein'
 import { Client, VideoInfo } from './Client'
+
 const app = require('../../package.json')
 
 const searchQuery = [

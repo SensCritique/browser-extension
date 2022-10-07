@@ -6,7 +6,7 @@ export default class Cache {
   private readonly prefix: string;
 
   constructor () {
-    this.prefix = 'noteflix_'
+    this.prefix = 'senscritique_'
   }
 
   save (videoInfo: VideoInfo, service: Service): VideoInfo {

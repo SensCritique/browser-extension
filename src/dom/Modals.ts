@@ -1,7 +1,7 @@
 import logo64 from '../../images/logo'
 
-export const AbTestModalId = 'noteflix_help_modal'
-export const NotSupportedModalId = 'noteflix_not_supported_modal'
+export const AbTestModalId = 'senscritique_help_modal'
+export const NotSupportedModalId = 'senscritique_not_supported_modal'
 
 const Modal = (id: string, text: Element): Element => {
   const modal = document.createElement('div')
@@ -42,8 +42,8 @@ export const ABTestModal = (): Element => {
   button.innerText = 'Désactiver l\'option "Participer à des tests"'
   button.href = 'https://www.netflix.com/DoNotTest'
   text.innerHTML = `
-  Votre compte Netflix semble faire parti d'une phase de test, ce qui le rend incompatible avec NoteFlix.<br />
-  ${button.outerHTML} pour que NoteFlix fonctionne. 
+  Votre compte Netflix semble faire parti d'une phase de test, ce qui le rend incompatible avec SensCritique-extension.<br />
+  ${button.outerHTML} pour que SensCritique-extension fonctionne. 
   `
   return Modal(AbTestModalId, text)
 }
@@ -55,7 +55,7 @@ export const NotSupportedModal = (): Element => {
   text.style.marginLeft = '10px'
 
   text.innerHTML = `
-  L'interface de Netflix ne semble plus être supportée par Noteflix pour le moment. <br />
+  L'interface de Netflix ne semble plus être supportée par SensCritique-extension pour le moment. <br />
   Aucune crainte, nous sommes déjà sur le coup...🚀 <br /> 
   `
   return Modal(NotSupportedModalId, text)

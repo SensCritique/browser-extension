@@ -111,7 +111,7 @@ export default class Manager {
   }
 
   showAbTestModal (): void {
-    const cacheKey = 'noteflix_help'
+    const cacheKey = 'senscritique_help'
     const helpModalAlreadyDisplayed = sessionStorage.getItem(cacheKey)
 
     if (document.getElementById(AbTestModalId) == null && !helpModalAlreadyDisplayed) {
@@ -126,7 +126,7 @@ export default class Manager {
   }
 
   showNotSupportedModal (): void {
-    const cacheKey = 'noteflix_not_supported'
+    const cacheKey = 'senscritique_not_supported'
     const NotSupportedModalIdDisplayed = sessionStorage.getItem(cacheKey)
 
     if (document.getElementById(NotSupportedModalId) == null && !NotSupportedModalIdDisplayed) {

@@ -1,10 +1,10 @@
 {
-  "name": "noteflix",
+  "name": "senscritique-extension",
   "version": "1.2.14",
   "description": "Permet d'avoir les scores SensCritique sur Netflix",
   "author": "SensCritique",
   "repository": {
-    "url": "https://github.com/senscritique/noteflix"
+    "url": "https://github.com/senscritique/SensCritique-extension"
   },
   "scripts": {
     "test": "jest"

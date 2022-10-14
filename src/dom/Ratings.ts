@@ -1,3 +1,5 @@
+import { Service } from './../http/Service'
+
 export default class Ratings {
   static render (hash: string): Element {
     const mainDiv = document.createElement('div')
@@ -12,7 +14,7 @@ export default class Ratings {
     const senscritiqueElement = document.createElement('div')
     senscritiqueElement.style.padding = '0 .5em 0 .5em'
     senscritiqueElement.style.position = 'relative'
-    senscritiqueElement.classList.add(`senscritique_extension_${hash}`)
+    senscritiqueElement.classList.add(`${Service.SENSCRITIQUE}_${hash}`)
     mainDiv.appendChild(senscritiqueElement)
 
     return mainDiv

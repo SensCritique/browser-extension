@@ -13,9 +13,9 @@ test.each(successDataset)('It should convert SensCritique note (%s) in percentag
     name: 'test',
     redirect: ''
   })
-  const sensCritiqueExtensionScore = sensCritiqueRating.ratingInPercent(sensCritiqueNote)
+  const noteflixScore = sensCritiqueRating.ratingInPercent(sensCritiqueNote)
 
-  expect(sensCritiqueExtensionScore).toBe(expected)
+  expect(noteflixScore).toBe(expected)
 })
 
 const errorDataset = [
@@ -27,11 +27,11 @@ const errorDataset = [
 test.each(errorDataset)('It should convert wrong SensCritique note (%s) to null', (sensCritiqueNote, expected) => {
   const sensCritiqueRating = new SensCritiqueRating({
     name: 'test',
-    redirect: ''
+    redirect: '',
   })
-  const sensCritiqueExtensionScore = sensCritiqueRating.ratingInPercent(sensCritiqueNote)
+  const noteflixScore = sensCritiqueRating.ratingInPercent(sensCritiqueNote)
 
-  expect(sensCritiqueExtensionScore).toBe(expected)
+  expect(noteflixScore).toBe(expected)
 })
 
 test('It should create instance with rights rating', () => {
@@ -49,7 +49,7 @@ test('It should render node with rights info', () => {
     rating: '8,5',
     redirect: 'https://google.fr',
     hashId: 'XXX',
-    name: 'test'
+    name: 'test',
   })
   const sensCritiqueRatingRendered = sensCritiqueRating.render()
 

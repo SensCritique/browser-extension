@@ -12,7 +12,7 @@ export default class Ratings {
     const senscritiqueElement = document.createElement('div')
     senscritiqueElement.style.padding = '0 .5em 0 .5em'
     senscritiqueElement.style.position = 'relative'
-    senscritiqueElement.classList.add(`senscritique_extension_${hash}`)
+    senscritiqueElement.classList.add(`senscritique_${hash}`)
     mainDiv.appendChild(senscritiqueElement)
 
     return mainDiv

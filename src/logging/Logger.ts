@@ -17,7 +17,7 @@ export default class Logger {
       context: {
         app_version: chrome.runtime.getManifest().version,
         netflix_ui_version: Netflix.getUiVersion(),
-        service: 'senscritique-extension'
+        service: 'noteflix'
       }
     })
   }

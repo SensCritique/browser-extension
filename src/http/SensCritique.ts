@@ -36,7 +36,7 @@ export default class SensCritique implements Client {
   async getVideoInfo (search: string, type: VideoType, year: string = null): Promise<VideoInfo> {
     if (search) {
       const headers = new Headers()
-      headers.append('User-Agent', `senscritique-extension v${app.version}`)
+      headers.append('User-Agent', `Noteflix v${app.version}`)
       headers.append('Content-Type', 'application/json')
       const response = await fetch(this.searchUrl, {
         headers,

@@ -9,7 +9,7 @@ All the code is the same for Chrome and Firefox except for the event system whic
 - SensCritique (HTTP): Fetch video ID and Type
 - SensCritique (HTTP): Fetch video note
 ##### Content_script
-- SensCritique-extension: Generate DOM with providers notes.
+- Noteflix: Generate DOM with providers notes.
 
 # Installation / Test
 ## Installation

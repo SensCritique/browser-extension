@@ -1,6 +1,6 @@
 <img src="/images/logo-128.png" height=50/>
 
-# SensCritique-extension
+# NoteFlix
 Permet d'avoir un score SensCritique sur les pages de descriptions Netflix
 
 [Cliquez ici pour installer l'extension depuis le store firefox](https://addons.mozilla.org/fr/firefox/addon/noteflix/)

@@ -1,3 +1,3 @@
 export enum Service {
-  SENSCRITIQUE = 'senscritique'
+  SENSCRITIQUE = 'senscritique_extension'
 }

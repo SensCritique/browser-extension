@@ -1,7 +1,7 @@
 import logo64 from '../../images/logo'
 
-export const AbTestModalId = 'senscritique_help_modal'
-export const NotSupportedModalId = 'senscritique_not_supported_modal'
+export const AbTestModalId = 'senscritique_extension_help_modal'
+export const NotSupportedModalId = 'senscritique_extension_not_supported_modal'
 
 const Modal = (id: string, text: Element): Element => {
   const modal = document.createElement('div')

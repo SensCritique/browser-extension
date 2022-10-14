@@ -1,7 +1,7 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "SensCritique",
-  "version": "1.2.15",
+  "version": "1.2.16",
   "description": "Permet d'avoir les scores et avis SensCritique sur Netflix",
   "icons": {
     "48": "images/logo-48.png",
@@ -9,8 +9,7 @@
     "128": "images/logo-128.png"
   },
   "background" : {
-    "scripts" : ["background/index.js"],
-    "persistent": false
+    "service_worker" : "background/index.js"
   },
   "content_scripts": [
     {
@@ -18,7 +17,7 @@
       "js": ["index/index.js"]
     }
   ],
-  "permissions": [
+  "host_permissions": [
     "*://www.senscritique.com/*"
   ]
 }

@@ -6,6 +6,7 @@ export const COLOR = {
   YELLOW: '#fecc00',
   GREEN: '#2EB33B',
   BLACK: '#1A1A1A',
+  WHITE: '#FFFFFF',
 }
 
 export class Rating {
@@ -69,7 +70,7 @@ export class Rating {
     divProgressCircle.style.display = 'flex'
     divProgressCircle.style.justifyContent = 'center'
     divProgressCircle.style.alignItems = 'center'
-    divProgressCircle.style.background = `conic-gradient( ${this.color} ${this.rating}%, transparent 0 100%)`
+    divProgressCircle.style.background = `conic-gradient(${this.color} ${this.rating}%, transparent 0 100%)`
 
     const divSmallCircle = document.createElement('div')
     divSmallCircle.style.borderRadius = '50%'
@@ -82,8 +83,8 @@ export class Rating {
     const textRating = document.createElement('span')
     textRating.style.fontSize = '16px'
     textRating.style.fontWeight = '700'
-    textRating.innerText = this.rating ? this.rating.toString() : '??'
-    textRating.style.color = 'white'
+    textRating.innerText = this.rating ? this.rating.toString() : '?'
+    textRating.style.color = COLOR.WHITE
 
     divBackground.appendChild(divLogo)
     divBackground.appendChild(a)

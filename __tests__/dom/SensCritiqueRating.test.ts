@@ -54,7 +54,7 @@ test('It should render node with rights info', () => {
   const sensCritiqueRatingRendered = sensCritiqueRating.render()
 
   expect(sensCritiqueRatingRendered).not.toBeNull()
-  expect(sensCritiqueRatingRendered.getAttribute('href')).toBe('https://google.fr')
-  expect(sensCritiqueRatingRendered.getAttribute('id')).toBe('XXX')
-  expect((sensCritiqueRatingRendered.childNodes[1] as HTMLElement).innerText).toBe('85')
+  expect(sensCritiqueRatingRendered.children[1].getAttribute('href')).toBe('https://google.fr')
+  expect(sensCritiqueRatingRendered.children[1].getAttribute('id')).toBe('XXX')
+  expect((sensCritiqueRatingRendered.childNodes[2].childNodes[0].childNodes[0].childNodes[0] as HTMLElement).innerText).toBe('85')
 })

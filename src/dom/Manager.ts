@@ -19,12 +19,12 @@ export default class Manager {
   private cache: Cache
   private logger: Logger
 
-  constructor() {
+  constructor () {
     this.cache = new Cache()
     this.logger = new Logger()
   }
 
-  getVideoInfo(
+  getVideoInfo (
     service: string,
     videoName: string,
     videoYear: string,
@@ -37,13 +37,13 @@ export default class Manager {
         service,
         videoName,
         videoYear,
-        videoType,
+        videoType
       } as Message,
       callback
     )
   }
 
-  refreshRatings() {
+  refreshRatings () {
     const videoName = this.getVideoName()
     const modal = document.querySelector('.detail-modal')
     const hash = md5(videoName)
@@ -61,7 +61,7 @@ export default class Manager {
     }
   }
 
-  getVideoName(): string | null {
+  getVideoName (): string | null {
     const detailModalVideoName = document
       .querySelector('.previewModal--player-titleTreatment-logo')
       ?.getAttribute('alt')
@@ -69,7 +69,7 @@ export default class Manager {
     return detailModalVideoName || null
   }
 
-  getVideoYear(): string {
+  getVideoYear (): string {
     const yearElement: HTMLElement = document.querySelector(
       '.detail-modal .year'
     )
@@ -77,7 +77,7 @@ export default class Manager {
     return yearElement?.innerText
   }
 
-  getVideoType(): VideoType {
+  getVideoType (): VideoType {
     const episodesElement = document.querySelector(
       '.detail-modal .episodeSelector'
     )
@@ -85,7 +85,7 @@ export default class Manager {
     return episodesElement == null ? VideoType.MOVIE : VideoType.SERIE
   }
 
-  getRating(videoName: string, jawbone: Element, service: Service): void {
+  getRating (videoName: string, jawbone: Element, service: Service): void {
     const videoInfoFound = this.cache.get(videoName, service)
     if (!videoInfoFound) {
       this.getVideoInfo(
@@ -103,7 +103,7 @@ export default class Manager {
     }
   }
 
-  renderRating(service: Service, element: Element, videoInfo: VideoInfo): void {
+  renderRating (service: Service, element: Element, videoInfo: VideoInfo): void {
     this.cache.save(videoInfo, service)
 
     const serviceRating = new RatingFactory().create(service, videoInfo)
@@ -119,7 +119,7 @@ export default class Manager {
       })
   }
 
-  logVideoInfo(videoName: string, rating: string, service: Service): void {
+  logVideoInfo (videoName: string, rating: string, service: Service): void {
     if (rating) {
       this.logger.info(`Rating fetched for video ${videoName}`, {
         name: videoName,
@@ -136,7 +136,7 @@ export default class Manager {
     }
   }
 
-  currentVideoId(): string {
+  currentVideoId (): string {
     const urlQuery = new URL(window.location.toString()).pathname.split(
       '/title/'
     )
@@ -149,7 +149,7 @@ export default class Manager {
     return secondJawboneId || firstJawboneId
   }
 
-  showAbTestModal(): void {
+  showAbTestModal (): void {
     const cacheKey = 'senscritique_extension_help'
     const helpModalAlreadyDisplayed = sessionStorage.getItem(cacheKey)
 
@@ -169,7 +169,7 @@ export default class Manager {
     }
   }
 
-  showNotSupportedModal(): void {
+  showNotSupportedModal (): void {
     const cacheKey = 'senscritique_extension_not_supported'
     const NotSupportedModalIdDisplayed = sessionStorage.getItem(cacheKey)
 

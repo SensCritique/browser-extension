@@ -3,7 +3,7 @@ import SensCritiqueLogo from '../../images/services/senscritique'
 import { VideoInfo } from '../http/Client'
 
 export const SensCritiqueRating = class SensCritiqueRating extends Rating {
-  constructor(videoInfo: VideoInfo) {
+  constructor (videoInfo: VideoInfo) {
     super()
     this.videoInfo = videoInfo
     this.logo = SensCritiqueLogo
@@ -14,7 +14,7 @@ export const SensCritiqueRating = class SensCritiqueRating extends Rating {
       : null
   }
 
-  ratingInPercent(rawRating: string): number | null {
+  ratingInPercent (rawRating: string): number | null {
     if (
       rawRating === null ||
       rawRating === undefined ||

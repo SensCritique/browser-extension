@@ -15,7 +15,7 @@ export class Rating {
   protected videoInfo: VideoInfo
   protected logo: string
 
-  get color() {
+  get color () {
     if (!this.ratingPercent) {
       return COLOR.GREY
     }
@@ -31,7 +31,7 @@ export class Rating {
     }
   }
 
-  render(): Element {
+  render (): Element {
     const divBackground = document.createElement('div')
     divBackground.style.width = '95px'
     divBackground.style.height = '44px'

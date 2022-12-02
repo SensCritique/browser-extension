@@ -10,26 +10,28 @@ export const COLOR = {
 }
 
 export class Rating {
-  public rating: number
+  public rating: string
+  public ratingPercent: number
   protected videoInfo: VideoInfo
   protected logo: string
 
-  get color () {
-    if (!this.rating) {
+  get color() {
+    if (!this.ratingPercent) {
       return COLOR.GREY
     }
-    if (this.rating >= 0 && this.rating < 55) {
+    if (this.ratingPercent >= 0 && this.ratingPercent < 55) {
       return COLOR.RED
     }
-    if (this.rating >= 55 && this.rating < 65) {
+    if (this.ratingPercent >= 55 && this.ratingPercent < 65) {
       return COLOR.YELLOW
     }
-    if (this.rating >= 65) {
+
+    if (this.ratingPercent >= 65) {
       return COLOR.GREEN
     }
   }
 
-  render (): Element {
+  render(): Element {
     const divBackground = document.createElement('div')
     divBackground.style.width = '95px'
     divBackground.style.height = '44px'
@@ -70,7 +72,7 @@ export class Rating {
     divProgressCircle.style.display = 'flex'
     divProgressCircle.style.justifyContent = 'center'
     divProgressCircle.style.alignItems = 'center'
-    divProgressCircle.style.background = `conic-gradient(${this.color} ${this.rating}%, transparent 0 100%)`
+    divProgressCircle.style.background = `conic-gradient(${this.color} ${this.ratingPercent}%, transparent 0 100%)`
 
     const divSmallCircle = document.createElement('div')
     divSmallCircle.style.borderRadius = '50%'
@@ -83,7 +85,7 @@ export class Rating {
     const textRating = document.createElement('span')
     textRating.style.fontSize = '16px'
     textRating.style.fontWeight = '700'
-    textRating.innerText = this.rating ? this.rating.toString() : '?'
+    textRating.innerText = this.rating && '?'
     textRating.style.color = COLOR.WHITE
 
     divBackground.appendChild(divLogo)

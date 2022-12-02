@@ -125,13 +125,13 @@ export default class Manager {
         name: videoName,
         rating: rating,
         serviceWebsite: service,
-        netflix_id: this.currentVideoId(),
+        netflix_id: this.currentVideoId()
       })
     } else {
       this.logger.error(`Cannot fetch rating for video ${videoName}`, {
         name: videoName,
         serviceWebsite: service,
-        netflix_id: this.currentVideoId(),
+        netflix_id: this.currentVideoId()
       })
     }
   }

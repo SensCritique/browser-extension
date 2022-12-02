@@ -85,7 +85,7 @@ export class Rating {
     const textRating = document.createElement('span')
     textRating.style.fontSize = '16px'
     textRating.style.fontWeight = '700'
-    textRating.innerText = this.rating && '?'
+    textRating.innerText = this.rating ? this.rating : '?'
     textRating.style.color = COLOR.WHITE
 
     divBackground.appendChild(divLogo)

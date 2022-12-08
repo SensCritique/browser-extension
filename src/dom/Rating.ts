@@ -48,6 +48,7 @@ export class Rating {
     a.setAttribute('target', '_blank')
     a.style.display = 'block'
     a.style.height = '100%'
+    a.style.width = '100%'
 
     const divLogo = document.createElement('div')
     divLogo.style.paddingLeft = '10px'

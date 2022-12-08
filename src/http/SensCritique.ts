@@ -53,7 +53,7 @@ export default class SensCritique implements Client {
               (type === VideoType.MOVIE && result.product.universe === 1)) && result.product.title === search) {
               videoInfo = {
                 name: result.product.title,
-                redirect: `${this.baseUrl}${result.product.url}/critiques`,
+                redirect: `${this.baseUrl}${result.product.url}`,
                 url: `${this.baseUrl}${result.product.url}`,
                 id: result.product.universe,
                 type: type,

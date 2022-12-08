@@ -8,7 +8,7 @@ Le score correspond à la note globale des spectateurs SensCritique en pourcenta
 
 Exemples : 
 - À partir de 6,5/10 le cercle sera vert
-- De 5,5/10 à 6,4/10 le cercle sera orange 
+- De 5,5/10 à 6,4/10 le cercle sera jaune
 - En dessous de 5,5/10 le cercle sera rouge
 
 Le score est cliquable et renvoie directement vers la page de la critique du film ou de la série.

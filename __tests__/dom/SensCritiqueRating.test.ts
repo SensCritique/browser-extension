@@ -8,15 +8,19 @@ const successDataset = [
   ['0,1', 1],
   ['0', 0]
 ]
-test.each(successDataset)('It should convert SensCritique note (%s) in percentage (%s)', (sensCritiqueNote, expected) => {
-  const sensCritiqueRating = new SensCritiqueRating({
-    name: 'test',
-    redirect: ''
-  })
-  const sensCritiqueExtensionScore = sensCritiqueRating.ratingInPercent(sensCritiqueNote)
+test.each(successDataset)(
+  'It should convert SensCritique note (%s) in percentage (%s)',
+  (sensCritiqueNote, expected) => {
+    const sensCritiqueRating = new SensCritiqueRating({
+      name: 'test',
+      redirect: ''
+    })
+    const sensCritiqueExtensionScore =
+      sensCritiqueRating.ratingInPercent(sensCritiqueNote)
 
-  expect(sensCritiqueExtensionScore).toBe(expected)
-})
+    expect(sensCritiqueExtensionScore).toBe(expected)
+  }
+)
 
 const errorDataset = [
   ['2,,5', null],
@@ -24,15 +28,19 @@ const errorDataset = [
   [undefined, null],
   ['11', null]
 ]
-test.each(errorDataset)('It should convert wrong SensCritique note (%s) to null', (sensCritiqueNote, expected) => {
-  const sensCritiqueRating = new SensCritiqueRating({
-    name: 'test',
-    redirect: ''
-  })
-  const sensCritiqueExtensionScore = sensCritiqueRating.ratingInPercent(sensCritiqueNote)
+test.each(errorDataset)(
+  'It should convert wrong SensCritique note (%s) to null',
+  (sensCritiqueNote, expected) => {
+    const sensCritiqueRating = new SensCritiqueRating({
+      name: 'test',
+      redirect: ''
+    })
+    const sensCritiqueExtensionScore =
+      sensCritiqueRating.ratingInPercent(sensCritiqueNote)
 
-  expect(sensCritiqueExtensionScore).toBe(expected)
-})
+    expect(sensCritiqueExtensionScore).toBe(expected)
+  }
+)
 
 test('It should create instance with rights rating', () => {
   const sensCritiqueRating = new SensCritiqueRating({
@@ -41,7 +49,7 @@ test('It should create instance with rights rating', () => {
     redirect: ''
   })
 
-  expect(sensCritiqueRating.rating).toBe(70)
+  expect(sensCritiqueRating.rating).toBe('7')
 })
 
 test('It should render node with rights info', () => {
@@ -54,7 +62,14 @@ test('It should render node with rights info', () => {
   const sensCritiqueRatingRendered = sensCritiqueRating.render()
 
   expect(sensCritiqueRatingRendered).not.toBeNull()
-  expect(sensCritiqueRatingRendered.getAttribute('href')).toBe('https://google.fr')
-  expect(sensCritiqueRatingRendered.getAttribute('id')).toBe('XXX')
-  expect((sensCritiqueRatingRendered.childNodes[1] as HTMLElement).innerText).toBe('85')
+  expect(sensCritiqueRatingRendered.children[1].getAttribute('href')).toBe(
+    'https://google.fr'
+  )
+  expect(sensCritiqueRatingRendered.children[1].getAttribute('id')).toBe('XXX')
+  expect(
+    (
+      sensCritiqueRatingRendered.childNodes[2].childNodes[0].childNodes[0]
+        .childNodes[0] as HTMLElement
+    ).innerText
+  ).toBe('8,5')
 })

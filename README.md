@@ -3,16 +3,13 @@
 # SensCritique-extension
 Permet d'avoir un score SensCritique sur les pages de descriptions Netflix
 
-[Cliquez ici pour installer l'extension depuis le store firefox](https://addons.mozilla.org/fr/firefox/addon/noteflix/)
-
 ## Fonctionnement du score
 Le score correspond à la note globale des spectateurs SensCritique en pourcentage plutôt qu'une note sur 5 ou sur 10.
 
 Exemples : 
-- 4,5/5 devient 90 (vert)
-- 2,5/5 devient 50 (jaune)
-- 1.5/5 devient 30 (orange)
-- 1/5 devient 20 (rouge)
+- À partir de 6,5/10 le cercle sera vert
+- De 5,5/10 à 6,4/10 le cercle sera orange 
+- En dessous de 5,5/10 le cercle sera rouge
 
 Le score est cliquable et renvoie directement vers la page de la critique du film ou de la série.
 
@@ -25,8 +22,8 @@ Si le score n'est pas trouvé, un point d'interrogation sera affiché. L'indicat
 ![](images/screenshots/3.png)
 
 # Téléchargement
-- [Chrome](https://chrome.google.com/webstore/detail/noteflix/ahoplkcmcgpbkimjhncpnnllgikapjoj)
-- [Firefox](https://addons.mozilla.org/en-US/firefox/addon/noteflix/)
+- [Chrome](https://chrome.google.com/webstore/detail/senscritique/enficnaijgnbdbdcpbplmbnhoenehllk?hl=fr)
+- [Firefox](https://addons.mozilla.org/fr/firefox/addon/senscritique/)
 
 
 # Contribuer

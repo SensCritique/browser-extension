@@ -1,6 +1,6 @@
 {
   "name": "senscritique-extension",
-  "version": "1.2.18",
+  "version": "1.2.19",
   "description": "Permet d'avoir les scores SensCritique sur Netflix",
   "author": "SensCritique",
   "repository": {

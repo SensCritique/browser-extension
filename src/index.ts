@@ -1,17 +1,24 @@
-import Manager from './dom/Manager'
-import { Netflix } from './config/Netflix'
+import Netflix from './dom/providers/Netflix'
+import Disney from './dom/providers/Disney'
+import { NetflixConfig } from './config/Netflix'
+import { Provider } from './http/Provider'
 import md5 from 'blueimp-md5'
 
-const manager = new Manager()
+const netflix = new Netflix()
+const disney = new Disney()
 let timer = 0
 
 setInterval(() => {
-  manager.refreshRatings()
+  console.log(window.location.href)
+  if (window.location.href && window.location.href.includes(Provider.DISNEY)) disney.refreshRatings()
+  else netflix.refreshRatings()
 }, 1000)
 
 // Check if user has accepted AB Tests
 setInterval(async () => {
-  const videoName = manager.getVideoName()
+  let videoName = null
+  if (window.location.href && window.location.href.includes(Provider.DISNEY)) videoName = disney.refreshRatings()
+  else videoName = netflix.refreshRatings()
   const ratingsHash = md5(videoName)
   const ratingsElements = document.getElementsByClassName(ratingsHash)
 

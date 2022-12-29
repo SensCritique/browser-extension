@@ -1,7 +1,7 @@
 {
   "name": "senscritique-extension",
   "version": "1.2.19",
-  "description": "Permet d'avoir les scores SensCritique sur Netflix",
+  "description": "Permet d'avoir les scores SensCritique sur Netflix/Disney+",
   "author": "SensCritique",
   "repository": {
     "url": "https://github.com/senscritique/SensCritique-extension"
@@ -12,6 +12,7 @@
   "license": "MIT",
   "keywords": [
     "netflix",
+    "disney", 
     "senscritique",
     "score",
     "avis",

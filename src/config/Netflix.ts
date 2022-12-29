@@ -1,4 +1,4 @@
-export class Netflix {
+export class NetflixConfig {
   static getUiVersion (): string {
     const headers = window.wrappedJSObject?.netflix?.reactContext?.models?.abContext?.data?.headers
 
@@ -7,7 +7,7 @@ export class Netflix {
 
   static async canABTest (): Promise<boolean> {
     let url = 'https://www.netflix.com/api/shakti/%uiVersion%/account/donottest'
-    const uiVersion = Netflix.getUiVersion()
+    const uiVersion = NetflixConfig.getUiVersion()
     if (uiVersion) {
       url = url.replace(/%uiVersion%/, uiVersion)
       const response = await fetch(url)

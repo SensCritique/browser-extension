@@ -32,7 +32,6 @@ export class Rating {
   }
 
   render (): Element {
-    console.log('=====>', this.rating)
     const divBackground = document.createElement('div')
     divBackground.style.width = '95px'
     divBackground.style.height = '44px'

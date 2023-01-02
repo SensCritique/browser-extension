@@ -1,9 +1,5 @@
 import Cache from '../storage/Cache'
 import { MessageEvent } from './MessageEvent'
-import md5 from 'blueimp-md5'
-import RatingFactory from './RatingFactory'
-import { Service } from '../http/Service'
-import { Provider } from '../http/Provider'
 import Logger from '../logging/Logger'
 import {
   ABTestModal,
@@ -11,9 +7,7 @@ import {
   NotSupportedModal,
   NotSupportedModalId
 } from './Modals'
-import { VideoType } from '../http/VideoType'
 import { Message } from '../background'
-import { VideoInfo } from '../http/Client'
 
 export default class Manager {
   private cache: Cache
@@ -41,52 +35,6 @@ export default class Manager {
       } as Message,
       callback
     )
-  }
-
-  renderRating (service: Service, element: Element, videoInfo: VideoInfo): void {
-    this.cache.save(videoInfo, service)
-
-    const serviceRating = new RatingFactory().create(service, videoInfo)
-    const ratingElement = serviceRating.render()
-
-    document
-      .querySelectorAll(`.${service}_${md5(videoInfo.name)}`)
-      .forEach((serviceElement) => {
-        if (serviceElement.childNodes.length === 0) {
-          serviceElement.innerHTML = ratingElement.outerHTML
-          this.logVideoInfo(videoInfo.name, serviceRating.rating, service)
-        }
-      })
-  }
-
-  logVideoInfo (videoName: string, rating: string, service: Service): void {
-    if (rating) {
-      this.logger.info(`Rating fetched for video ${videoName}`, {
-        name: videoName,
-        rating: rating,
-        serviceWebsite: service,
-        netflix_id: this.currentVideoId()
-      })
-    } else {
-      this.logger.error(`Cannot fetch rating for video ${videoName}`, {
-        name: videoName,
-        serviceWebsite: service,
-        netflix_id: this.currentVideoId()
-      })
-    }
-  }
-
-  currentVideoId (): string {
-    const urlQuery = new URL(window.location.toString()).pathname.split(
-      '/title/'
-    )
-    const firstJawboneId =
-      urlQuery.length > 0 && !isNaN(parseInt(urlQuery[1])) ? urlQuery[1] : null
-    const secondJawboneId = new URLSearchParams(window.location.search).get(
-      'jbv'
-    )
-
-    return secondJawboneId || firstJawboneId
   }
 
   showAbTestModal (): void {

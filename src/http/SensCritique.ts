@@ -20,7 +20,7 @@ const searchQuery = [
   }
 ]
 
-export default class SensCritique implements Client {
+export const SensCritique = class SensCritique implements Client {
   private baseUrl: string = 'https://www.senscritique.com'
   private searchUrl: string;
   private errorSearchUrl: string;
@@ -34,15 +34,12 @@ export default class SensCritique implements Client {
     return this.errorSearchUrl.replace('%search%', videoName)
   }
 
+  // remove all special char / string inside parentheses and lowercase the entire string
   cleanTitle (title: string): string | null {
-    return title?.replace(/ *\([^)]*\) */g, '').replace(/’|'|:|-|™|,|!|/gi, '').replace(/\s+/g, ' ').toLowerCase() || null
+    return title?.replace(/ *\([^)]*\) */g, '').replace(/[^\w ]/g, '').replace(/\s+/g, ' ').toLowerCase() || null
   }
 
   async getVideoInfo (search: string, type: VideoType, year: string = null): Promise<VideoInfo> {
-    if (type === VideoType.TVSHOW) {
-      year = year.split('-')[0]
-    }
-
     if (search) {
       const titleSearch = this.cleanTitle(search)
 
@@ -65,7 +62,7 @@ export default class SensCritique implements Client {
           for (const result of results) {
             const title = this.cleanTitle(result.product?.title)
             const originalTitle = this.cleanTitle(result.product?.originalTitle)
-            const yearDateRelease = result.product?.dateRelease?.split('-')[0]
+            const yearDateRelease = result.product?.dateRelease
 
             if ((type === VideoType.MOVIE && result.product.universe === Type.MOVIE) &&
               ((title === titleSearch) || (originalTitle === titleSearch) || titleSearch.includes(title) || titleSearch.includes(originalTitle)) &&
@@ -76,7 +73,7 @@ export default class SensCritique implements Client {
                 url: `${this.baseUrl}${result.product.url}`,
                 id: result.product.universe,
                 type: type,
-                rating: result.product.rating.toString()
+                rating: result.product.rating?.toString()
               }
               break
             } else if ((result.product.universe === Type.TVSHOW && type === VideoType.TVSHOW) &&
@@ -87,13 +84,13 @@ export default class SensCritique implements Client {
                 url: `${this.baseUrl}${result.product.url}`,
                 id: result.product.universe,
                 type: type,
-                rating: result.product.rating.toString()
+                rating: result.product.rating?.toString()
               }
               break
             }
           }
 
-          // if the titles are not exactly the same we check if one of the word in the title is include in the first result
+          // if the titles are not exactly the same, we check if one of the word in the title is include in the first result
           // and with the same year (only for movies)
           const title = this.cleanTitle(results[0]?.product?.title)?.split(' ')[0]
           const originalTitle = this.cleanTitle(results[0]?.product?.originalTitle)?.split(' ')[0]
@@ -108,7 +105,7 @@ export default class SensCritique implements Client {
               url: `${this.baseUrl}${results[0].product.url}`,
               id: results[0].product.universe,
               type: type,
-              rating: results[0].product.rating.toString()
+              rating: results[0].product.rating?.toString()
             }
           } else if (!videoInfo &&
             (type === VideoType.TVSHOW && results[0]?.product.universe === Type.TVSHOW) &&
@@ -119,7 +116,7 @@ export default class SensCritique implements Client {
               url: `${this.baseUrl}${results[0].product.url}`,
               id: results[0].product.universe,
               type: type,
-              rating: results[0].product.rating.toString()
+              rating: results[0].product.rating?.toString()
             }
           }
 
@@ -138,3 +135,5 @@ export default class SensCritique implements Client {
     }
   }
 }
+
+export default SensCritique

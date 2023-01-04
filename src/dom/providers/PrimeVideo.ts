@@ -51,7 +51,6 @@ export default class PrimeVideo {
 
   getVideoYear (): string {
     const element: any = document.querySelectorAll('.XqYSS8')[1]?.firstElementChild
-    console.log(element?.innerText)
     return element?.innerText
   }
 

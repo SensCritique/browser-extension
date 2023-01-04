@@ -1,7 +1,7 @@
 <img src="/images/logo-128.png" height=50/>
 
 # SensCritique-extension
-Permet d'avoir un score SensCritique sur les pages de descriptions __[Netflix](https://www.netflix.com)__ et __[Disney+](https://www.disneyplus.com)__
+Permet d'avoir un score SensCritique sur les pages de descriptions __[Netflix](https://www.netflix.com)__, __[Disney+](https://www.disneyplus.com)__ et __[Prime video](https://www.primevideo.com)__.
 
 ## Fonctionnement du score
 Le score correspond à la note globale des spectateurs SensCritique en pourcentage plutôt qu'une note sur 5 ou sur 10.

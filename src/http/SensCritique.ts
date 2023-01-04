@@ -16,7 +16,7 @@ const searchQuery = [
         from: 0
       }
     },
-    query: 'query Results($query: String, $filters: [SKFiltersSet], $page: SKPageInput, $sortBy: String) {  results(query: $query, filters: $filters) {    hits(page: $page, sortBy: $sortBy) {      items {        ... on ResultHit {          id          product {            id            title            url            rating            universe     dateRelease    }        }      }    }  }}'
+    query: 'query Results($query: String, $filters: [SKFiltersSet], $page: SKPageInput, $sortBy: String) {  results(query: $query, filters: $filters) {    hits(page: $page, sortBy: $sortBy) {      items {        ... on ResultHit {          id          product {            id            title        originalTitle           url            rating            universe     dateRelease    }        }      }    }  }}'
   }
 ]
 
@@ -34,8 +34,8 @@ export default class SensCritique implements Client {
     return this.errorSearchUrl.replace('%search%', videoName)
   }
 
-  cleanTitle (title: string): string {
-    return title.replace(/ *\([^)]*\) */g, '').replace(/’|'|:|-|™|,|!|/gi, '').replace(/\s+/g, ' ').toLowerCase()
+  cleanTitle (title: string): string | null {
+    return title?.replace(/ *\([^)]*\) */g, '').replace(/’|'|:|-|™|,|!|/gi, '').replace(/\s+/g, ' ').toLowerCase() || null
   }
 
   async getVideoInfo (search: string, type: VideoType, year: string = null): Promise<VideoInfo> {
@@ -63,11 +63,12 @@ export default class SensCritique implements Client {
 
         if (results.length > 0) {
           for (const result of results) {
-            const title = this.cleanTitle(result.product.title)
+            const title = this.cleanTitle(result.product?.title)
+            const originalTitle = this.cleanTitle(result.product?.originalTitle)
             const yearDateRelease = result.product?.dateRelease?.split('-')[0]
 
             if ((type === VideoType.MOVIE && result.product.universe === Type.MOVIE) &&
-              ((title === titleSearch) || titleSearch.includes(title)) &&
+              ((title === titleSearch) || (originalTitle === titleSearch) || titleSearch.includes(title) || titleSearch.includes(originalTitle)) &&
               parseInt(year) === parseInt(yearDateRelease)) {
               videoInfo = {
                 name: title,
@@ -93,12 +94,25 @@ export default class SensCritique implements Client {
           }
 
           // if the titles are not exactly the same we check if one of the word in the title is include in the first result
-          // and with the same year
-          const title = this.cleanTitle(results[0]?.product.title).split(' ')[0]
-          const yearDateRelease = results[0].product?.dateRelease?.split('-')[0]
+          // and with the same year (only for movies)
+          const title = this.cleanTitle(results[0]?.product?.title)?.split(' ')[0]
+          const originalTitle = this.cleanTitle(results[0]?.product?.originalTitle)?.split(' ')[0]
+          const yearDateRelease = results[0]?.product?.dateRelease?.split('-')[0]
           if (!videoInfo &&
-            titleSearch.includes(title) &&
+            (type === VideoType.MOVIE && results[0]?.product.universe === Type.MOVIE) &&
+            (titleSearch.includes(title) || titleSearch.includes(originalTitle)) &&
             parseInt(year) === parseInt(yearDateRelease)) {
+            videoInfo = {
+              name: results[0].product.title,
+              redirect: `${this.baseUrl}${results[0].product.url}`,
+              url: `${this.baseUrl}${results[0].product.url}`,
+              id: results[0].product.universe,
+              type: type,
+              rating: results[0].product.rating.toString()
+            }
+          } else if (!videoInfo &&
+            (type === VideoType.TVSHOW && results[0]?.product.universe === Type.TVSHOW) &&
+            (titleSearch.includes(title) || titleSearch.includes(originalTitle))) {
             videoInfo = {
               name: results[0].product.title,
               redirect: `${this.baseUrl}${results[0].product.url}`,

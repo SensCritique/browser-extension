@@ -5,6 +5,7 @@ All the code is the same for Chrome and Firefox except for the event system whic
 # Workflow
 ##### Content_script
 - Netflix: Fetch video info (name)
+- Disney: Fetch video info (name)
 ##### Background
 - SensCritique (HTTP): Fetch video ID and Type
 - SensCritique (HTTP): Fetch video note

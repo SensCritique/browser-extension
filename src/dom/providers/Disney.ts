@@ -58,7 +58,7 @@ export default class Disney {
   }
 
   getRating (videoName: string, jawbone: Element, service: Service, hash: string): void {
-    const videoInfoFound = null
+    const videoInfoFound = this.cache.get(videoName, service)
     if (!videoInfoFound) {
       manager.getVideoInfo(
         service,

@@ -22,7 +22,7 @@ export default class Disney {
 
   refreshRatings () {
     const videoName = this.getVideoName()
-    const modal = document.querySelector('.sc-gCUMDz')
+    const modal = document.querySelector("[data-gv2containerkey='contentMeta']")
     const hash = md5(videoName)
 
     if (videoName && modal?.getElementsByClassName(hash).length === 0) {
@@ -44,7 +44,7 @@ export default class Disney {
   }
 
   getVideoYear (): string {
-    const element: any = document.querySelector('.sc-jOVcOr')?.lastElementChild
+    const element: any = document.querySelector('.metadata').querySelector('span')
     const innerText = element?.innerText
     const year = innerText.split('•')[0]
     return year

@@ -39,6 +39,10 @@ export const SensCritique = class SensCritique implements Client {
     return title?.replace(/ *\([^)]*\) */g, '').replace(/[^\w ]/g, '').replace(/\s+/g, ' ').toLowerCase() || null
   }
 
+  hasSimilarTitle (title: string, distance: number): boolean {
+    return (title.length <= 10 && distance <= 2) || (title.length > 10 && distance === 4)
+  }
+
   async getVideoInfo (search: string, type: VideoType, year: string = null): Promise<VideoInfo> {
     if (search) {
       const titleSearch = this.cleanTitle(search)
@@ -59,14 +63,25 @@ export const SensCritique = class SensCritique implements Client {
         const results = body[0]?.data?.results?.hits?.items
 
         if (results.length > 0) {
+          const levenshteinResults = []
+
           for (const result of results) {
             const title = this.cleanTitle(result.product?.title)
-            const originalTitle = this.cleanTitle(result.product?.originalTitle)
             const yearDateRelease = result.product?.dateRelease
+            const distance = Levenshtein.get(title, titleSearch)
+
+            // add products in an array with the distance of levenshtein in addition
+            if (type === VideoType.MOVIE && result.product.universe === UniverseTypeId.MOVIE &&
+              parseInt(year) === parseInt(yearDateRelease)) {
+              levenshteinResults.push({ ...result, distance: distance })
+            }
+            if (type === VideoType.TVSHOW && result.product.universe === UniverseTypeId.TVSHOW) {
+              levenshteinResults.push({ ...result, distance: distance })
+            }
 
             if ((type === VideoType.MOVIE && result.product.universe === UniverseTypeId.MOVIE) &&
-              ((title === titleSearch) || (originalTitle === titleSearch) || titleSearch.includes(title) || titleSearch.includes(originalTitle)) &&
-              parseInt(year) === parseInt(yearDateRelease)) {
+              parseInt(year) === parseInt(yearDateRelease) &&
+              this.hasSimilarTitle(title, distance)) {
               videoInfo = {
                 name: title,
                 redirect: `${this.baseUrl}${result.product.url}`,
@@ -76,8 +91,8 @@ export const SensCritique = class SensCritique implements Client {
                 rating: result.product.rating?.toString()
               }
               break
-            } else if ((result.product.universe === UniverseTypeId.TVSHOW && type === VideoType.TVSHOW) &&
-            ((title === titleSearch) || titleSearch.includes(title))) {
+            } else if ((type === VideoType.TVSHOW && result.product.universe === UniverseTypeId.TVSHOW) &&
+              this.hasSimilarTitle(title, distance)) {
               videoInfo = {
                 name: title,
                 redirect: `${this.baseUrl}${result.product.url}`,
@@ -90,33 +105,33 @@ export const SensCritique = class SensCritique implements Client {
             }
           }
 
-          // if the titles are not exactly the same, we check if one of the word in the title is include in the first result
-          // and with the same year (only for movies)
-          const title = this.cleanTitle(results[0]?.product?.title)?.split(' ')?.[0]
-          const originalTitle = this.cleanTitle(results[0]?.product?.originalTitle)?.split(' ')?.[0]
-          const yearDateRelease = results[0]?.product?.dateRelease?.split('-')?.[0]
-          if (!videoInfo &&
-            (type === VideoType.MOVIE && results[0]?.product.universe === UniverseTypeId.MOVIE) &&
-            (titleSearch.includes(title) || titleSearch.includes(originalTitle)) &&
-            parseInt(year) === parseInt(yearDateRelease)) {
-            videoInfo = {
-              name: results[0].product.title,
-              redirect: `${this.baseUrl}${results[0].product.url}`,
-              url: `${this.baseUrl}${results[0].product.url}`,
-              id: results[0].product.universe,
-              type: type,
-              rating: results[0].product.rating?.toString()
-            }
-          } else if (!videoInfo &&
-            (type === VideoType.TVSHOW && results[0]?.product.universe === UniverseTypeId.TVSHOW) &&
-            (titleSearch.includes(title) || titleSearch.includes(originalTitle))) {
-            videoInfo = {
-              name: results[0].product.title,
-              redirect: `${this.baseUrl}${results[0].product.url}`,
-              url: `${this.baseUrl}${results[0].product.url}`,
-              id: results[0].product.universe,
-              type: type,
-              rating: results[0].product.rating?.toString()
+          // if levenshteinResults has only one result this product is return
+          // or if levenshteinResults has multiple results, the product which has the lowest levenshtein distance will be display
+          if (!videoInfo) {
+            if (levenshteinResults?.length === 1) {
+              videoInfo = {
+                name: results[0].product.title,
+                redirect: `${this.baseUrl}${results[0].product.url}`,
+                url: `${this.baseUrl}${results[0].product.url}`,
+                id: results[0].product.universe,
+                type: type,
+                rating: results[0].product.rating?.toString()
+              }
+            } else if (levenshteinResults?.length > 1) {
+              const closestResult = levenshteinResults.reduce(
+                (accumulator, currentValue) =>
+                  accumulator.distance < currentValue.distance
+                    ? accumulator
+                    : currentValue
+              )
+              videoInfo = {
+                name: closestResult.product.title,
+                redirect: `${this.baseUrl}${closestResult.product.url}`,
+                url: `${this.baseUrl}${closestResult.product.url}`,
+                id: closestResult.product.universe,
+                type: type,
+                rating: closestResult.product.rating?.toString()
+              }
             }
           }
 

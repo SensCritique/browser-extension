@@ -2,7 +2,7 @@ import { Service } from './../http/Service'
 import { Provider } from '../http/Provider'
 
 export default class Ratings {
-  static render (hash: string, provider: string): Element {
+  static render (hash: string, provider?: string): Element {
     const mainDiv = document.createElement('div')
     mainDiv.style.display = 'flex'
     mainDiv.style.marginBottom = '1em'

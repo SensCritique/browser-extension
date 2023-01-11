@@ -1,7 +1,7 @@
 import { VideoType } from './VideoType'
 import * as Levenshtein from 'fast-levenshtein'
 import { Client, VideoInfo } from './Client'
-import { Type } from '../http/Type'
+import { UniverseTypeId } from './UniverseTypeId'
 
 const app = require('../../package.json')
 
@@ -64,7 +64,7 @@ export const SensCritique = class SensCritique implements Client {
             const originalTitle = this.cleanTitle(result.product?.originalTitle)
             const yearDateRelease = result.product?.dateRelease
 
-            if ((type === VideoType.MOVIE && result.product.universe === Type.MOVIE) &&
+            if ((type === VideoType.MOVIE && result.product.universe === UniverseTypeId.MOVIE) &&
               ((title === titleSearch) || (originalTitle === titleSearch) || titleSearch.includes(title) || titleSearch.includes(originalTitle)) &&
               parseInt(year) === parseInt(yearDateRelease)) {
               videoInfo = {
@@ -76,7 +76,7 @@ export const SensCritique = class SensCritique implements Client {
                 rating: result.product.rating?.toString()
               }
               break
-            } else if ((result.product.universe === Type.TVSHOW && type === VideoType.TVSHOW) &&
+            } else if ((result.product.universe === UniverseTypeId.TVSHOW && type === VideoType.TVSHOW) &&
             ((title === titleSearch) || titleSearch.includes(title))) {
               videoInfo = {
                 name: title,
@@ -92,11 +92,11 @@ export const SensCritique = class SensCritique implements Client {
 
           // if the titles are not exactly the same, we check if one of the word in the title is include in the first result
           // and with the same year (only for movies)
-          const title = this.cleanTitle(results[0]?.product?.title)?.split(' ')[0]
-          const originalTitle = this.cleanTitle(results[0]?.product?.originalTitle)?.split(' ')[0]
-          const yearDateRelease = results[0]?.product?.dateRelease?.split('-')[0]
+          const title = this.cleanTitle(results[0]?.product?.title)?.split(' ')?.[0]
+          const originalTitle = this.cleanTitle(results[0]?.product?.originalTitle)?.split(' ')?.[0]
+          const yearDateRelease = results[0]?.product?.dateRelease?.split('-')?.[0]
           if (!videoInfo &&
-            (type === VideoType.MOVIE && results[0]?.product.universe === Type.MOVIE) &&
+            (type === VideoType.MOVIE && results[0]?.product.universe === UniverseTypeId.MOVIE) &&
             (titleSearch.includes(title) || titleSearch.includes(originalTitle)) &&
             parseInt(year) === parseInt(yearDateRelease)) {
             videoInfo = {
@@ -108,7 +108,7 @@ export const SensCritique = class SensCritique implements Client {
               rating: results[0].product.rating?.toString()
             }
           } else if (!videoInfo &&
-            (type === VideoType.TVSHOW && results[0]?.product.universe === Type.TVSHOW) &&
+            (type === VideoType.TVSHOW && results[0]?.product.universe === UniverseTypeId.TVSHOW) &&
             (titleSearch.includes(title) || titleSearch.includes(originalTitle))) {
             videoInfo = {
               name: results[0].product.title,

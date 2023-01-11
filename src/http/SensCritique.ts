@@ -39,8 +39,8 @@ export const SensCritique = class SensCritique implements Client {
     return title?.replace(/ *\([^)]*\) */g, '').replace(/[^\w ]/g, '').replace(/\s+/g, ' ').toLowerCase() || null
   }
 
-  hasSimilarTitle (title: string, distance: number): boolean {
-    return (title.length <= 10 && distance <= 2) || (title.length > 10 && distance === 4)
+  isSimilarTitle (title: string, distance: number): boolean {
+    return (title.length <= 10 && distance <= 2) || (title.length > 10 && distance <= 4)
   }
 
   async getVideoInfo (search: string, type: VideoType, year: string = null): Promise<VideoInfo> {
@@ -68,6 +68,7 @@ export const SensCritique = class SensCritique implements Client {
           for (const result of results) {
             const title = this.cleanTitle(result.product?.title)
             const yearDateRelease = result.product?.dateRelease
+
             const distance = Levenshtein.get(title, titleSearch)
 
             // add products in an array with the distance of levenshtein in addition
@@ -81,7 +82,7 @@ export const SensCritique = class SensCritique implements Client {
 
             if ((type === VideoType.MOVIE && result.product.universe === UniverseTypeId.MOVIE) &&
               parseInt(year) === parseInt(yearDateRelease) &&
-              this.hasSimilarTitle(title, distance)) {
+              this.isSimilarTitle(title, distance)) {
               videoInfo = {
                 name: title,
                 redirect: `${this.baseUrl}${result.product.url}`,
@@ -92,7 +93,7 @@ export const SensCritique = class SensCritique implements Client {
               }
               break
             } else if ((type === VideoType.TVSHOW && result.product.universe === UniverseTypeId.TVSHOW) &&
-              this.hasSimilarTitle(title, distance)) {
+              this.isSimilarTitle(title, distance)) {
               videoInfo = {
                 name: title,
                 redirect: `${this.baseUrl}${result.product.url}`,

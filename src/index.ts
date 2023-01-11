@@ -11,7 +11,6 @@ const domainOrigin = (new URL(window.location.href))?.origin
 let timer = 0
 
 setInterval(() => {
-  console.log('domain', domainOrigin)
   if (domainOrigin) {
     switch (domainOrigin) {
       case ProviderUrlDomain.DISNEY:

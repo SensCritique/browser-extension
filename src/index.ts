@@ -9,7 +9,6 @@ const disney = new Disney()
 let timer = 0
 
 setInterval(() => {
-  console.log(window.location.href)
   if (window.location.href && window.location.href.includes(Provider.DISNEY)) disney.refreshRatings()
   else netflix.refreshRatings()
 }, 1000)

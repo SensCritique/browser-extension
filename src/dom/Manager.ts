@@ -23,6 +23,7 @@ export default class Manager {
     videoName: string,
     videoYear: string,
     videoType: string,
+    seasons: string,
     callback: Function
   ): void {
     chrome.runtime.sendMessage(
@@ -31,7 +32,8 @@ export default class Manager {
         service,
         videoName,
         videoYear,
-        videoType
+        videoType,
+        seasons
       } as Message,
       callback
     )

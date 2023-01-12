@@ -3,7 +3,7 @@ import { VideoType } from './VideoType'
 export interface VideoInfo {
   name: string,
   redirect?: string,
-  id?: string,
+  id?: string | number,
   url?: string,
   type?: VideoType,
   rating?: string,
@@ -11,5 +11,5 @@ export interface VideoInfo {
 }
 
 export interface Client {
-  getVideoInfo(search: string, type: VideoType, year?: string): Promise<VideoInfo>
+  getVideoInfo(search: string, type: VideoType, year?: string, seasons?: string): Promise<VideoInfo>
 }

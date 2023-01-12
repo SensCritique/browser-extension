@@ -44,7 +44,7 @@ export default class Disney {
   }
 
   getVideoYear (): string {
-    const element: any = document.querySelector('.metadata').querySelector('span')
+    const element = document.querySelector('.metadata.text-color--primary').querySelector('span')
     const innerText = element?.innerText
     const year = innerText.split('•')[0]
     return year
@@ -53,8 +53,14 @@ export default class Disney {
   getVideoType (): VideoType {
     const element = document.querySelectorAll('nav')[1]?.firstElementChild
     const innerHtml = element?.innerHTML
-
     return innerHtml !== 'ÉPISODES' ? VideoType.MOVIE : VideoType.TVSHOW
+  }
+
+  getSeasons (): string | null {
+    const element = document.querySelector('.metadata.text-color--primary').querySelector('span')
+    const innerText = element?.innerText
+    const seasons = innerText.split('•')?.[1].match(/\d+/)?.[0]
+    return seasons
   }
 
   getRating (videoName: string, jawbone: Element, service: Service, hash: string): void {
@@ -65,6 +71,7 @@ export default class Disney {
         videoName,
         this.getVideoYear(),
         this.getVideoType(),
+        this.getSeasons(),
         (videoInfo: VideoInfo) => {
           this.renderRating(service, jawbone, videoInfo, hash)
         }

@@ -62,6 +62,13 @@ export default class Netflix {
     return episodesElement == null ? VideoType.MOVIE : VideoType.TVSHOW
   }
 
+  getSeasons (): string | null {
+    const element = document.querySelector('.duration')
+    const innerHtml = element?.innerHTML
+    const seasons = innerHtml?.split(' ')?.[0]
+    return seasons
+  }
+
   getRating (videoName: string, jawbone: Element, service: Service, hash: string): void {
     const videoInfoFound = this.cache.get(videoName, service)
     if (!videoInfoFound) {
@@ -70,6 +77,7 @@ export default class Netflix {
         videoName,
         this.getVideoYear(),
         this.getVideoType(),
+        this.getSeasons(),
         (videoInfo: VideoInfo) => {
           this.renderRating(service, jawbone, videoInfo, hash)
         }

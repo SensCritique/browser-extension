@@ -12,9 +12,10 @@ export interface Message {
   videoName: string,
   videoYear: string,
   videoType: VideoType,
+  seasons: string,
 }
 
-const fetchInfo = async (message: Message): Promise<VideoInfo> => senscritique.getVideoInfo(message.videoName, message.videoType, message.videoYear)
+const fetchInfo = async (message: Message): Promise<VideoInfo> => senscritique.getVideoInfo(message.videoName, message.videoType, message.videoYear, message.seasons)
 
 chrome.runtime.onMessage.addListener((message: Message, sender: void, callback: Function) => {
   fetchInfo(message).then(response => {

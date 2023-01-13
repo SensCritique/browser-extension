@@ -20,7 +20,7 @@ const searchQuery = [
   }
 ]
 
-export interface ResultProps {
+export interface ProductResult {
   product: {
     title: string,
     url: string,
@@ -48,7 +48,7 @@ export const SensCritique = class SensCritique implements Client {
     return title?.replace(/ *\([^)]*\) */g, '').replace(/[^\w ]/g, '').replace(/\s+/g, ' ').toLowerCase() || null
   }
 
-  getYear = (dateRelease: string): number | null => {
+  getYear (dateRelease: string): number | null {
     return new Date(dateRelease).getFullYear()
   }
 
@@ -60,7 +60,7 @@ export const SensCritique = class SensCritique implements Client {
     return title.length <= 15 && distance <= 10
   }
 
-  setVideoInfos (result: ResultProps, title: string, type: VideoType): VideoInfo {
+  mapVideoInfos (result: ProductResult, title: string, type: VideoType): VideoInfo {
     return {
       name: title,
       redirect: `${this.baseUrl}${result.product.url}`,
@@ -116,20 +116,21 @@ export const SensCritique = class SensCritique implements Client {
             if ((type === VideoType.MOVIE && result.product.universe === UniverseTypeId.MOVIE) &&
               parseInt(year) === yearDateRelease &&
               this.isSimilarTitle(title, distance)) {
-              return this.setVideoInfos(result, title, type)
+              return this.mapVideoInfos(result, title, type)
             }
 
             // TVSHOW
             // if tvShow only has one season, we compare the years
             if ((type === VideoType.TVSHOW && result.product.universe === UniverseTypeId.TVSHOW) &&
-              this.isSimilarTitle(title, distance) && parseInt(seasons) === 1 &&
+              this.isSimilarTitle(title, distance) &&
+              parseInt(seasons) === 1 &&
               parseInt(year) === yearDateRelease) {
-              return this.setVideoInfos(result, title, type)
+              return this.mapVideoInfos(result, title, type)
             }
 
             if ((type === VideoType.TVSHOW && result.product.universe === UniverseTypeId.TVSHOW) &&
               this.isSimilarTitle(title, distance)) {
-              return this.setVideoInfos(result, title, type)
+              return this.mapVideoInfos(result, title, type)
             }
           }
 
@@ -138,7 +139,7 @@ export const SensCritique = class SensCritique implements Client {
           // MOVIE
           if (levenshteinResults?.length > 0 && type === VideoType.MOVIE) {
             if (levenshteinResults.length === 1) {
-              return this.setVideoInfos(levenshteinResults[0], levenshteinResults[0].product.title, type)
+              return this.mapVideoInfos(levenshteinResults[0], levenshteinResults[0].product.title, type)
             }
             const closestResult = levenshteinResults.reduce(
               (accumulator, currentValue) =>
@@ -146,7 +147,7 @@ export const SensCritique = class SensCritique implements Client {
                   ? accumulator
                   : currentValue
             )
-            return this.setVideoInfos(closestResult, closestResult.product.title, type)
+            return this.mapVideoInfos(closestResult, closestResult.product.title, type)
           }
 
           // TVSHOW
@@ -157,7 +158,7 @@ export const SensCritique = class SensCritique implements Client {
             if (levenshteinResults.length === 1 &&
               this.isRelevanceTitle(levenshteinResults[0].product.title, levenshteinResults[0].distance) &&
               parseInt(year) === yearDateRelease) {
-              return this.setVideoInfos(levenshteinResults[0], levenshteinResults[0].product.title, type)
+              return this.mapVideoInfos(levenshteinResults[0], levenshteinResults[0].product.title, type)
             }
             const closestResult = levenshteinResults.reduce(
               (accumulator, currentValue) =>
@@ -169,7 +170,7 @@ export const SensCritique = class SensCritique implements Client {
             yearDateRelease = this.getYear(closestResult.product?.dateRelease)
             if (this.isRelevanceTitle(closestResult.product.title, closestResult.distance) &&
               parseInt(year) === yearDateRelease) {
-              return this.setVideoInfos(closestResult, closestResult.product.title, type)
+              return this.mapVideoInfos(closestResult, closestResult.product.title, type)
             }
           }
 

@@ -5,7 +5,7 @@ import { mapSensCritiqueProduct } from '../mapper/SensCritiqueProductMapper'
 import { Product } from '../type/Product'
 import { productsMatchedWithLevenshtein } from '../helper/LevenshteinHelper'
 import Logger from '../logging/Logger'
-import { numberMatched, stringMatched } from '../helper/MatchingHelper'
+import { numbersMatched, stringsMatched } from '../helper/MatchingHelper'
 
 const app = require('../../package.json')
 
@@ -74,11 +74,11 @@ export default class SensCritique implements Client {
   }
 
   async compare (senscritiqueProduct: Product, platformProduct: Product): Promise<VideoInfo> {
-    const isMovie = stringMatched((platformProduct.type && senscritiqueProduct.type), VideoType.MOVIE)
-    const isTvShow = stringMatched((platformProduct.type && senscritiqueProduct.type), VideoType.TVSHOW)
-    const yearMatched = numberMatched(senscritiqueProduct.year, platformProduct.year)
-    const typeMatched = stringMatched(senscritiqueProduct.type, platformProduct.type)
-    const seasonMatched = numberMatched(senscritiqueProduct.nbrSeasons, platformProduct.nbrSeasons)
+    const isMovie = stringsMatched((platformProduct.type && senscritiqueProduct.type), VideoType.MOVIE)
+    const isTvShow = stringsMatched((platformProduct.type && senscritiqueProduct.type), VideoType.TVSHOW)
+    const yearMatched = numbersMatched(senscritiqueProduct.year, platformProduct.year)
+    const typeMatched = stringsMatched(senscritiqueProduct.type, platformProduct.type)
+    const seasonMatched = numbersMatched(senscritiqueProduct.nbrSeasons, platformProduct.nbrSeasons)
     const titleMatched = productsMatchedWithLevenshtein(senscritiqueProduct, platformProduct)
 
     const videoInfos = this.mapVideoInfos(senscritiqueProduct, senscritiqueProduct.title, senscritiqueProduct.type)

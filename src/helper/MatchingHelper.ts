@@ -1,6 +1,4 @@
 export const numberMatched = (number1: number, number2: number): boolean => {
-    console.log('number1', number1)
-    console.log('number2', number2)
   if (number1 && number2) {
     return number1 === number2
   }

@@ -8,18 +8,14 @@ import Manager from '../Manager'
 import { VideoType } from '../../http/VideoType'
 import { VideoInfo } from '../../http/Client'
 import RatingFactory from '../RatingFactory'
+import {
+  ABTestModal,
+  AbTestModalId,
+  NotSupportedModal,
+  NotSupportedModalId
+} from '../Modals'
 
-const manager = new Manager()
-
-export default class Disney {
-  private cache: Cache
-  private logger: Logger
-
-  constructor () {
-    this.cache = new Cache()
-    this.logger = new Logger()
-  }
-
+export default class Disney extends Manager {
   refreshRatings () {
     const videoName = this.getVideoName()
     const modal = document.querySelector("[data-gv2containerkey='contentMeta']")
@@ -64,9 +60,9 @@ export default class Disney {
   }
 
   getRating (videoName: string, jawbone: Element, service: Service, hash: string): void {
-    const videoInfoFound = this.cache.get(videoName, service)
+    const videoInfoFound = null
     if (!videoInfoFound) {
-      manager.getVideoInfo(
+      this.getVideoInfo(
         service,
         videoName,
         this.getVideoYear(),
@@ -122,5 +118,48 @@ export default class Disney {
       '/'
     )
     return urlQuery.length > 0 && urlQuery[4] ? urlQuery[4] : null
+  }
+
+  /*
+   * Todo: On garde ou pas ?
+   */
+  showAbTestModal (): void {
+    const cacheKey = 'senscritique_extension_help'
+    const helpModalAlreadyDisplayed = sessionStorage.getItem(cacheKey)
+
+    if (
+      document.getElementById(AbTestModalId) == null &&
+      !helpModalAlreadyDisplayed
+    ) {
+      this.logger.error(
+        'Netflix GUI seems to be differents, user is part of an AB Test'
+      )
+      document.body.appendChild(ABTestModal())
+      sessionStorage.setItem(cacheKey, '1')
+
+      document.getElementById(AbTestModalId).addEventListener('click', () => {
+        document.getElementById(AbTestModalId).remove()
+      })
+    }
+  }
+
+  showNotSupportedModal (): void {
+    const cacheKey = 'senscritique_extension_not_supported'
+    const NotSupportedModalIdDisplayed = sessionStorage.getItem(cacheKey)
+
+    if (
+      document.getElementById(NotSupportedModalId) == null &&
+      !NotSupportedModalIdDisplayed
+    ) {
+      this.logger.error('A newer GUI version seems available')
+      document.body.appendChild(NotSupportedModal())
+      sessionStorage.setItem(cacheKey, '1')
+
+      document
+        .getElementById(NotSupportedModalId)
+        .addEventListener('click', () => {
+          document.getElementById(NotSupportedModalId).remove()
+        })
+    }
   }
 }

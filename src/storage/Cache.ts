@@ -1,6 +1,6 @@
 import md5 from 'blueimp-md5'
 import { VideoInfo } from '../http/Client'
-import { Service } from '../http/Service'
+import { Service } from '../enum/Service'
 
 export default class Cache {
   private readonly prefix: string;

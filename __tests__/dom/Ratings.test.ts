@@ -1,4 +1,3 @@
-import { Provider } from './../../src/http/Provider'
 import { test, expect } from '@jest/globals'
 import Ratings from '../../src/dom/Ratings'
 

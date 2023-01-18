@@ -1,21 +1,19 @@
 import { flatten } from '../helper/StringHelper'
-import { UniverseTypeId } from '../http/UniverseTypeId'
-import { VideoType } from '../http/VideoType'
+import { UniverseTypeId } from '../enum/UniverseTypeId'
+import { VideoType } from '../enum/VideoType'
 import { Product } from '../type/Product'
 
-type SeasonsProduct = {
-  length: number
+type Seasons = {
   seasonNumber: number,
 }
 
 type SensCritiqueProduct = {
     title: string,
     originalTitle: string,
-    dateRelease: string,
     universe: number
     url: string,
     rating: number,
-    seasons: SeasonsProduct,
+    seasons: Seasons[],
     // eslint-disable-next-line camelcase
     year_of_production: number
 }
@@ -24,7 +22,7 @@ type SensCritiqueResult = {
     product: SensCritiqueProduct
 }
 
-const findVideoTypeFromUniverse = (universe: number): VideoType => {
+export const findVideoTypeFromUniverse = (universe: number): VideoType => {
   switch (universe) {
     default:
       return null

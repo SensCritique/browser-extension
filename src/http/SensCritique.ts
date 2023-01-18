@@ -1,11 +1,10 @@
-import { VideoType } from './VideoType'
+import { VideoType } from '../enum/VideoType'
 import { Client, VideoInfo } from './Client'
 import { mapPlatformProduct } from '../mapper/PlatformProductMapper'
 import { mapSensCritiqueProduct } from '../mapper/SensCritiqueProductMapper'
 import { Product } from '../type/Product'
-import { productsMatchedWithLevenshtein } from '../helper/LevenshteinHelper'
+import { matchedWithLevenshtein } from '../helper/LevenshteinHelper'
 import Logger from '../logging/Logger'
-import { numbersMatched, stringsMatched } from '../helper/MatchingHelper'
 
 const app = require('../../package.json')
 
@@ -24,7 +23,7 @@ const searchQuery = [
   }
 ]
 
-export default class SensCritique implements Client {
+const SensCritique = class SensCritique implements Client {
   private baseUrl: string = 'https://www.senscritique.com'
   private searchUrl: string;
   private errorSearchUrl: string;
@@ -73,32 +72,44 @@ export default class SensCritique implements Client {
     return null
   }
 
-  async compare (senscritiqueProduct: Product, platformProduct: Product): Promise<VideoInfo> {
-    const isMovie = stringsMatched((platformProduct.type && senscritiqueProduct.type), VideoType.MOVIE)
-    const isTvShow = stringsMatched((platformProduct.type && senscritiqueProduct.type), VideoType.TVSHOW)
-    const yearMatched = numbersMatched(senscritiqueProduct.year, platformProduct.year)
-    const typeMatched = stringsMatched(senscritiqueProduct.type, platformProduct.type)
-    const seasonMatched = numbersMatched(senscritiqueProduct.nbrSeasons, platformProduct.nbrSeasons)
-    const titleMatched = productsMatchedWithLevenshtein(senscritiqueProduct, platformProduct)
+  async compare (senscritiqueProduct: Product, platformProduct: Product): Promise<VideoInfo | null> {
+    const isMovie = (platformProduct?.type && senscritiqueProduct?.type) === VideoType.MOVIE
+    const isTvShow = (platformProduct?.type && senscritiqueProduct?.type) === VideoType.TVSHOW
+    const yearMatched = senscritiqueProduct?.year === platformProduct?.year
+    const typeMatched = senscritiqueProduct?.type === platformProduct?.type
+    const seasonMatched = senscritiqueProduct?.nbrSeasons === platformProduct?.nbrSeasons
+    const titleMatched = matchedWithLevenshtein(senscritiqueProduct.title, platformProduct.title)
+    const flattenTitleMatched = matchedWithLevenshtein(senscritiqueProduct.flattenedTitle, platformProduct.flattenedTitle)
+    const originalTitleMatched = matchedWithLevenshtein(senscritiqueProduct.originalTitle, platformProduct.title)
+    const flattenOriginalTitleMatched = matchedWithLevenshtein(senscritiqueProduct.flattenedOriginalTitle, platformProduct.flattenedTitle)
+
+    const titleMatchedLevenshtein = titleMatched || flattenTitleMatched || originalTitleMatched || flattenOriginalTitleMatched
 
     const videoInfos = this.mapVideoInfos(senscritiqueProduct, senscritiqueProduct.title, senscritiqueProduct.type)
 
-    if (titleMatched && yearMatched && typeMatched) {
-      return videoInfos
-    }
+    if (typeMatched) {
+      if (titleMatchedLevenshtein && yearMatched) {
+        return videoInfos
+      }
 
-    if (isMovie && typeMatched && yearMatched) {
-      return videoInfos
-    }
+      if (isMovie && yearMatched) {
+        return videoInfos
+      }
 
-    if (isTvShow && typeMatched && yearMatched && seasonMatched) {
-      return videoInfos
-    }
+      if (isTvShow && titleMatchedLevenshtein && seasonMatched) {
+        return videoInfos
+      }
 
-    if (isTvShow && typeMatched && seasonMatched) {
-      return videoInfos
-    }
+      if (isTvShow && yearMatched && seasonMatched) {
+        return videoInfos
+      }
 
+      if (isTvShow && titleMatchedLevenshtein) {
+        return videoInfos
+      }
+
+      return null
+    }
     return null
   }
 
@@ -134,3 +145,5 @@ export default class SensCritique implements Client {
     }
   }
 }
+
+export default SensCritique

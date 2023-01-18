@@ -1,5 +1,5 @@
-import { Service } from './../http/Service'
-import { Provider } from '../http/Provider'
+import { Service } from '../enum/Service'
+import { Provider } from '../enum/Provider'
 
 export default class Ratings {
   static render (hash: string, provider?: string): Element {

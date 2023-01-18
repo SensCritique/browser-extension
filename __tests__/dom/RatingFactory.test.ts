@@ -1,6 +1,6 @@
 import { test, expect } from '@jest/globals'
 import RatingFactory from '../../src/dom/RatingFactory'
-import { Service } from '../../src/http/Service'
+import { Service } from '../../src/enum/Service'
 import { SensCritiqueRating } from '../../src/dom/SensCritiqueRating'
 
 test('It should create an SensCritiqueRating instance', () => {

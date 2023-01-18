@@ -1,14 +1,14 @@
-import { VideoType } from '../http/VideoType'
+import { VideoType } from '../enum/VideoType'
 
 export type Product = {
-    title: string,
-    flattenedTitle: string,
-    originalTitle?: string,
-    flattenedOriginalTitle?: string,
+    title: string | null,
+    flattenedTitle: string | null,
+    originalTitle?: string | null,
+    flattenedOriginalTitle?: string | null,
     year: number,
     type: VideoType,
     nbrSeasons: number,
     url?: string,
     rating?: number,
-    distance?: number
+    distance?: number,
 }

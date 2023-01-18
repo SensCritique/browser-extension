@@ -1,8 +1,8 @@
 import { VideoInfo } from './http/Client'
-import { Service } from './http/Service'
+import { Service } from './enum/Service'
 import SensCritique from './http/SensCritique'
 import { MessageEvent } from './dom/MessageEvent'
-import { VideoType } from './http/VideoType'
+import { VideoType } from './enum/VideoType'
 
 const senscritique = new SensCritique()
 

@@ -1,8 +1,8 @@
 import Netflix from './dom/providers/Netflix'
 import Disney from './dom/providers/Disney'
 import { NetflixConfig } from './config/Netflix'
-import { Provider } from './http/Provider'
-import { ProviderUrlDomain } from './http/ProviderUrlDomain'
+import { Provider } from './enum/Provider'
+import { ProviderUrlDomain } from './enum/ProviderUrlDomain'
 import md5 from 'blueimp-md5'
 
 const netflix = new Netflix()

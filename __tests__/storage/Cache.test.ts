@@ -1,5 +1,5 @@
 import { test } from '@jest/globals'
-import { Service } from '../../src/http/Service'
+import { Service } from '../../src/enum/Service'
 import Cache from '../../src/storage/Cache'
 
 test('It should save information in sessionStorage', () => {

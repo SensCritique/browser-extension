@@ -27,7 +27,7 @@ export default class Netflix extends Manager {
         '.previewModal--detailsMetadata-info'
       )
       if (infoElement) {
-        const ratingsElement = Ratings.render(hash, Provider.NETFLIX)
+        const ratingsElement = Ratings.render(hash, videoName, Provider.NETFLIX)
         infoElement.prepend(ratingsElement)
       }
       this.getRating(videoName, modal, Service.SENSCRITIQUE, hash)

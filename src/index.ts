@@ -1,5 +1,6 @@
 import Netflix from './dom/providers/Netflix'
 import Disney from './dom/providers/Disney'
+import Canal from './dom/providers/Canal'
 import { NetflixConfig } from './config/Netflix'
 import { Provider } from './enum/Provider'
 import { ProviderUrlDomain } from './enum/ProviderUrlDomain'
@@ -7,6 +8,7 @@ import md5 from 'blueimp-md5'
 
 const netflix = new Netflix()
 const disney = new Disney()
+const canal = new Canal()
 const domainOrigin = (new URL(window.location.href))?.origin
 let timer = 0
 
@@ -15,6 +17,9 @@ setInterval(() => {
     switch (domainOrigin) {
       case ProviderUrlDomain.DISNEY:
         disney.refreshRatings()
+        break
+      case ProviderUrlDomain.CANAL:
+        canal.refreshRatings()
         break
       default:
         netflix.refreshRatings()

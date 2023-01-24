@@ -3,7 +3,6 @@ import Ratings from '../Ratings'
 import md5 from 'blueimp-md5'
 import { Service } from '../../enum/Service'
 import { Provider } from '../../enum/Provider'
-import Logger from '../../logging/Logger'
 import Manager from '../Manager'
 import { VideoType } from '../../enum/VideoType'
 import { VideoInfo } from '../../http/Client'
@@ -15,15 +14,24 @@ import {
   NotSupportedModalId
 } from '../Modals'
 
-export default class Disney extends Manager {
+export default class Canal extends Manager {
+  removePreviousRating (videoName: string) {
+    const element = document.getElementById('sc_rating')
+    var name = element?.getAttribute('name')
+    if (element && (videoName !== name)) {
+      element.remove()
+    }
+  }
+
   refreshRatings () {
     const videoName = this.getVideoName()
-    const modal = document.querySelector("[data-gv2containerkey='contentMeta']")
+    this.removePreviousRating(videoName)
+    const modal = document.querySelector("[data-e2e='mediaCardBody__info']")
     const hash = md5(videoName)
 
     if (videoName && modal?.getElementsByClassName(hash).length === 0) {
       if (modal) {
-        const ratingsElement = Ratings.render(hash, videoName, Provider.DISNEY)
+        const ratingsElement = Ratings.render(hash, videoName, Provider.CANAL)
         modal.prepend(ratingsElement)
       }
       this.getRating(videoName, modal, Service.SENSCRITIQUE, hash)
@@ -32,34 +40,33 @@ export default class Disney extends Manager {
 
   getVideoName (): string | null {
     const detailModalVideoName = document
-      .querySelector('#unauth-navbar-target')
-      ?.firstElementChild
-      ?.getAttribute('alt')
+      .querySelector('.bodyTitle___HwRP2')
+      ?.innerHTML
 
     return detailModalVideoName || null
   }
 
   getVideoYear (): string {
-    const element = document.querySelector('.metadata.text-color--primary').querySelector('span')
-    const innerText = element?.innerText
-    const year = innerText.split('•')[0]
+    const element = document.querySelector('.meta__title___d6mTo')
+    const innerHtml = element?.innerHTML
+    const year = innerHtml?.match(/(\d{4}-\d{4}|\d{4})/g)?.[0]
     return year
   }
 
   getVideoType (): VideoType {
-    const element = document.querySelectorAll('nav')[1]?.firstElementChild
+    const element = document.querySelector('.seasonSwitcher__title___xT1da')
     const innerHtml = element?.innerHTML
-    return innerHtml !== 'ÉPISODES' ? VideoType.MOVIE : VideoType.TVSHOW
+    return !innerHtml || innerHtml !== 'Saison' ? VideoType.MOVIE : VideoType.TVSHOW
   }
 
   getSeasons (): string | null {
-    const element = document.querySelector('.metadata.text-color--primary').querySelector('span')
-    const innerText = element?.innerText
-    const seasons = innerText.split('•')?.[1].match(/\d+/)?.[0]
-    return seasons
+    const element = document.querySelectorAll('.seasonSwitcher__item___7raR7')
+    const nbrSeasons = element?.length
+    return nbrSeasons.toString()
   }
 
   getRating (videoName: string, jawbone: Element, service: Service, hash: string): void {
+    // const videoInfoFound = this.cache.get(videoName, service)
     const videoInfoFound = null
     if (!videoInfoFound) {
       this.getVideoInfo(
@@ -101,14 +108,14 @@ export default class Disney extends Manager {
         rating: rating,
         serviceWebsite: service,
         disney_id: this.currentVideoId(),
-        provider: Provider.DISNEY
+        provider: Provider.CANAL
       })
     } else {
       this.logger.error(`Cannot fetch rating for video ${videoName}`, {
         name: videoName,
         serviceWebsite: service,
         disney_id: this.currentVideoId(),
-        provider: Provider.DISNEY
+        provider: Provider.CANAL
       })
     }
   }

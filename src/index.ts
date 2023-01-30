@@ -9,7 +9,6 @@ const netflix = new Netflix()
 const disney = new Disney()
 const domainOrigin = (new URL(window.location.href))?.origin
 let timer = 0
-
 setInterval(() => {
   if (domainOrigin) {
     switch (domainOrigin) {

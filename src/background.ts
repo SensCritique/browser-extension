@@ -1,8 +1,8 @@
 import { VideoInfo } from './http/Client'
-import { Service } from './enum/Service'
 import SensCritique from './http/SensCritique'
 import { MessageEvent } from './dom/MessageEvent'
 import { VideoType } from './enum/VideoType'
+import { LogSeverity } from './enum/LogSeverity'
 
 const senscritique = new SensCritique()
 
@@ -24,3 +24,52 @@ chrome.runtime.onMessage.addListener((message: Message, sender: void, callback: 
 
   return true
 })
+
+export class Logger {
+  static info (message: string, context : object = {}) {
+    return Logger.log(LogSeverity.INFO, message, context)
+  }
+
+  static error (message: string, context : object = {}) {
+    return Logger.log(LogSeverity.ERROR, message, context)
+  }
+
+  static warning (message: string, context : object = {}) {
+    return Logger.log(LogSeverity.WARNING, message, context)
+  }
+
+  static debug (message: string, context : object = {}) {
+    return Logger.log(LogSeverity.DEBUG, message, context)
+  }
+
+  static log (severity: LogSeverity, message: string, context: object = {}) {
+    const userAgent = navigator.userAgent
+    if (userAgent.includes('Chrome')) {
+      chrome.tabs.query({
+        currentWindow: true,
+        active: true
+      })
+        .then((tabs: any) => {
+          tabs.map((tab: any) =>
+            chrome.tabs.sendMessage(tab.id, { type: MessageEvent.LOG, severity, message, context }
+            ))
+        })
+        .catch((error: Error) => {
+          console.error(`Error: ${error}`)
+        })
+    } else {
+      browser.tabs.query({
+        currentWindow: true,
+        active: true
+      })
+        .then((tabs: any) => {
+          tabs.map((tab: any) =>
+            chrome.tabs.sendMessage(tab.id, { type: MessageEvent.LOG, severity, message, context }
+            ))
+        })
+        .catch((error: Error) => {
+          console.error(`Error: ${error}`)
+        })
+    }
+  }
+}

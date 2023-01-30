@@ -1,6 +1,5 @@
 import { datadogLogs, Logger as DatadogLogger, Datacenter } from '@datadog/browser-logs'
 import { Context } from '@datadog/browser-core'
-import { NetflixConfig } from '../config/Netflix'
 
 export default class Logger {
   private logger: DatadogLogger;
@@ -16,7 +15,6 @@ export default class Logger {
     this.logger = datadogLogs.createLogger('main', {
       context: {
         app_version: chrome.runtime.getManifest().version,
-        netflix_ui_version: NetflixConfig.getUiVersion(),
         service: 'senscritique-extension'
       }
     })

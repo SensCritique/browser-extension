@@ -1,9 +1,8 @@
-import Cache from '../../storage/Cache'
 import Ratings from '../Ratings'
 import md5 from 'blueimp-md5'
 import { Service } from '../../enum/Service'
 import { Provider } from '../../enum/Provider'
-import Logger from '../../logging/Logger'
+import { LogSeverityId } from '../../enum/LogSeverity'
 import Manager from '../Manager'
 import { VideoType } from '../../enum/VideoType'
 import { VideoInfo } from '../../http/Client'
@@ -66,7 +65,8 @@ export default class Netflix extends Manager {
   }
 
   getRating (videoName: string, jawbone: Element, service: Service, hash: string): void {
-    const videoInfoFound = null
+    const videoInfoFound = this.cache.get(videoName, service)
+
     if (!videoInfoFound) {
       this.getVideoInfo(
         service,
@@ -78,6 +78,7 @@ export default class Netflix extends Manager {
           this.renderRating(service, jawbone, videoInfo, hash)
         }
       )
+      this.getBackgroundLog(service)
     }
     if (videoInfoFound) {
       this.renderRating(service, jawbone, videoInfoFound, hash)
@@ -173,5 +174,36 @@ export default class Netflix extends Manager {
           document.getElementById(NotSupportedModalId).remove()
         })
     }
+  }
+
+  getBackgroundLog (service: Service): void {
+    chrome.runtime.onMessage.addListener((event: { context: { name: string }, message: string, severity: number}) => {
+      const { context, message, severity } = event
+      switch (severity) {
+        case LogSeverityId.ERROR:
+          this.logger.error(message, {
+            name: context.name,
+            serviceWebsite: service,
+            netflix_id: this.currentVideoId(),
+            provider: Provider.NETFLIX
+          })
+          break
+        case LogSeverityId.WARNING:
+          this.logger.warning(message, {
+            name: context.name,
+            serviceWebsite: service,
+            netflix_id: this.currentVideoId(),
+            provider: Provider.NETFLIX
+          })
+          break
+        default:
+          this.logger.info(message, {
+            name: context.name,
+            serviceWebsite: service,
+            netflix_id: this.currentVideoId(),
+            provider: Provider.NETFLIX
+          })
+      }
+    })
   }
 }

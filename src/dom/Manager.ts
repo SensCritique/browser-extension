@@ -1,12 +1,6 @@
 import Cache from '../storage/Cache'
 import { MessageEvent } from './MessageEvent'
 import Logger from '../logging/Logger'
-import {
-  ABTestModal,
-  AbTestModalId,
-  NotSupportedModal,
-  NotSupportedModalId
-} from './Modals'
 import { Message } from '../background'
 
 export default class Manager {

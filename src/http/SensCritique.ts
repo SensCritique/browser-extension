@@ -4,7 +4,7 @@ import { mapPlatformProduct } from '../mapper/PlatformProductMapper'
 import { mapSensCritiqueProduct } from '../mapper/SensCritiqueProductMapper'
 import { Product } from '../type/Product'
 import { matchedWithLevenshtein } from '../helper/LevenshteinHelper'
-import Logger from '../logging/Logger'
+import { Logger } from '../../src/background'
 
 const app = require('../../package.json')
 
@@ -27,12 +27,10 @@ const SensCritique = class SensCritique implements Client {
   private baseUrl: string = 'https://www.senscritique.com'
   private searchUrl: string;
   private errorSearchUrl: string;
-  // private logger: Logger
 
   constructor () {
     this.searchUrl = 'https://apollo.senscritique.com/'
     this.errorSearchUrl = this.baseUrl + '/search?query=%search%'
-    // this.logger = new Logger() // Todo : Dependency injection
   }
 
   buildErrorUrl (videoName: string): string {
@@ -65,9 +63,9 @@ const SensCritique = class SensCritique implements Client {
       return response?.json()
     }
 
-    // this.logger.error('An error occured when trying to fetch product on SensCritique', {
-    //   title
-    // })
+    Logger.error('An error occured when trying to fetch product on SensCritique', {
+      name: title
+    })
 
     return null
   }
@@ -89,27 +87,45 @@ const SensCritique = class SensCritique implements Client {
 
     if (typeMatched) {
       if (titleMatchedLevenshtein && yearMatched) {
+        Logger.info('The title and the year match between the platform and SensCritique', {
+          name: platformProduct?.title
+        })
         return videoInfos
       }
 
       if (isMovie && yearMatched) {
+        Logger.info('The year of this movie match between the platform and SensCritique', {
+          name: platformProduct?.title
+        })
         return videoInfos
       }
 
-      if (isTvShow && titleMatchedLevenshtein && seasonMatched) {
-        return videoInfos
-      }
+      if (isTvShow) {
+        if (titleMatchedLevenshtein && seasonMatched) {
+          Logger.info('The title and the number of seasons match between the platform and SensCritique', {
+            name: platformProduct?.title
+          })
+          return videoInfos
+        }
 
-      if (isTvShow && yearMatched && seasonMatched) {
-        return videoInfos
-      }
+        if (yearMatched && seasonMatched) {
+          Logger.info('The year and the number of seasons match between the platform and SensCritique', {
+            name: platformProduct?.title
+          })
+          return videoInfos
+        }
 
-      if (isTvShow && titleMatchedLevenshtein) {
-        return videoInfos
+        if (titleMatchedLevenshtein) {
+          Logger.info('The title match between the platform and SensCritique', {
+            name: platformProduct?.title
+          })
+          return videoInfos
+        }
       }
 
       return null
     }
+
     return null
   }
 
@@ -138,9 +154,19 @@ const SensCritique = class SensCritique implements Client {
               return videoInfos
             }
           }
+
+          Logger.debug('Unable to find the corresponding product between the plaform and SensCritique', {
+            name: title
+          })
           return defaultVideoInfos
         }
+
+        Logger.error('Unable to find products in the response', {
+          name: title
+        })
+        return defaultVideoInfos
       }
+
       return defaultVideoInfos
     }
   }

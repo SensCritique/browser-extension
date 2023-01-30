@@ -5,12 +5,13 @@ module.exports = {
     jest: true
   },
   globals: {
-    chrome: true
+    chrome: true,
+    browser: true
   },
   extends: [
     'standard'
   ],
-  parser: "@typescript-eslint/parser",
+  parser: '@typescript-eslint/parser',
   plugins: [
     '@typescript-eslint'
   ],
@@ -19,6 +20,6 @@ module.exports = {
     sourceType: 'module'
   },
   rules: {
-    "no-unused-vars": "off"
+    'no-unused-vars': 'off'
   }
 }

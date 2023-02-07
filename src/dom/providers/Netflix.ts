@@ -2,18 +2,10 @@ import Ratings from '../Ratings'
 import md5 from 'blueimp-md5'
 import { Service } from '../../enum/Service'
 import { Provider } from '../../enum/Provider'
-import { LogSeverityId } from '../../enum/LogSeverity'
 import Manager from '../Manager'
 import { VideoType } from '../../enum/VideoType'
 import { VideoInfo } from '../../http/Client'
 import RatingFactory from '../RatingFactory'
-import {
-  ABTestModal,
-  AbTestModalId,
-  NotSupportedModal,
-  NotSupportedModalId
-} from '../Modals'
-
 export default class Netflix extends Manager {
   refreshRatings () {
     const videoName = this.getVideoName()
@@ -78,7 +70,6 @@ export default class Netflix extends Manager {
           this.renderRating(service, jawbone, videoInfo, hash)
         }
       )
-      this.getBackgroundLog(service)
     }
     if (videoInfoFound) {
       this.renderRating(service, jawbone, videoInfoFound, hash)
@@ -131,79 +122,5 @@ export default class Netflix extends Manager {
     )
 
     return secondJawboneId || firstJawboneId
-  }
-
-  /*
-   * Todo: On garde ou pas ?
-   */
-  showAbTestModal (): void {
-    const cacheKey = 'senscritique_extension_help'
-    const helpModalAlreadyDisplayed = sessionStorage.getItem(cacheKey)
-
-    if (
-      document.getElementById(AbTestModalId) == null &&
-      !helpModalAlreadyDisplayed
-    ) {
-      this.logger.error(
-        'Netflix GUI seems to be differents, user is part of an AB Test'
-      )
-      document.body.appendChild(ABTestModal())
-      sessionStorage.setItem(cacheKey, '1')
-
-      document.getElementById(AbTestModalId).addEventListener('click', () => {
-        document.getElementById(AbTestModalId).remove()
-      })
-    }
-  }
-
-  showNotSupportedModal (): void {
-    const cacheKey = 'senscritique_extension_not_supported'
-    const NotSupportedModalIdDisplayed = sessionStorage.getItem(cacheKey)
-
-    if (
-      document.getElementById(NotSupportedModalId) == null &&
-      !NotSupportedModalIdDisplayed
-    ) {
-      this.logger.error('A newer GUI version seems available')
-      document.body.appendChild(NotSupportedModal())
-      sessionStorage.setItem(cacheKey, '1')
-
-      document
-        .getElementById(NotSupportedModalId)
-        .addEventListener('click', () => {
-          document.getElementById(NotSupportedModalId).remove()
-        })
-    }
-  }
-
-  getBackgroundLog (service: Service): void {
-    chrome.runtime.onMessage.addListener((event: { context: { name: string }, message: string, severity: number}) => {
-      const { context, message, severity } = event
-      switch (severity) {
-        case LogSeverityId.ERROR:
-          this.logger.error(message, {
-            name: context.name,
-            serviceWebsite: service,
-            netflix_id: this.currentVideoId(),
-            provider: Provider.NETFLIX
-          })
-          break
-        case LogSeverityId.WARNING:
-          this.logger.warning(message, {
-            name: context.name,
-            serviceWebsite: service,
-            netflix_id: this.currentVideoId(),
-            provider: Provider.NETFLIX
-          })
-          break
-        default:
-          this.logger.info(message, {
-            name: context.name,
-            serviceWebsite: service,
-            netflix_id: this.currentVideoId(),
-            provider: Provider.NETFLIX
-          })
-      }
-    })
   }
 }

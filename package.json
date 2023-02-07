@@ -12,7 +12,7 @@
   "license": "MIT",
   "keywords": [
     "netflix",
-    "disney", 
+    "disney",
     "senscritique",
     "score",
     "avis",
@@ -52,6 +52,7 @@
   },
   "dependencies": {
     "@datadog/browser-logs": "^1.25.4",
+    "@types/firefox-webext-browser": "^109.0.0",
     "blueimp-md5": "^2.18.0",
     "fast-levenshtein": "^2.0.6"
   }

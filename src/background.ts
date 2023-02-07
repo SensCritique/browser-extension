@@ -50,9 +50,7 @@ export class Logger {
         active: true
       })
         .then((tabs: any) => {
-          tabs.map((tab: any) =>
-            chrome.tabs.sendMessage(tab.id, { type: MessageEvent.LOG, severity, message, context }
-            ))
+          chrome.tabs.sendMessage(tabs[0].id, { type: MessageEvent.LOG, severity, message, context })
         })
         .catch((error: Error) => {
           console.error(`Error: ${error}`)
@@ -63,9 +61,7 @@ export class Logger {
         active: true
       })
         .then((tabs: any) => {
-          tabs.map((tab: any) =>
-            chrome.tabs.sendMessage(tab.id, { type: MessageEvent.LOG, severity, message, context }
-            ))
+          browser.tabs.sendMessage(tabs[0].id, { type: MessageEvent.LOG, severity, message, context })
         })
         .catch((error: Error) => {
           console.error(`Error: ${error}`)

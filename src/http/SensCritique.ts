@@ -86,45 +86,28 @@ const SensCritique = class SensCritique implements Client {
     const videoInfos = this.mapVideoInfos(senscritiqueProduct, senscritiqueProduct.title, senscritiqueProduct.type)
 
     if (typeMatched) {
-      if (titleMatchedLevenshtein && yearMatched) {
-        Logger.info('The title and the year match between the platform and SensCritique', {
-          name: platformProduct?.title
+      if ((titleMatchedLevenshtein && yearMatched) || (isMovie && yearMatched)) {
+        Logger.debug('Match succeeded', {
+          senscritiqueProduct,
+          platformProduct
         })
         return videoInfos
       }
 
-      if (isMovie && yearMatched) {
-        Logger.info('The year of this movie match between the platform and SensCritique', {
-          name: platformProduct?.title
-        })
+      if (isTvShow &&
+        ((yearMatched && seasonMatched) ||
+        (titleMatchedLevenshtein && seasonMatched) ||
+        titleMatchedLevenshtein)
+      ) {
         return videoInfos
       }
-
-      if (isTvShow) {
-        if (titleMatchedLevenshtein && seasonMatched) {
-          Logger.info('The title and the number of seasons match between the platform and SensCritique', {
-            name: platformProduct?.title
-          })
-          return videoInfos
-        }
-
-        if (yearMatched && seasonMatched) {
-          Logger.info('The year and the number of seasons match between the platform and SensCritique', {
-            name: platformProduct?.title
-          })
-          return videoInfos
-        }
-
-        if (titleMatchedLevenshtein) {
-          Logger.info('The title match between the platform and SensCritique', {
-            name: platformProduct?.title
-          })
-          return videoInfos
-        }
-      }
-
-      return null
     }
+
+    Logger.error('Products does not match', {
+      error: 'matching-error',
+      senscritiqueProduct,
+      platformProduct
+    })
 
     return null
   }

@@ -4,14 +4,16 @@ import { NetflixConfig } from './config/Netflix'
 import { Provider } from './enum/Provider'
 import { ProviderUrlDomain } from './enum/ProviderUrlDomain'
 import md5 from 'blueimp-md5'
+import { LogSeverityId } from './enum/LogSeverity'
+import Logger from './logging/Logger'
 
 const netflix = new Netflix()
 const disney = new Disney()
-const domainOrigin = (new URL(window.location.href))?.origin
-let timer = 0
+const domain = window.location.hostname
+
 setInterval(() => {
-  if (domainOrigin) {
-    switch (domainOrigin) {
+  if (domain) {
+    switch (domain) {
       case ProviderUrlDomain.DISNEY:
         disney.refreshRatings()
         break
@@ -22,27 +24,26 @@ setInterval(() => {
   }
 }, 1000)
 
-// Check if user has accepted AB Tests
-setInterval(async () => {
-  /*
-   * Temporary disable modals
-  switch (domainOrigin) {
-    case ProviderUrlDomain.DISNEY:
-      disney.refreshRatings()
+chrome.runtime.onMessage.addListener((event) => {
+  const logger = new Logger()
+  const { context, message, severity } = event
+  switch (severity) {
+    case LogSeverityId.ERROR:
+      logger.error(message, {
+        domain,
+        ...context
+      })
+      break
+    case LogSeverityId.DEBUG:
+      logger.debug(message, {
+        domain,
+        ...context
+      })
       break
     default:
-      netflix.refreshRatings()
-      break
+      logger.info(message, {
+        domain,
+        ...context
+      })
   }
-  const ratingsHash = md5(videoName)
-  const ratingsElements = document.getElementsByClassName(ratingsHash)
-
-  if (ratingsElements.length === 0 && timer > 3 && manager.currentVideoId() !== null && await Netflix.canABTest()) {
-    manager.showAbTestModal()
-  }
-  if (ratingsElements.length === 0 && timer > 3 && manager.currentVideoId() !== null && !await Netflix.canABTest()) {
-    manager.showNotSupportedModal()
-  }
-   */
-  timer = timer + 1
-}, 5000)
+})

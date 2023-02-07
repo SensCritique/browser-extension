@@ -27,19 +27,19 @@ chrome.runtime.onMessage.addListener((message: Message, sender: void, callback: 
 
 export class Logger {
   static info (message: string, context : object = {}) {
-    return Logger.log(LogSeverity.INFO, message, context)
+    Logger.log(LogSeverity.INFO, message, context)
   }
 
   static error (message: string, context : object = {}) {
-    return Logger.log(LogSeverity.ERROR, message, context)
+    Logger.log(LogSeverity.ERROR, message, context)
   }
 
   static warning (message: string, context : object = {}) {
-    return Logger.log(LogSeverity.WARNING, message, context)
+    Logger.log(LogSeverity.WARNING, message, context)
   }
 
   static debug (message: string, context : object = {}) {
-    return Logger.log(LogSeverity.DEBUG, message, context)
+    Logger.log(LogSeverity.DEBUG, message, context)
   }
 
   static log (severity: LogSeverity, message: string, context: object = {}) {

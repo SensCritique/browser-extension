@@ -43,7 +43,7 @@
     "jest": "^26.6.3",
     "mock-local-storage": "^1.1.15",
     "source-map-loader": "^1.1.2",
-    "ts-jest": "^26.4.4",
+    "ts-jest": "^26.5.6",
     "ts-loader": "^8.0.11",
     "typescript": "^4.0.5",
     "web-ext": "^4.3.0",

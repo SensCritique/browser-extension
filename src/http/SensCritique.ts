@@ -4,6 +4,7 @@ import { mapPlatformProduct } from '../mapper/PlatformProductMapper'
 import { mapSensCritiqueProduct } from '../mapper/SensCritiqueProductMapper'
 import { Product } from '../type/Product'
 import { matchedWithLevenshtein } from '../helper/LevenshteinHelper'
+import { compare } from '../helper/ComparatorHelper'
 import { Logger } from '../../src/background'
 
 const app = require('../../package.json')
@@ -37,17 +38,6 @@ const SensCritique = class SensCritique implements Client {
     return this.errorSearchUrl.replace('%search%', videoName)
   }
 
-  mapVideoInfos (result: Product, title: string, type: VideoType): VideoInfo {
-    return {
-      name: title,
-      redirect: `${this.baseUrl}${result.url}`,
-      url: `${this.baseUrl}${result.url}`,
-      id: result.type,
-      type: type,
-      rating: result.rating?.toString()
-    }
-  }
-
   async search (title: string) {
     const headers = new Headers()
     headers.append('User-Agent', `senscritique-extension v${app.version}`)
@@ -65,48 +55,6 @@ const SensCritique = class SensCritique implements Client {
 
     Logger.error('An error occured when trying to fetch product on SensCritique', {
       name: title
-    })
-
-    return null
-  }
-
-  async compare (senscritiqueProduct: Product, platformProduct: Product): Promise<VideoInfo | null> {
-    const isMovie = (platformProduct?.type && senscritiqueProduct?.type) === VideoType.MOVIE
-    const isTvShow = (platformProduct?.type && senscritiqueProduct?.type) === VideoType.TVSHOW
-    const yearMatched = senscritiqueProduct?.year === platformProduct?.year
-    const typeMatched = senscritiqueProduct?.type === platformProduct?.type
-    const seasonMatched = senscritiqueProduct?.nbrSeasons === platformProduct?.nbrSeasons
-    const titleMatched = matchedWithLevenshtein(senscritiqueProduct.title, platformProduct.title)
-    const flattenTitleMatched = matchedWithLevenshtein(senscritiqueProduct.flattenedTitle, platformProduct.flattenedTitle)
-    const originalTitleMatched = matchedWithLevenshtein(senscritiqueProduct.originalTitle, platformProduct.title)
-    const flattenOriginalTitleMatched = matchedWithLevenshtein(senscritiqueProduct.flattenedOriginalTitle, platformProduct.flattenedTitle)
-
-    const titleMatchedLevenshtein = titleMatched || flattenTitleMatched || originalTitleMatched || flattenOriginalTitleMatched
-
-    const videoInfos = this.mapVideoInfos(senscritiqueProduct, senscritiqueProduct.title, senscritiqueProduct.type)
-
-    if (typeMatched) {
-      if ((titleMatchedLevenshtein && yearMatched) || (isMovie && yearMatched)) {
-        Logger.debug('Match succeeded', {
-          senscritiqueProduct,
-          platformProduct
-        })
-        return videoInfos
-      }
-
-      if (isTvShow &&
-        ((yearMatched && seasonMatched) ||
-        (titleMatchedLevenshtein && seasonMatched) ||
-        titleMatchedLevenshtein)
-      ) {
-        return videoInfos
-      }
-    }
-
-    Logger.error('Products does not match', {
-      error: 'matching-error',
-      senscritiqueProduct,
-      platformProduct
     })
 
     return null
@@ -131,21 +79,22 @@ const SensCritique = class SensCritique implements Client {
           for (const product of results) {
             const senscritiqueProduct = mapSensCritiqueProduct(product)
 
-            videoInfos = await this.compare(senscritiqueProduct, platformProduct)
+            videoInfos = await compare(senscritiqueProduct, platformProduct)
 
             if (videoInfos) {
               return videoInfos
             }
           }
-
-          Logger.debug('Unable to find the corresponding product between the plaform and SensCritique', {
-            name: title
+          Logger.error('Cannot match product', {
+            error: 'matching-error',
+            platformProduct
           })
+
           return defaultVideoInfos
         }
 
-        Logger.error('Unable to find products in the response', {
-          name: title
+        Logger.error('Product not found on SensCritique', {
+          platformProduct
         })
         return defaultVideoInfos
       }

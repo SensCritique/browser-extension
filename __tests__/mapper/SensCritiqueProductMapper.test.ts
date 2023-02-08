@@ -1,4 +1,3 @@
-import { VideoType } from './../../src/enum/VideoType'
 import { test, expect } from '@jest/globals'
 import { findVideoTypeFromUniverse, mapSensCritiqueProduct } from '../../src/mapper/SensCritiqueProductMapper'
 
@@ -11,7 +10,8 @@ const sensCritiqueProduct = {
     universe: 1,
     seasons: [{ seasonNumber: 1 }],
     year_of_production: 2013,
-    url: '/serie/brooklyn_nine_nine/8855898'
+    url: '/serie/brooklyn_nine_nine/8855898',
+    providers: [{ name: 'netflix' }]
   }
 }
 
@@ -30,7 +30,7 @@ describe('findVideoTypeFromUniverse tests', () => {
 })
 
 describe('mapSensCritiqueProduct tests', () => {
-  test('It should return product transform after mapping', () => {
+  test('It should return SensCritique mapped product', () => {
     const result = mapSensCritiqueProduct(sensCritiqueProduct)
     expect(result.flattenedTitle).toEqual('brooklyn ninenine')
     expect(result.title).toEqual('Brooklyn Nine-Nine')

@@ -8,7 +8,7 @@ type Season = {
 }
 
 type Provider = {
-  name?: string,
+  name: string,
 }
 
 type SensCritiqueProduct = {

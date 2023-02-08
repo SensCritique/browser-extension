@@ -86,6 +86,11 @@ const SensCritique = class SensCritique implements Client {
             videoInfos = await compare(senscritiqueProduct, platformProduct)
 
             if (videoInfos) {
+              Logger.debug('Match succeeded', {
+                senscritiqueProduct,
+                platformProduct
+              })
+
               return videoInfos
             }
           }

@@ -4,6 +4,7 @@ import { VideoInfo } from '../http/Client'
 import { mapVideoInfos } from '../mapper/VideoInfoMapper'
 import { Product } from '../type/Product'
 import { matchedWithLevenshtein } from './LevenshteinHelper'
+import { matchedProviders } from './ProviderHelper'
 
 export const compare = async (senscritiqueProduct: Product, platformProduct: Product): Promise<VideoInfo | null> => {
   const isMovie = (platformProduct?.type && senscritiqueProduct?.type) === VideoType.MOVIE
@@ -15,12 +16,13 @@ export const compare = async (senscritiqueProduct: Product, platformProduct: Pro
   const flattenTitleMatched = matchedWithLevenshtein(senscritiqueProduct.flattenedTitle, platformProduct.flattenedTitle)
   const originalTitleMatched = matchedWithLevenshtein(senscritiqueProduct.originalTitle, platformProduct.title)
   const flattenOriginalTitleMatched = matchedWithLevenshtein(senscritiqueProduct.flattenedOriginalTitle, platformProduct.flattenedTitle)
+  const providerMatched = senscritiqueProduct.providers?.length ? matchedProviders(senscritiqueProduct.providers, platformProduct.providers) : null
 
   const titleMatchedLevenshtein = titleMatched || flattenTitleMatched || originalTitleMatched || flattenOriginalTitleMatched
 
   const videoInfos = mapVideoInfos(senscritiqueProduct, senscritiqueProduct.title, senscritiqueProduct.type)
 
-  if (typeMatched) {
+  if (typeMatched && providerMatched) {
     if ((titleMatchedLevenshtein && yearMatched) || (isMovie && yearMatched)) {
       Logger.debug('Match succeeded', {
         senscritiqueProduct,
@@ -32,9 +34,13 @@ export const compare = async (senscritiqueProduct: Product, platformProduct: Pro
 
     if (isTvShow &&
         ((yearMatched && seasonMatched) ||
-        (titleMatchedLevenshtein && seasonMatched) ||
-        titleMatchedLevenshtein)
+        (titleMatchedLevenshtein && seasonMatched))
     ) {
+      Logger.debug('Match succeeded', {
+        senscritiqueProduct,
+        platformProduct
+      })
+
       return videoInfos
     }
   }

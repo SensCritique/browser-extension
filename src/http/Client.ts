@@ -11,5 +11,5 @@ export interface VideoInfo {
 }
 
 export interface Client {
-  getVideoInfo(search: string, type: VideoType, year?: string, seasons?: string): Promise<VideoInfo>
+  getVideoInfo(search: string, type: VideoType, year?: string, seasons?: string, provider?: string): Promise<VideoInfo>
 }

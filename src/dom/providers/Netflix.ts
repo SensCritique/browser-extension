@@ -66,6 +66,7 @@ export default class Netflix extends Manager {
         this.getVideoYear(),
         this.getVideoType(),
         this.getSeasons(),
+        Provider.NETFLIX,
         (videoInfo: VideoInfo) => {
           this.renderRating(service, jawbone, videoInfo, hash)
         }

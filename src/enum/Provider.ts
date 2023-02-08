@@ -1,4 +1,4 @@
 export enum Provider {
-    NETFLIX = 'netfix',
+    NETFLIX = 'netflix',
     DISNEY = 'disney'
 }

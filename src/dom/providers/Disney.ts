@@ -52,8 +52,7 @@ export default class Disney extends Manager {
   }
 
   getRating (videoName: string, jawbone: Element, service: Service, hash: string): void {
-    // const videoInfoFound = this.cache.get(videoName, service)
-    const videoInfoFound = null
+    const videoInfoFound = this.cache.get(videoName, service)
 
     if (!videoInfoFound) {
       this.getVideoInfo(
@@ -62,6 +61,7 @@ export default class Disney extends Manager {
         this.getVideoYear(),
         this.getVideoType(),
         this.getSeasons(),
+        Provider.DISNEY,
         (videoInfo: VideoInfo) => {
           this.renderRating(service, jawbone, videoInfo, hash)
         }

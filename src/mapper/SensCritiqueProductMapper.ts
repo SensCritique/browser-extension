@@ -3,8 +3,12 @@ import { UniverseTypeId } from '../enum/UniverseTypeId'
 import { VideoType } from '../enum/VideoType'
 import { Product } from '../type/Product'
 
-type Seasons = {
-  seasonNumber: number,
+type Season = {
+  seasonNumber?: number,
+}
+
+type Provider = {
+  name?: string,
 }
 
 type SensCritiqueProduct = {
@@ -13,9 +17,10 @@ type SensCritiqueProduct = {
     universe: number
     url: string,
     rating: number,
-    seasons: Seasons[],
+    seasons: Season[],
     // eslint-disable-next-line camelcase
     year_of_production: number
+    providers: Provider[]
 }
 
 type SensCritiqueResult = {
@@ -34,6 +39,8 @@ export const findVideoTypeFromUniverse = (universe: number): VideoType => {
 }
 
 export const mapSensCritiqueProduct = (senscritiqueProduct: SensCritiqueResult): Product => {
+  const providersList = []
+  senscritiqueProduct?.product.providers?.map((provider) => providersList.push(provider.name))
   return {
     title: senscritiqueProduct.product?.title,
     flattenedTitle: flatten(senscritiqueProduct.product?.title),
@@ -43,6 +50,7 @@ export const mapSensCritiqueProduct = (senscritiqueProduct: SensCritiqueResult):
     nbrSeasons: senscritiqueProduct.product?.seasons?.length,
     type: findVideoTypeFromUniverse(senscritiqueProduct.product?.universe),
     url: senscritiqueProduct.product?.url,
-    rating: senscritiqueProduct.product?.rating
+    rating: senscritiqueProduct.product?.rating,
+    providers: providersList
   }
 }

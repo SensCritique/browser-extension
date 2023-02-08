@@ -20,7 +20,7 @@ const searchQuery = [
         from: 0
       }
     },
-    query: 'query Results($query: String, $filters: [SKFiltersSet], $page: SKPageInput, $sortBy: String) {  results(query: $query, filters: $filters) {    hits(page: $page, sortBy: $sortBy) {      items {        ... on ResultHit {          id          product {            id            title        originalTitle           url            rating            universe     dateRelease   year_of_production   seasons { seasonNumber }  }        }      }    }  }}'
+    query: 'query Results($query: String, $filters: [SKFiltersSet], $page: SKPageInput, $sortBy: String) {  results(query: $query, filters: $filters) {    hits(page: $page, sortBy: $sortBy) {      items {        ... on ResultHit {          id          product {            id            title        originalTitle           url            rating            universe     dateRelease   year_of_production   seasons { seasonNumber } providers { name }  }        }      }    }  }}'
   }
 ]
 
@@ -60,20 +60,24 @@ const SensCritique = class SensCritique implements Client {
     return null
   }
 
-  async getVideoInfo (title: string, type: VideoType, year: string = null, seasons: string): Promise<VideoInfo | null> {
+  async getVideoInfo (title: string, type: VideoType, year: string = null, seasons: string, provider: string): Promise<VideoInfo | null> {
     const defaultVideoInfos = {
       name: title,
       redirect: this.buildErrorUrl(title),
       id: null,
       type: null
     }
-    const platformProduct = mapPlatformProduct(title, type, parseInt(year), parseInt(seasons))
+
+    console.log('provider', provider)
+    const platformProduct = mapPlatformProduct(title, type, parseInt(year), parseInt(seasons), provider)
 
     if (title) {
       const response = await this.search(title)
       if (response) {
         let videoInfos = null
         const results = response[0]?.data?.results?.hits?.items
+
+        console.log(results)
 
         if (results.length > 0) {
           for (const product of results) {

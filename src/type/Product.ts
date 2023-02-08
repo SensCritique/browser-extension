@@ -11,4 +11,5 @@ export type Product = {
     url?: string,
     rating?: number,
     distance?: number,
+    providers?: string[]
 }

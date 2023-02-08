@@ -17,6 +17,9 @@ export const compare = async (senscritiqueProduct: Product, platformProduct: Pro
   const originalTitleMatched = matchedWithLevenshtein(senscritiqueProduct.originalTitle, platformProduct.title)
   const flattenOriginalTitleMatched = matchedWithLevenshtein(senscritiqueProduct.flattenedOriginalTitle, platformProduct.flattenedTitle)
   const providerMatched = senscritiqueProduct.providers?.length ? matchedProviders(senscritiqueProduct.providers, platformProduct.providers) : null
+  console.log('providerMatched', providerMatched)
+  console.log('senscritiqueProduct', senscritiqueProduct)
+  console.log('platformProduct', platformProduct)
 
   const titleMatchedLevenshtein = titleMatched || flattenTitleMatched || originalTitleMatched || flattenOriginalTitleMatched
 

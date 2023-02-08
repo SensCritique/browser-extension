@@ -5,7 +5,7 @@ import { Logger } from '../../src/background'
 
 jest.mock('../../src/background', () => {
   return {
-    Logger: jest.fn().mockImplementation(() => {
+    default: jest.fn().mockImplementation(() => {
       return {
         info: null,
         error: null,
@@ -27,13 +27,15 @@ const matchByTitleDataset = [
     title: 'Brooklyn Nine-Nine',
     type: VideoType.TVSHOW,
     url: '/serie/brooklyn_nine_nine/8855898',
-    year: 2021
+    year: 2021,
+    providers: ['Disney+']
   }, {
     flattenedTitle: 'brooklyn ninenine',
     nbrSeasons: 8,
     title: 'Brooklyn Nine-Nine',
     type: VideoType.TVSHOW,
-    year: 2021
+    year: 2021,
+    providers: ['disney']
   }, {
     name: 'Brooklyn Nine-Nine',
     redirect: 'https://www.senscritique.com/serie/brooklyn_nine_nine/8855898',

@@ -9,7 +9,7 @@ import {
   notMatchByTypeOrProviderDataset,
   notMatchByTitleAndYearIfMovieDataset,
   notMatchByTitleYearAndSeasonsIfTvShowDataset
-} from '../../datasets/CamparatorHelper'
+} from '../../src/dataset/CamparatorHelper'
 
 jest.mock('../../src/background', () => {
   return {

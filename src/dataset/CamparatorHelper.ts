@@ -1,4 +1,4 @@
-import { VideoType } from '../src/enum/VideoType'
+import { VideoType } from '../enum/VideoType'
 
 const sensCritiqueProduct = {
   flattenedOriginalTitle: null,

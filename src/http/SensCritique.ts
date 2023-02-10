@@ -68,7 +68,6 @@ const SensCritique = class SensCritique implements Client {
       type: null
     }
 
-    console.log('provider', provider)
     const platformProduct = mapPlatformProduct(title, type, parseInt(year), parseInt(seasons), provider)
 
     if (title) {
@@ -77,8 +76,6 @@ const SensCritique = class SensCritique implements Client {
         let videoInfos = null
         const results = response[0]?.data?.results?.hits?.items
 
-        console.log(results)
-
         if (results.length > 0) {
           for (const product of results) {
             const senscritiqueProduct = mapSensCritiqueProduct(product)
@@ -86,7 +83,7 @@ const SensCritique = class SensCritique implements Client {
             videoInfos = await compare(senscritiqueProduct, platformProduct)
 
             if (videoInfos) {
-              Logger.debug('Match succeeded', {
+              Logger.info('Match succeeded', {
                 senscritiqueProduct,
                 platformProduct
               })

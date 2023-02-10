@@ -1,9 +1,6 @@
 import Netflix from './dom/providers/Netflix'
 import Disney from './dom/providers/Disney'
-import { NetflixConfig } from './config/Netflix'
-import { Provider } from './enum/Provider'
 import { ProviderUrlDomain } from './enum/ProviderUrlDomain'
-import md5 from 'blueimp-md5'
 import { LogSeverityId } from './enum/LogSeverity'
 import Logger from './logging/Logger'
 
@@ -30,20 +27,23 @@ chrome.runtime.onMessage.addListener((event) => {
   switch (severity) {
     case LogSeverityId.ERROR:
       logger.error(message, {
-        domain,
-        ...context
+        ...context,
+        name: context.platformProduct.title,
+        provider: context.platformProduct.providers[0]
       })
       break
     case LogSeverityId.DEBUG:
       logger.debug(message, {
-        domain,
-        ...context
+        ...context,
+        name: context.platformProduct.title,
+        provider: context.platformProduct.providers[0]
       })
       break
     default:
       logger.info(message, {
-        domain,
-        ...context
+        ...context,
+        name: context.platformProduct.title,
+        provider: context.platformProduct.providers[0]
       })
   }
 })

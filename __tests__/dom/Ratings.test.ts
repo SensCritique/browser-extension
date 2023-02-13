@@ -6,5 +6,7 @@ test('It should render one div for SensCritique', () => {
 
   expect(ratingsDiv).not.toBeNull()
   expect(ratingsDiv.childNodes.length).toBe(1)
-  expect((ratingsDiv.childNodes[0] as Element).classList).toContain('senscritique_extension_XXX')
+  expect((ratingsDiv.childNodes[0] as Element).classList).toContain(
+    'senscritique_extension_XXX'
+  )
 })

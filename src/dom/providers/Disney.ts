@@ -8,7 +8,7 @@ import { VideoInfo } from '../../http/Client'
 import RatingFactory from '../RatingFactory'
 
 export default class Disney extends Manager {
-  refreshRatings () {
+  refreshRatings(): void {
     const videoName = this.getVideoName()
     const modal = document.querySelector("[data-gv2containerkey='contentMeta']")
     const hash = md5(videoName)
@@ -22,36 +22,44 @@ export default class Disney extends Manager {
     }
   }
 
-  getVideoName (): string | null {
+  getVideoName(): string | null {
     const detailModalVideoName = document
       .querySelector('#unauth-navbar-target')
-      ?.firstElementChild
-      ?.getAttribute('alt')
+      ?.firstElementChild?.getAttribute('alt')
 
     return detailModalVideoName || null
   }
 
-  getVideoYear (): string {
-    const element = document.querySelector('.metadata.text-color--primary').querySelector('span')
+  getVideoYear(): string {
+    const element = document
+      .querySelector('.metadata.text-color--primary')
+      .querySelector('span')
     const innerText = element?.innerText
     const year = innerText.split('•')[0]
     return year
   }
 
-  getVideoType (): VideoType {
+  getVideoType(): VideoType {
     const element = document.querySelectorAll('nav')[1]?.firstElementChild
     const innerHtml = element?.innerHTML
     return innerHtml !== 'ÉPISODES' ? VideoType.MOVIE : VideoType.TVSHOW
   }
 
-  getSeasons (): string | null {
-    const element = document.querySelector('.metadata.text-color--primary').querySelector('span')
+  getSeasons(): string | null {
+    const element = document
+      .querySelector('.metadata.text-color--primary')
+      .querySelector('span')
     const innerText = element?.innerText
     const seasons = innerText.split('•')?.[1].match(/\d+/)?.[0]
     return seasons
   }
 
-  getRating (videoName: string, jawbone: Element, service: Service, hash: string): void {
+  getRating(
+    videoName: string,
+    jawbone: Element,
+    service: Service,
+    hash: string
+  ): void {
     const videoInfoFound = this.cache.get(videoName, service)
 
     if (!videoInfoFound) {
@@ -72,7 +80,12 @@ export default class Disney extends Manager {
     }
   }
 
-  renderRating (service: Service, element: Element, videoInfo: VideoInfo, hash: string): void {
+  renderRating(
+    service: Service,
+    element: Element,
+    videoInfo: VideoInfo,
+    hash: string
+  ): void {
     this.cache.save(videoInfo, service)
 
     const serviceRating = new RatingFactory().create(service, videoInfo)
@@ -88,29 +101,27 @@ export default class Disney extends Manager {
       })
   }
 
-  logVideoInfo (videoName: string, rating: string, service: Service): void {
+  logVideoInfo(videoName: string, rating: string, service: Service): void {
     if (rating) {
       this.logger.info(`Rating fetched for video ${videoName}`, {
         name: videoName,
         rating: rating,
         serviceWebsite: service,
         disney_id: this.currentVideoId(),
-        provider: Provider.DISNEY
+        provider: Provider.DISNEY,
       })
     } else {
       this.logger.error(`Cannot fetch rating for video ${videoName}`, {
         name: videoName,
         serviceWebsite: service,
         disney_id: this.currentVideoId(),
-        provider: Provider.DISNEY
+        provider: Provider.DISNEY,
       })
     }
   }
 
-  currentVideoId (): string {
-    const urlQuery = new URL(window.location.toString()).pathname.split(
-      '/'
-    )
+  currentVideoId(): string {
+    const urlQuery = new URL(window.location.toString()).pathname.split('/')
     return urlQuery.length > 0 && urlQuery[4] ? urlQuery[4] : null
   }
 }

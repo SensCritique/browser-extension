@@ -3,7 +3,13 @@ import { mapPlatformProduct } from '../../src/mapper/PlatformProductMapper'
 import { Provider } from '../../src/enum/Provider'
 
 test('It should return mapped product', () => {
-  const result = mapPlatformProduct('Test 34()!!!', VideoType.MOVIE, 2000, 2, Provider.NETFLIX)
+  const result = mapPlatformProduct(
+    'Test 34()!!!',
+    VideoType.MOVIE,
+    2000,
+    2,
+    Provider.NETFLIX
+  )
   expect(result.flattenedTitle).toEqual('test 34')
   expect(result.title).toEqual('Test 34()!!!')
   expect(result.type).toEqual('movie')

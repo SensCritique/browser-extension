@@ -2,24 +2,25 @@ import Cache from '../storage/Cache'
 import { MessageEvent } from './MessageEvent'
 import Logger from '../logging/Logger'
 import { Message } from '../background'
+import { VideoInfo } from '../http/Client'
 
 export default class Manager {
   protected cache: Cache
   protected logger: Logger
 
-  constructor () {
+  constructor() {
     this.cache = new Cache()
     this.logger = new Logger()
   }
 
-  getVideoInfo (
+  getVideoInfo(
     service: string,
     videoName: string,
     videoYear: string,
     videoType: string,
     seasons: string,
     provider: string,
-    callback: Function
+    callback: (response: VideoInfo) => void
   ): void {
     chrome.runtime.sendMessage(
       {
@@ -29,7 +30,7 @@ export default class Manager {
         videoYear,
         videoType,
         seasons,
-        provider
+        provider,
       } as Message,
       callback
     )

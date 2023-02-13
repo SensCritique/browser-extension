@@ -4,27 +4,27 @@ import { VideoType } from '../enum/VideoType'
 import { Product } from '../type/Product'
 
 type Season = {
-  seasonNumber?: number,
+  seasonNumber?: number
 }
 
 type Provider = {
-  name: string,
+  name: string
 }
 
 type SensCritiqueProduct = {
-    title: string,
-    originalTitle: string,
-    universe: number
-    url: string,
-    rating: number,
-    seasons: Season[],
-    // eslint-disable-next-line camelcase
-    year_of_production: number
-    providers: Provider[]
+  title: string
+  originalTitle: string
+  universe: number
+  url: string
+  rating: number
+  seasons: Season[]
+  // eslint-disable-next-line camelcase
+  year_of_production: number
+  providers: Provider[]
 }
 
 type SensCritiqueResult = {
-    product: SensCritiqueProduct
+  product: SensCritiqueProduct
 }
 
 export const findVideoTypeFromUniverse = (universe: number): VideoType => {
@@ -38,9 +38,13 @@ export const findVideoTypeFromUniverse = (universe: number): VideoType => {
   }
 }
 
-export const mapSensCritiqueProduct = (senscritiqueProduct: SensCritiqueResult): Product => {
+export const mapSensCritiqueProduct = (
+  senscritiqueProduct: SensCritiqueResult
+): Product => {
   const providersList = []
-  senscritiqueProduct?.product.providers?.map((provider) => providersList.push(provider.name))
+  senscritiqueProduct?.product.providers?.map((provider) =>
+    providersList.push(provider.name)
+  )
   return {
     title: senscritiqueProduct.product?.title,
     flattenedTitle: flatten(senscritiqueProduct.product?.title),
@@ -51,6 +55,6 @@ export const mapSensCritiqueProduct = (senscritiqueProduct: SensCritiqueResult):
     type: findVideoTypeFromUniverse(senscritiqueProduct.product?.universe),
     url: senscritiqueProduct.product?.url,
     rating: senscritiqueProduct.product?.rating,
-    providers: providersList
+    providers: providersList,
   }
 }

@@ -2,7 +2,7 @@ import {
   levenshteinDistance,
   shortStringMatchedLevenshtein,
   longStringMatchedLevenshtein,
-  matchedWithLevenshtein
+  matchedWithLevenshtein,
 } from '../../src/helper/LevenshteinHelper'
 import { test, expect } from '@jest/globals'
 
@@ -54,7 +54,9 @@ describe('longStringMatchedLevenshtein tests', () => {
 
 describe('matchedWithLevenshtein tests', () => {
   test('It should render false', () => {
-    expect(matchedWithLevenshtein('Andor', 'Vader: A Star Wars Theory Fan Series')).toBeFalsy()
+    expect(
+      matchedWithLevenshtein('Andor', 'Vader: A Star Wars Theory Fan Series')
+    ).toBeFalsy()
   })
   test('It should render false', () => {
     expect(matchedWithLevenshtein('Andor', 'Andor')).toBeTruthy()

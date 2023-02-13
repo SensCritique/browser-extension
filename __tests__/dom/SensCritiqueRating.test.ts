@@ -6,14 +6,14 @@ const successDataset = [
   ['8.6', 86],
   ['10', 100],
   ['0,1', 1],
-  ['0', 0]
+  ['0', 0],
 ]
 test.each(successDataset)(
   'It should convert SensCritique note (%s) in percentage (%s)',
   (sensCritiqueNote, expected) => {
     const sensCritiqueRating = new SensCritiqueRating({
       name: 'test',
-      redirect: ''
+      redirect: '',
     })
     const sensCritiqueExtensionScore =
       sensCritiqueRating.ratingInPercent(sensCritiqueNote)
@@ -26,14 +26,14 @@ const errorDataset = [
   ['2,,5', null],
   [null, null],
   [undefined, null],
-  ['11', null]
+  ['11', null],
 ]
 test.each(errorDataset)(
   'It should convert wrong SensCritique note (%s) to null',
   (sensCritiqueNote, expected) => {
     const sensCritiqueRating = new SensCritiqueRating({
       name: 'test',
-      redirect: ''
+      redirect: '',
     })
     const sensCritiqueExtensionScore =
       sensCritiqueRating.ratingInPercent(sensCritiqueNote)
@@ -46,7 +46,7 @@ test('It should create instance with rights rating', () => {
   const sensCritiqueRating = new SensCritiqueRating({
     rating: '7',
     name: 'test',
-    redirect: ''
+    redirect: '',
   })
 
   expect(sensCritiqueRating.rating).toBe('7')
@@ -57,7 +57,7 @@ test('It should render node with rights info', () => {
     rating: '8,5',
     redirect: 'https://google.fr',
     hashId: 'XXX',
-    name: 'test'
+    name: 'test',
   })
   const sensCritiqueRatingRendered = sensCritiqueRating.render()
 

@@ -29,21 +29,21 @@ chrome.runtime.onMessage.addListener((event) => {
       logger.error(message, {
         ...context,
         name: context.platformProduct.title,
-        provider: context.platformProduct.providers[0]
+        provider: context.platformProduct.providers[0],
       })
       break
     case LogSeverityId.DEBUG:
       logger.debug(message, {
         ...context,
         name: context.platformProduct.title,
-        provider: context.platformProduct.providers[0]
+        provider: context.platformProduct.providers[0],
       })
       break
     default:
       logger.info(message, {
         ...context,
         name: context.platformProduct.title,
-        provider: context.platformProduct.providers[0]
+        provider: context.platformProduct.providers[0],
       })
   }
 })

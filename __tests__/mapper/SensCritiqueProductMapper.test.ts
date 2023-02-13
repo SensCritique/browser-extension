@@ -1,5 +1,8 @@
 import { test, expect } from '@jest/globals'
-import { findVideoTypeFromUniverse, mapSensCritiqueProduct } from '../../src/mapper/SensCritiqueProductMapper'
+import {
+  findVideoTypeFromUniverse,
+  mapSensCritiqueProduct,
+} from '../../src/mapper/SensCritiqueProductMapper'
 
 const sensCritiqueProduct = {
   id: 1,
@@ -11,8 +14,8 @@ const sensCritiqueProduct = {
     seasons: [{ seasonNumber: 1 }],
     year_of_production: 2013,
     url: '/serie/brooklyn_nine_nine/8855898',
-    providers: [{ name: 'netflix' }]
-  }
+    providers: [{ name: 'netflix' }],
+  },
 }
 
 describe('findVideoTypeFromUniverse tests', () => {

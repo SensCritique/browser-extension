@@ -2,7 +2,11 @@ import { VideoType } from '../enum/VideoType'
 import { VideoInfo } from '../http/Client'
 import { Product } from '../type/Product'
 
-export const mapVideoInfos = (result: Product, title: string, type: VideoType): VideoInfo => {
+export const mapVideoInfos = (
+  result: Product,
+  title: string,
+  type: VideoType
+): VideoInfo => {
   const baseUrl = 'https://www.senscritique.com'
 
   return {
@@ -11,6 +15,6 @@ export const mapVideoInfos = (result: Product, title: string, type: VideoType): 
     url: `${baseUrl}${result.url}`,
     id: result.type,
     type: type,
-    rating: result.rating?.toString()
+    rating: result.rating?.toString(),
   }
 }

@@ -7,7 +7,7 @@ import { VideoType } from '../../enum/VideoType'
 import { VideoInfo } from '../../http/Client'
 import RatingFactory from '../RatingFactory'
 export default class Netflix extends Manager {
-  refreshRatings () {
+  refreshRatings(): void {
     const videoName = this.getVideoName()
     const modal = document.querySelector('.detail-modal')
     const hash = md5(videoName)
@@ -25,7 +25,7 @@ export default class Netflix extends Manager {
     }
   }
 
-  getVideoName (): string | null {
+  getVideoName(): string | null {
     const detailModalVideoName = document
       .querySelector('.previewModal--player-titleTreatment-logo')
       ?.getAttribute('alt')
@@ -33,7 +33,7 @@ export default class Netflix extends Manager {
     return detailModalVideoName || null
   }
 
-  getVideoYear (): string {
+  getVideoYear(): string {
     const yearElement: HTMLElement = document.querySelector(
       '.detail-modal .year'
     )
@@ -41,7 +41,7 @@ export default class Netflix extends Manager {
     return yearElement?.innerText
   }
 
-  getVideoType (): VideoType {
+  getVideoType(): VideoType {
     const episodesElement = document.querySelector(
       '.detail-modal .episodeSelector'
     )
@@ -49,14 +49,19 @@ export default class Netflix extends Manager {
     return episodesElement == null ? VideoType.MOVIE : VideoType.TVSHOW
   }
 
-  getSeasons (): string | null {
+  getSeasons(): string | null {
     const element = document.querySelector('.duration')
     const innerHtml = element?.innerHTML
     const seasons = innerHtml?.split(' ')?.[0]
     return seasons
   }
 
-  getRating (videoName: string, jawbone: Element, service: Service, hash: string): void {
+  getRating(
+    videoName: string,
+    jawbone: Element,
+    service: Service,
+    hash: string
+  ): void {
     const videoInfoFound = this.cache.get(videoName, service)
 
     if (!videoInfoFound) {
@@ -77,7 +82,12 @@ export default class Netflix extends Manager {
     }
   }
 
-  renderRating (service: Service, element: Element, videoInfo: VideoInfo, hash: string): void {
+  renderRating(
+    service: Service,
+    element: Element,
+    videoInfo: VideoInfo,
+    hash: string
+  ): void {
     this.cache.save(videoInfo, service)
 
     const serviceRating = new RatingFactory().create(service, videoInfo)
@@ -93,26 +103,26 @@ export default class Netflix extends Manager {
       })
   }
 
-  logVideoInfo (videoName: string, rating: string, service: Service): void {
+  logVideoInfo(videoName: string, rating: string, service: Service): void {
     if (rating) {
       this.logger.info(`Rating fetched for video ${videoName}`, {
         name: videoName,
         rating: rating,
         serviceWebsite: service,
         netflix_id: this.currentVideoId(),
-        provider: Provider.NETFLIX
+        provider: Provider.NETFLIX,
       })
     } else {
       this.logger.error(`Cannot fetch rating for video ${videoName}`, {
         name: videoName,
         serviceWebsite: service,
         netflix_id: this.currentVideoId(),
-        provider: Provider.NETFLIX
+        provider: Provider.NETFLIX,
       })
     }
   }
 
-  currentVideoId (): string {
+  currentVideoId(): string {
     const urlQuery = new URL(window.location.toString()).pathname.split(
       '/title/'
     )

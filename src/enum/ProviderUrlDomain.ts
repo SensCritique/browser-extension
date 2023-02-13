@@ -1,4 +1,4 @@
 export enum ProviderUrlDomain {
-    NETFLIX = 'www.netflix.com',
-    DISNEY = 'www.disneyplus.com'
+  NETFLIX = 'www.netflix.com',
+  DISNEY = 'www.disneyplus.com',
 }

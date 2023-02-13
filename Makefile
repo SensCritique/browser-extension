@@ -27,7 +27,7 @@ install:
 	${RUN_NODE} npm install
 .PHONY: test
 test:
-	${RUN_NODE} npm test
+	${RUN_NODE} npm test ${FILE}
 .PHONY: sh
 sh:
 	${RUN_NODE} sh

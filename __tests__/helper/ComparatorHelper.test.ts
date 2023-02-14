@@ -1,7 +1,7 @@
-import {test, expect} from '@jest/globals'
+import { test, expect } from '@jest/globals'
 import browser from '../global/browser'
 Object.assign(global, browser)
-import {compare} from '../../src/helper/ComparatorHelper'
+import { compare } from '../../src/helper/ComparatorHelper'
 import {
   matchByTitleAndYearDataset,
   matchByMovieAndYearDataset,
@@ -11,9 +11,7 @@ import {
   notMatchByTitleAndYearIfMovieDataset,
   notMatchByTitleYearAndSeasonsIfTvShowDataset,
 } from '../../src/dataset/CamparatorHelper'
-import {Logger} from '../../src/background'
 jest.mock('../../src/background')
-
 
 describe('Test products matching with compare()', () => {
   test.each(matchByTitleAndYearDataset)(

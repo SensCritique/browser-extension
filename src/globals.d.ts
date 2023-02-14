@@ -1,2 +1,3 @@
-declare var chrome: any
-declare var wrappedJSObject: any
+declare let chrome: any
+declare let wrappedJSObject: any
+declare let browser: any

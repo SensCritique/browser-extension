@@ -1,24 +1,39 @@
+// eslint-disable-next-line no-undef
 module.exports = {
   env: {
     browser: true,
     es2020: true,
-    jest: true
+    jest: true,
   },
   globals: {
-    chrome: true
+    chrome: true,
+    browser: true,
   },
   extends: [
-    'standard'
+    'eslint:recommended',
+    'plugin:@typescript-eslint/eslint-recommended',
+    'plugin:@typescript-eslint/recommended',
   ],
-  parser: "@typescript-eslint/parser",
-  plugins: [
-    '@typescript-eslint'
-  ],
+  parser: '@typescript-eslint/parser',
+  plugins: ['@typescript-eslint', 'prettier'],
   parserOptions: {
     ecmaVersion: 11,
-    sourceType: 'module'
+    sourceType: 'module',
   },
   rules: {
-    "no-unused-vars": "off"
-  }
+    'no-unused-vars': 'error',
+    'no-console': ['error', { allow: ['error'] }],
+    semi: ['error', 'never'],
+    'comma-dangle': 'off',
+    'no-underscore-dangle': [2, { allowAfterThis: true }],
+    'prettier/prettier': [
+      'error',
+      {
+        trailingComma: 'es5',
+        singleQuote: true,
+        semi: false,
+        printWidth: 80,
+      },
+    ],
+  },
 }

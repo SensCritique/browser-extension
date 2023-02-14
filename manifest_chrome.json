@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "SensCritique",
-  "version": "1.2.19",
-  "description": "Permet d'avoir les scores et avis SensCritique sur Netflix",
+  "version": "1.3.0",
+  "description": "Permet d'avoir les scores et avis SensCritique sur Netflix/Disney+",
   "icons": {
     "48": "images/logo-48.png",
     "64": "images/logo-64.png",
@@ -13,7 +13,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*.netflix.com/*"],
+      "matches": ["*://*.netflix.com/*", "*://*.disneyplus.com/*"],
       "js": ["index/index.js"]
     }
   ],

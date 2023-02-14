@@ -6,7 +6,7 @@ export const COLOR = {
   YELLOW: '#fecc00',
   GREEN: '#2EB33B',
   BLACK: '#1A1A1A',
-  WHITE: '#FFFFFF'
+  WHITE: '#FFFFFF',
 }
 
 export class Rating {
@@ -15,7 +15,7 @@ export class Rating {
   protected videoInfo: VideoInfo
   protected logo: string
 
-  get color () {
+  get color(): string {
     if (!this.ratingPercent) {
       return COLOR.GREY
     }
@@ -31,7 +31,7 @@ export class Rating {
     }
   }
 
-  render (): Element {
+  render(): Element {
     const divBackground = document.createElement('div')
     divBackground.style.width = '95px'
     divBackground.style.height = '44px'

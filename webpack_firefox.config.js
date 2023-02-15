@@ -1,4 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path')
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const CopyPlugin = require('copy-webpack-plugin')
 
 module.exports = {
@@ -7,24 +9,24 @@ module.exports = {
     rules: [
       { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' },
       { test: /\.tsx?$/, loader: 'ts-loader' },
-      { test: /\.js$/, loader: 'source-map-loader' }
-    ]
+      { test: /\.js$/, loader: 'source-map-loader' },
+    ],
   },
   entry: {
     index: './src/index.ts',
-    background: './src/background.ts'
+    background: './src/background.ts',
   },
   resolve: {
-    extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js']
+    extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js'],
   },
   plugins: [
     new CopyPlugin([
       { from: 'images/logo*', to: '.' },
-      { from: 'manifest_firefox.json', to: 'manifest.json' }
-    ])
+      { from: 'manifest_firefox.json', to: 'manifest.json' },
+    ]),
   ],
   output: {
     path: path.resolve(__dirname, 'dist/firefox/main'),
-    filename: '[name]/index.js'
-  }
+    filename: '[name]/index.js',
+  },
 }

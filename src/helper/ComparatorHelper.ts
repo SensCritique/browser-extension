@@ -34,9 +34,11 @@ export const compare = async (
     senscritiqueProduct.flattenedOriginalTitle,
     platformProduct.flattenedTitle
   )
-  const providerMatched = senscritiqueProduct.providers?.length
-    ? matchedProviders(senscritiqueProduct.providers, platformProduct.providers)
-    : null
+  const providerMatched = matchedProviders(
+    senscritiqueProduct.providers,
+    platformProduct.providers
+  )
+
   const titleMatchedLevenshtein =
     titleMatched ||
     flattenTitleMatched ||

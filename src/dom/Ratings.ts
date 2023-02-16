@@ -9,6 +9,10 @@ export default class Ratings {
     mainDiv.style.maxWidth = '400px'
     mainDiv.style.height = '36px'
     mainDiv.style.lineHeight = '36px'
+    mainDiv.style.position = 'absolute'
+    mainDiv.style.bottom = '2px'
+    mainDiv.style.right = '2px'
+    mainDiv.style.zIndex = '100'
     mainDiv.classList.add(hash)
 
     // SensCritique

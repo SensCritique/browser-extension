@@ -3,6 +3,7 @@ import { MessageEvent } from './MessageEvent'
 import Logger from '../logging/Logger'
 import { Message } from '../background'
 import { VideoInfo } from '../http/Client'
+import { BrowserExtensionProduct } from '../type/BrowserExtensionProduct'
 
 export default class Manager {
   protected cache: Cache
@@ -25,12 +26,29 @@ export default class Manager {
     chrome.runtime.sendMessage(
       {
         type: MessageEvent.INFO,
+        searchType: 'video_info',
         service,
         videoName,
         videoYear,
         videoType,
         seasons,
         provider,
+      } as Message,
+      callback
+    )
+  }
+
+  getVideoInfoByPlatformId(
+    service: string,
+    platformProductIds: number[],
+    callback: (browserExtensionProducts: BrowserExtensionProduct[]) => void
+  ): void {
+    chrome.runtime.sendMessage(
+      {
+        type: MessageEvent.INFO,
+        searchType: 'platform_id',
+        service,
+        platformProductIds,
       } as Message,
       callback
     )

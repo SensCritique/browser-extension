@@ -21,6 +21,7 @@ setInterval(() => {
   }
 }, 1000)
 
+// Receive events from back
 chrome.runtime.onMessage.addListener((event) => {
   const logger = new Logger()
   const { context, message, severity } = event

@@ -5,6 +5,7 @@ import { mapSensCritiqueProduct } from '../mapper/SensCritiqueProductMapper'
 import { compare } from '../helper/ComparatorHelper'
 import { Logger } from '../../src/background'
 import { Product } from '../type/Product'
+import { Provider } from '../enum/Provider'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const app = require('../../package.json')
@@ -25,13 +26,25 @@ const searchQuery = [
   },
 ]
 
+const searchByPlatformIdQuery = [
+  {
+    operationName: 'productByPlatform',
+    variables: {
+      platformIds: [],
+      provider: '%provider%',
+    },
+    query:
+      'query productByPlatform($platformIds: [Int], $provider: String) {\n  productByPlatform(platformIds: $platformIds, provider: $provider) {\n    platformId\n    rating\n  }\n}\n',
+  },
+]
+
 const SensCritique = class SensCritique implements Client {
   private baseUrl = 'https://www.senscritique.com'
   private searchUrl: string
   private errorSearchUrl: string
 
   constructor() {
-    this.searchUrl = 'https://apollo.senscritique.com/'
+    this.searchUrl = 'https://apollo.senscritique.local/'
     this.errorSearchUrl = this.baseUrl + '/search?query=%search%'
   }
 
@@ -122,6 +135,30 @@ const SensCritique = class SensCritique implements Client {
       }
 
       return defaultVideoInfos
+    }
+  }
+
+  async getVideoInfoByPlatformId(
+    platformProductIds: number[],
+    provider: Provider
+  ): Promise<VideoInfo | null> {
+    const headers = new Headers()
+    headers.append('User-Agent', `senscritique-extension v${app.version}`)
+    headers.append('Content-Type', 'application/json')
+    searchByPlatformIdQuery[0].variables.platformIds = platformProductIds
+    const request = JSON.stringify(searchByPlatformIdQuery).replace(
+      '%provider%',
+      provider
+    )
+
+    const response = await fetch(this.searchUrl, {
+      headers,
+      method: 'POST',
+      body: request,
+    })
+
+    if (response?.ok) {
+      return (await response.json())[0]?.data?.productByPlatform
     }
   }
 }

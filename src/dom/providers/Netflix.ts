@@ -6,9 +6,38 @@ import Manager from '../Manager'
 import { VideoType } from '../../enum/VideoType'
 import { VideoInfo } from '../../http/Client'
 import RatingFactory from '../RatingFactory'
+import { BrowserExtensionProduct } from '../../type/BrowserExtensionProduct'
+
 export default class Netflix extends Manager {
   refreshRatings(): void {
-    const videoName = this.getVideoName()
+    this.refreshModalRating()
+    this.refreshWallRatings()
+  }
+
+  refreshWallRatings(): void {
+    const productCards = document.querySelectorAll('.title-card a[href]')
+    const platformProductIds = []
+    productCards.forEach((card) => {
+      const url = decodeURI(card.getAttribute('href'))
+      if (url) {
+        const regexpResult = url.match(/\/watch\/(\d+)/)
+        if (regexpResult[1]) {
+          platformProductIds.push(parseInt(regexpResult[1]))
+        }
+      }
+    })
+
+    if (platformProductIds.length > 0) {
+      this.getRatingByPlatformId(platformProductIds)
+    }
+  }
+
+  refreshModalRating(): void {
+    // new URL(window.location.href)?.searchParams.get('jbv')
+    const videoName =
+      document
+        .querySelector('.previewModal--player-titleTreatment-logo')
+        ?.getAttribute('alt') || null
     const modal = document.querySelector('.detail-modal')
     const hash = md5(videoName)
 
@@ -23,14 +52,6 @@ export default class Netflix extends Manager {
       }
       this.getRating(videoName, modal, Service.SENSCRITIQUE, hash)
     }
-  }
-
-  getVideoName(): string | null {
-    const detailModalVideoName = document
-      .querySelector('.previewModal--player-titleTreatment-logo')
-      ?.getAttribute('alt')
-
-    return detailModalVideoName || null
   }
 
   getVideoYear(): string {
@@ -54,6 +75,43 @@ export default class Netflix extends Manager {
     const innerHtml = element?.innerHTML
     const seasons = innerHtml?.split(' ')?.[0]
     return seasons
+  }
+
+  getRatingByPlatformId(platformProductIds: number[]): void {
+    if (platformProductIds.length > 0) {
+      this.getVideoInfoByPlatformId(
+        Provider.NETFLIX,
+        platformProductIds,
+        (browserExtensionProducts: BrowserExtensionProduct[]) => {
+          browserExtensionProducts.map((browserExtensionProduct) => {
+            const hash = md5(browserExtensionProduct.platformId.toString())
+            const platformId = browserExtensionProduct.platformId
+            const element = document.querySelector(
+              `.title-card a[href*="/watch/${platformId}"]`
+            )
+            if (element?.getElementsByClassName(hash).length === 0) {
+              const ratingsElement = Ratings.render(hash, Provider.NETFLIX)
+              element.prepend(ratingsElement)
+            }
+            // get video info
+            this.renderRating(
+              Service.SENSCRITIQUE,
+              element,
+              {
+                name: '',
+                redirect: '',
+                id: '',
+                url: '',
+                type: VideoType.MOVIE,
+                rating: browserExtensionProduct?.rating.toString(),
+                hashId: hash,
+              },
+              hash
+            )
+          })
+        }
+      )
+    }
   }
 
   getRating(

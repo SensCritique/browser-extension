@@ -1,4 +1,4 @@
-RUN_NODE = docker-compose run --rm node
+RUN_NODE = docker-compose run --rm -Ti node
 
 .PHONY: build-firefox
 build-firefox:
@@ -13,7 +13,7 @@ build-chrome:
 	cd dist/chrome/main && zip -r ../latest_chrome.zip * && mv ../latest_chrome.zip ../../../releases/
 .PHONY: watch-chrome
 watch-chrome:
-	${RUN_NODE} npx webpack --mode=development --config=webpack_chrome.config.js --watch
+	${RUN_NODE} npx webpack --mode=development --config=webpack_chrome.config.js --watc
 .PHONY: fix
 fix:
 	${RUN_NODE} npx eslint --fix src/*

@@ -6,4 +6,3 @@ services:
       context: docker/node
     volumes:
       - ./:/app
-    working_dir: /app

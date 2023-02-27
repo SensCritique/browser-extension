@@ -6,9 +6,11 @@ import { compare } from '../helper/ComparatorHelper'
 import { Logger } from '../../src/background'
 import { Product } from '../type/Product'
 import { Provider } from '../enum/Provider'
+import { BrowserExtensionProduct } from '../type/BrowserExtensionProduct'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const app = require('../../package.json')
+
 
 const searchQuery = [
   {
@@ -138,10 +140,10 @@ const SensCritique = class SensCritique implements Client {
     }
   }
 
-  async getVideoInfoByPlatformId(
+  async getProductRatingsByPlatformId(
     platformProductIds: number[],
     provider: Provider
-  ): Promise<VideoInfo | null> {
+  ): Promise<BrowserExtensionProduct[]> {
     const headers = new Headers()
     headers.append('User-Agent', `senscritique-extension v${app.version}`)
     headers.append('Content-Type', 'application/json')

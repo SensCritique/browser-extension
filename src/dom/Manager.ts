@@ -38,7 +38,7 @@ export default class Manager {
     )
   }
 
-  getVideoInfoByPlatformId(
+  getRatingsByPlatformId(
     service: string,
     platformProductIds: number[],
     callback: (browserExtensionProducts: BrowserExtensionProduct[]) => void

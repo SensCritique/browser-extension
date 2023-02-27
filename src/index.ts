@@ -24,27 +24,23 @@ setInterval(() => {
 // Receive events from back
 chrome.runtime.onMessage.addListener((event) => {
   const logger = new Logger()
+  console.log("ddd",event)
   const { context, message, severity } = event
+  
   switch (severity) {
     case LogSeverityId.ERROR:
       logger.error(message, {
-        ...context,
-        name: context.platformProduct.title,
-        provider: context.platformProduct.providers[0],
+        ...context
       })
       break
     case LogSeverityId.DEBUG:
       logger.debug(message, {
-        ...context,
-        name: context.platformProduct.title,
-        provider: context.platformProduct.providers[0],
+        ...context
       })
       break
     default:
       logger.info(message, {
-        ...context,
-        name: context.platformProduct.title,
-        provider: context.platformProduct.providers[0],
+        ...context
       })
   }
 })

@@ -7,7 +7,7 @@ export interface VideoInfo {
   url?: string
   type?: VideoType
   rating?: string
-  hashId?: string
+  hash?: string
 }
 
 export interface Client {

@@ -1,11 +1,10 @@
-import Ratings from '../Ratings'
 import md5 from 'blueimp-md5'
 import { Service } from '../../enum/Service'
 import { Provider } from '../../enum/Provider'
 import Manager from '../Manager'
 import { VideoType } from '../../enum/VideoType'
 import { VideoInfo } from '../../http/Client'
-import RatingFactory from '../RatingFactory'
+import { SensCritiqueRating } from '../SensCritiqueRating'
 
 export default class Disney extends Manager {
   refreshRatings(): void {
@@ -14,10 +13,12 @@ export default class Disney extends Manager {
     const hash = md5(videoName)
 
     if (videoName && modal?.getElementsByClassName(hash).length === 0) {
+      /*
       if (modal) {
         const ratingsElement = Ratings.render(hash, Provider.DISNEY)
         modal.prepend(ratingsElement)
       }
+      */
       this.getRating(videoName, modal, Service.SENSCRITIQUE, hash)
     }
   }
@@ -60,9 +61,9 @@ export default class Disney extends Manager {
     service: Service,
     hash: string
   ): void {
-    const videoInfoFound = this.cache.get(videoName, service)
+    const productCache = this.cache.get(hash)
 
-    if (!videoInfoFound) {
+    if (!productCache) {
       this.getVideoInfo(
         service,
         videoName,
@@ -71,12 +72,12 @@ export default class Disney extends Manager {
         this.getSeasons(),
         Provider.DISNEY,
         (videoInfo: VideoInfo) => {
-          this.renderRating(service, jawbone, videoInfo, hash)
+          this.renderRating(service, jawbone, videoInfo)
         }
       )
     }
-    if (videoInfoFound) {
-      this.renderRating(service, jawbone, videoInfoFound, hash)
+    if (productCache) {
+      this.renderRating(service, jawbone, productCache)
     }
   }
 
@@ -84,15 +85,14 @@ export default class Disney extends Manager {
     service: Service,
     element: Element,
     videoInfo: VideoInfo,
-    hash: string
   ): void {
-    this.cache.save(videoInfo, service)
+    this.cache.save(videoInfo)
 
-    const serviceRating = new RatingFactory().create(service, videoInfo)
-    const ratingElement = serviceRating.render()
+    const serviceRating = new SensCritiqueRating(videoInfo)
+    const ratingElement = serviceRating.render(Provider.DISNEY)
 
     document
-      .querySelectorAll(`.${service}_${hash}`)
+      .querySelectorAll(`.${service}_${videoInfo.hash}`)
       .forEach((serviceElement) => {
         if (serviceElement.childNodes.length === 0) {
           serviceElement.innerHTML = ratingElement.outerHTML

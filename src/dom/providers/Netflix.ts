@@ -1,12 +1,11 @@
-import Ratings from '../Ratings'
 import md5 from 'blueimp-md5'
 import { Service } from '../../enum/Service'
 import { Provider } from '../../enum/Provider'
 import Manager from '../Manager'
 import { VideoType } from '../../enum/VideoType'
 import { VideoInfo } from '../../http/Client'
-import RatingFactory from '../RatingFactory'
 import { BrowserExtensionProduct } from '../../type/BrowserExtensionProduct'
+import { SensCritiqueRating } from '../SensCritiqueRating'
 
 export default class Netflix extends Manager {
   refreshRatings(): void {
@@ -16,19 +15,50 @@ export default class Netflix extends Manager {
 
   refreshWallRatings(): void {
     const productCards = document.querySelectorAll('.title-card a[href]')
-    const platformProductIds = []
+    let platformProductIds = []
     productCards.forEach((card) => {
       const url = decodeURI(card.getAttribute('href'))
       if (url) {
+        // Find all PlatformIds on current page
         const regexpResult = url.match(/\/watch\/(\d+)/)
         if (regexpResult[1]) {
           platformProductIds.push(parseInt(regexpResult[1]))
         }
       }
     })
+    platformProductIds = [...new Set(platformProductIds)]
 
     if (platformProductIds.length > 0) {
-      this.getRatingByPlatformId(platformProductIds)
+      this.getRatingsByPlatformId(
+        Provider.NETFLIX,
+        platformProductIds,
+        (browserExtensionProducts: BrowserExtensionProduct[]) => {
+          // Response from API with all browserExtensionProducts
+          browserExtensionProducts.forEach((browserExtensionProduct) => {
+            const hash = md5(browserExtensionProduct.platformId.toString())
+            const platformId = browserExtensionProduct.platformId
+            const cardElements = document.querySelectorAll(
+              `.title-card a[href*="/watch/${platformId}"]`
+            )
+            
+            cardElements.forEach(cardElement => {
+              this.renderRating(
+                Service.SENSCRITIQUE,
+                cardElement,
+                {
+                  name: '',
+                  redirect: '',
+                  id: '',
+                  url: '',
+                  type: VideoType.MOVIE,
+                  rating: browserExtensionProduct?.rating?.toString(),
+                  hash,
+                }
+              )
+            })
+            })
+        }
+      )
     }
   }
 
@@ -46,10 +76,7 @@ export default class Netflix extends Manager {
       const infoElement = modal.querySelector(
         '.previewModal--detailsMetadata-info'
       )
-      if (infoElement) {
-        const ratingsElement = Ratings.render(hash, Provider.NETFLIX)
-        infoElement.prepend(ratingsElement)
-      }
+      
       this.getRating(videoName, modal, Service.SENSCRITIQUE, hash)
     }
   }
@@ -77,50 +104,13 @@ export default class Netflix extends Manager {
     return seasons
   }
 
-  getRatingByPlatformId(platformProductIds: number[]): void {
-    if (platformProductIds.length > 0) {
-      this.getVideoInfoByPlatformId(
-        Provider.NETFLIX,
-        platformProductIds,
-        (browserExtensionProducts: BrowserExtensionProduct[]) => {
-          browserExtensionProducts.map((browserExtensionProduct) => {
-            const hash = md5(browserExtensionProduct.platformId.toString())
-            const platformId = browserExtensionProduct.platformId
-            const element = document.querySelector(
-              `.title-card a[href*="/watch/${platformId}"]`
-            )
-            if (element?.getElementsByClassName(hash).length === 0) {
-              const ratingsElement = Ratings.render(hash, Provider.NETFLIX)
-              element.prepend(ratingsElement)
-            }
-            // get video info
-            this.renderRating(
-              Service.SENSCRITIQUE,
-              element,
-              {
-                name: '',
-                redirect: '',
-                id: '',
-                url: '',
-                type: VideoType.MOVIE,
-                rating: browserExtensionProduct?.rating.toString(),
-                hashId: hash,
-              },
-              hash
-            )
-          })
-        }
-      )
-    }
-  }
-
   getRating(
     videoName: string,
     jawbone: Element,
     service: Service,
     hash: string
   ): void {
-    const videoInfoFound = this.cache.get(videoName, service)
+    const videoInfoFound = this.cache.get(videoName)
 
     if (!videoInfoFound) {
       this.getVideoInfo(
@@ -131,12 +121,12 @@ export default class Netflix extends Manager {
         this.getSeasons(),
         Provider.NETFLIX,
         (videoInfo: VideoInfo) => {
-          this.renderRating(service, jawbone, videoInfo, hash)
+          this.renderRating(service, jawbone, videoInfo)
         }
       )
     }
     if (videoInfoFound) {
-      this.renderRating(service, jawbone, videoInfoFound, hash)
+      this.renderRating(service, jawbone, videoInfoFound)
     }
   }
 
@@ -144,21 +134,17 @@ export default class Netflix extends Manager {
     service: Service,
     element: Element,
     videoInfo: VideoInfo,
-    hash: string
   ): void {
-    this.cache.save(videoInfo, service)
+    this.cache.save(videoInfo)
 
-    const serviceRating = new RatingFactory().create(service, videoInfo)
-    const ratingElement = serviceRating.render()
-
-    document
-      .querySelectorAll(`.${service}_${hash}`)
-      .forEach((serviceElement) => {
-        if (serviceElement.childNodes.length === 0) {
-          serviceElement.innerHTML = ratingElement.outerHTML
-          this.logVideoInfo(videoInfo.name, serviceRating.rating, service)
-        }
-      })
+    if(!element.querySelector(`.senscritique_${videoInfo.hash}`)){
+      // Rating element not found, create it
+      const serviceRating = new SensCritiqueRating(videoInfo)
+      const ratingElement = serviceRating.render(Provider.NETFLIX)
+  
+      element.prepend(ratingElement)
+      this.logVideoInfo(videoInfo.name, serviceRating.rating, service)
+    }
   }
 
   logVideoInfo(videoName: string, rating: string, service: Service): void {

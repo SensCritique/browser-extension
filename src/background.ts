@@ -4,6 +4,7 @@ import { MessageEvent } from './dom/MessageEvent'
 import { VideoType } from './enum/VideoType'
 import { LogSeverity } from './enum/LogSeverity'
 import { Provider } from './enum/Provider'
+import { BrowserExtensionProduct } from './type/BrowserExtensionProduct'
 
 const senscritique = new SensCritique()
 
@@ -35,15 +36,29 @@ const fetchInfo = async (message: ProductMessage): Promise<VideoInfo> =>
   )
 const fetchInfoByPlatformId = async (
   message: ProductPlatformMessage
-): Promise<VideoInfo> =>
-  senscritique.getVideoInfoByPlatformId(
+): Promise<BrowserExtensionProduct[]> => {
+  const browserExtensionProducts = await senscritique.getProductRatingsByPlatformId(
     message.platformProductIds,
     message.service
   )
+  browserExtensionProducts.forEach(product => {
+    if(product.rating === null) {
+      Logger.error(`Rating missing for product platform ID:${product.platformId}`, {
+        messageEvent: message,
+        platformProductId: product.platformId,
+        error: 'missing_rating'
+      })
+    }
+  })
+
+
+  return browserExtensionProducts
+}
+  
 
 // Receive events from front
 chrome.runtime.onMessage.addListener(
-  (message: Message, sender: void, callback: (response: VideoInfo) => void) => {
+  (message: Message, sender: void, callback: (response: VideoInfo | BrowserExtensionProduct[]) => void) => {
     if (message?.type !== MessageEvent.INFO) {
       return true
     }
@@ -68,26 +83,27 @@ chrome.runtime.onMessage.addListener(
 )
 
 export class Logger {
-  static info(message: string, context: Record<string, unknown> = {}): void {
+  static info(message: string, context: object = {}): void {
     Logger.log(LogSeverity.INFO, message, context)
   }
 
-  static error(message: string, context: Record<string, unknown> = {}): void {
+  static error(message: string, context: object = {}): void {
     Logger.log(LogSeverity.ERROR, message, context)
   }
 
-  static warning(message: string, context: Record<string, unknown> = {}): void {
+  static warning(message: string, context: object = {}): void {
+    console.log(message, context)
     Logger.log(LogSeverity.WARNING, message, context)
   }
 
-  static debug(message: string, context: Record<string, unknown> = {}): void {
+  static debug(message: string, context: object = {}): void {
     Logger.log(LogSeverity.DEBUG, message, context)
   }
 
   static log(
     severity: LogSeverity,
     message: string,
-    context: Record<string, unknown> = {}
+    context: object = {}
   ): void {
     const userAgent = navigator.userAgent
     if (userAgent.includes('Chrome')) {

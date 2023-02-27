@@ -56,7 +56,7 @@ test('It should render node with rights info', () => {
   const sensCritiqueRating = new SensCritiqueRating({
     rating: '8,5',
     redirect: 'https://google.fr',
-    hashId: 'XXX',
+    hash: 'XXX',
     name: 'test',
   })
   const sensCritiqueRatingRendered = sensCritiqueRating.render()

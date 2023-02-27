@@ -9,23 +9,18 @@ export default class Cache {
     this.prefix = 'senscritique_extension_'
   }
 
-  save(videoInfo: VideoInfo, service: Service): VideoInfo {
-    videoInfo.hashId = md5(`${service}_${videoInfo.name}`)
+  save(videoInfo: VideoInfo): VideoInfo
+   {
     sessionStorage.setItem(
-      this.prefix + videoInfo.hashId,
+      this.prefix + videoInfo.hash,
       JSON.stringify(videoInfo)
     )
 
     return videoInfo
   }
 
-  get(videoName: string, service: Service): VideoInfo {
-    const hashId = md5(`${service}_${videoName}`)
-    return JSON.parse(sessionStorage.getItem(this.prefix + hashId))
+  get(hash: string): VideoInfo {
+    return JSON.parse(sessionStorage.getItem(this.prefix + hash))
   }
 
-  exists(videoName: string, service: Service): string {
-    const hashId = md5(`${service}_${videoName}`)
-    return sessionStorage.getItem(this.prefix + hashId)
-  }
 }

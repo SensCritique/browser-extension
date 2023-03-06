@@ -15,7 +15,7 @@ export default class Netflix extends Manager {
 
   refreshWallRatings(): void {
     const productCards = document.querySelectorAll('.title-card a[href]')
-    let platformProductIds = []
+    let platformProductIds: number[] = []
     productCards.forEach((card) => {
       const url = decodeURI(card.getAttribute('href'))
       if (url) {
@@ -27,39 +27,58 @@ export default class Netflix extends Manager {
       }
     })
     platformProductIds = [...new Set(platformProductIds)]
+    const platformProductsInCached = []
+    const platformProductsIdsMissing = []
 
     if (platformProductIds.length > 0) {
-      this.getRatingsByPlatformId(
-        Provider.NETFLIX,
-        platformProductIds,
-        (browserExtensionProducts: BrowserExtensionProduct[]) => {
-          // Response from API with all browserExtensionProducts
-          browserExtensionProducts.forEach((browserExtensionProduct) => {
-            const hash = md5(browserExtensionProduct.platformId.toString())
-            const platformId = browserExtensionProduct.platformId
-            const cardElements = document.querySelectorAll(
-              `.title-card a[href*="/watch/${platformId}"]`
-            )
-            
-            cardElements.forEach(cardElement => {
-              this.renderRating(
-                Service.SENSCRITIQUE,
-                cardElement,
-                {
-                  name: '',
-                  redirect: '',
-                  id: '',
-                  url: '',
-                  type: VideoType.MOVIE,
-                  rating: browserExtensionProduct?.rating?.toString(),
-                  hash,
-                }
-              )
-            })
-            })
+      // Check if products platform IDs are present in cache
+      platformProductIds.forEach((platformId) => {
+        const cachedProduct = this.cache.get(md5(platformId.toString()))
+        if(cachedProduct) {
+         platformProductsInCached.push(cachedProduct)
+        } else {
+          platformProductsIdsMissing.push(platformId)
         }
-      )
+      })
+
+      if(platformProductsIdsMissing.length) {
+        this.getRatingsByPlatformId(
+          Provider.NETFLIX,
+          platformProductsIdsMissing,
+          (browserExtensionProducts: BrowserExtensionProduct[]) => {
+            this.renderWallRatings(browserExtensionProducts)
+          }
+        )
+      }
+      this.renderWallRatings(platformProductsInCached)
     }
+  }
+
+  renderWallRatings(browserExtensionProducts: BrowserExtensionProduct[]): void {
+     // Response from API with all browserExtensionProducts
+     browserExtensionProducts.forEach((browserExtensionProduct) => { 
+      const hash = md5(browserExtensionProduct.platformId.toString())
+      const platformId = browserExtensionProduct.platformId
+      const cardElements = document.querySelectorAll(
+        `.title-card a[href*="/watch/${platformId}"]`
+      )
+      cardElements.forEach(cardElement => {
+        this.renderRating(
+          Service.SENSCRITIQUE,
+          cardElement,
+          {
+            name: '',
+            redirect: '',
+            id: '',
+            url: '',
+            type: VideoType.MOVIE,
+            rating: browserExtensionProduct?.rating?.toString(),
+            hash,
+            platformId: browserExtensionProduct?.platformId
+          }
+        )
+      })
+      })
   }
 
   refreshModalRating(): void {

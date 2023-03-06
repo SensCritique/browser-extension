@@ -92,7 +92,6 @@ export class Logger {
   }
 
   static warning(message: string, context: object = {}): void {
-    console.log(message, context)
     Logger.log(LogSeverity.WARNING, message, context)
   }
 

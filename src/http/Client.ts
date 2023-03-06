@@ -8,6 +8,7 @@ export interface VideoInfo {
   type?: VideoType
   rating?: string
   hash?: string
+  platformId?: string | number
 }
 
 export interface Client {

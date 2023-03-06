@@ -24,7 +24,6 @@ setInterval(() => {
 // Receive events from back
 chrome.runtime.onMessage.addListener((event) => {
   const logger = new Logger()
-  console.log("ddd",event)
   const { context, message, severity } = event
   
   switch (severity) {

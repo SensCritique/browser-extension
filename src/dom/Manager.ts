@@ -43,14 +43,16 @@ export default class Manager {
     platformProductIds: number[],
     callback: (browserExtensionProducts: BrowserExtensionProduct[]) => void
   ): void {
-    chrome.runtime.sendMessage(
-      {
-        type: MessageEvent.INFO,
-        searchType: 'platform_id',
-        service,
-        platformProductIds,
-      } as Message,
-      callback
-    )
+    if(platformProductIds.length) {
+      chrome.runtime.sendMessage(
+        {
+          type: MessageEvent.INFO,
+          searchType: 'platform_id',
+          service,
+          platformProductIds,
+        } as Message,
+        callback
+      )
+    }
   }
 }

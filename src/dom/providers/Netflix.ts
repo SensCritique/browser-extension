@@ -99,47 +99,20 @@ export default class Netflix extends Manager {
     const platformIdRegex = new URL(window.location.href)?.pathname?.match(/\/title\/(\d+)/)
     const platformId = new URL(window.location.href)?.searchParams.get('jbv') || platformIdRegex?.[1] 
     
-    const videoName =
-      document
-        .querySelector('.previewModal--player-titleTreatment-logo')
-        ?.getAttribute('alt') || null
     const modal = document.querySelector('.detail-modal')
     const hash = md5(platformId)
 
-    if (videoName && modal?.getElementsByClassName(hash).length === 0) {
+    if (modal?.getElementsByClassName(hash).length === 0) {
       // Create main div for Ratings
       const infoElement = modal.querySelector(
         '.previewModal--detailsMetadata-info'
       )
-      this.getRating(videoName, infoElement, Service.SENSCRITIQUE, hash)
+      this.getRating(parseInt(platformId), infoElement, Service.SENSCRITIQUE, hash)
     }
   }
 
-  getVideoYear(): string {
-    const yearElement: HTMLElement = document.querySelector(
-      '.detail-modal .year'
-    )
-
-    return yearElement?.innerText
-  }
-
-  getVideoType(): VideoType {
-    const episodesElement = document.querySelector(
-      '.detail-modal .episodeSelector'
-    )
-
-    return episodesElement == null ? VideoType.MOVIE : VideoType.TVSHOW
-  }
-
-  getSeasons(): string | null {
-    const element = document.querySelector('.duration')
-    const innerHtml = element?.innerHTML
-    const seasons = innerHtml?.split(' ')?.[0]
-    return seasons
-  }
-
   getRating(
-    videoName: string,
+    platformId: number,
     element: Element,
     service: Service,
     hash: string
@@ -154,17 +127,25 @@ export default class Netflix extends Manager {
       element.prepend(mainDiv);
 
       if (!videoInfoFound) {
-        this.getVideoInfo(
-          service,
-          videoName,
-          this.getVideoYear(),
-          this.getVideoType(),
-          this.getSeasons(),
-          Provider.NETFLIX,
-          (videoInfo: VideoInfo) => {
-            this.renderRating(service, element, videoInfo)
-          }
-        )
+          this.getRatingsByPlatformId(
+            Provider.NETFLIX,
+            [platformId],
+            (browserExtensionProducts: BrowserExtensionProduct[]) => {
+              const browserExtensionProduct = browserExtensionProducts?.[0]
+              if (browserExtensionProduct) {
+                this.renderRating(service, element, {
+                  name: '',
+                  hash,
+                  id: '',
+                  platformId,
+                  redirect: '',
+                  type: VideoType.MOVIE,
+                  rating: browserExtensionProduct.rating.toString(),
+                  url: ''
+                })
+              }
+            }
+          )
       }
       if (videoInfoFound) {
         this.renderRating(service, element, videoInfoFound)

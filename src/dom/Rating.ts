@@ -32,15 +32,7 @@ export class Rating {
     }
   }
 
-  render(provider: string): Element {
-    const mainDiv = document.createElement('div')
-    mainDiv.style.position = 'absolute'
-    mainDiv.style.zIndex = '100'
-    mainDiv.style.right = '2px'
-    mainDiv.style.bottom = '2px'
-    mainDiv.style.display = 'flex'
-    mainDiv.classList.add('senscritique_'+this.videoInfo.hash)
-
+  render(mainDiv: Element) {
     const divBackground = document.createElement('div')
     divBackground.style.width = '95px'
     divBackground.style.height = '44px'
@@ -106,8 +98,6 @@ export class Rating {
     divSmallCircle.appendChild(textRating)
     divLogo.appendChild(logo)
 
-    mainDiv.appendChild(divBackground)
-
-    return mainDiv
+    mainDiv.querySelector(`.senscritique_${this.videoInfo.hash}`).appendChild(divBackground)
   }
 }

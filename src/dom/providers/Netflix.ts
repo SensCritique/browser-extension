@@ -62,41 +62,56 @@ export default class Netflix extends Manager {
       const cardElements = document.querySelectorAll(
         `.title-card a[href*="/watch/${platformId}"]`
       )
+
       cardElements.forEach(cardElement => {
-        this.renderRating(
-          Service.SENSCRITIQUE,
-          cardElement,
-          {
-            name: '',
-            redirect: '',
-            id: '',
-            url: '',
-            type: VideoType.MOVIE,
-            rating: browserExtensionProduct?.rating?.toString(),
-            hash,
-            platformId: browserExtensionProduct?.platformId
-          }
-        )
+        const hashClass = 'senscritique_'+hash
+        if(!cardElement.querySelector(`.${hashClass}`)) {
+          const mainDiv = document.createElement('div')
+          mainDiv.style.position = 'absolute'
+          mainDiv.style.zIndex = '100'
+          mainDiv.style.right = '2px'
+          mainDiv.style.bottom = '2px'
+          mainDiv.style.display = 'flex'
+          mainDiv.classList.add(hashClass)
+          cardElement.prepend(mainDiv);
+
+
+          this.renderRating(
+            Service.SENSCRITIQUE,
+            cardElement,
+            {
+              name: '',
+              redirect: '',
+              id: '',
+              url: '',
+              type: VideoType.MOVIE,
+              rating: browserExtensionProduct?.rating?.toString(),
+              hash,
+              platformId: browserExtensionProduct?.platformId
+            }
+          )
+        }
       })
-      })
+    })
   }
 
   refreshModalRating(): void {
-    // new URL(window.location.href)?.searchParams.get('jbv')
+    const platformIdRegex = new URL(window.location.href)?.pathname?.match(/\/title\/(\d+)/)
+    const platformId = new URL(window.location.href)?.searchParams.get('jbv') || platformIdRegex?.[1] 
+    
     const videoName =
       document
         .querySelector('.previewModal--player-titleTreatment-logo')
         ?.getAttribute('alt') || null
     const modal = document.querySelector('.detail-modal')
-    const hash = md5(videoName)
+    const hash = md5(platformId)
 
     if (videoName && modal?.getElementsByClassName(hash).length === 0) {
       // Create main div for Ratings
       const infoElement = modal.querySelector(
         '.previewModal--detailsMetadata-info'
       )
-      
-      this.getRating(videoName, modal, Service.SENSCRITIQUE, hash)
+      this.getRating(videoName, infoElement, Service.SENSCRITIQUE, hash)
     }
   }
 
@@ -125,27 +140,35 @@ export default class Netflix extends Manager {
 
   getRating(
     videoName: string,
-    jawbone: Element,
+    element: Element,
     service: Service,
     hash: string
   ): void {
-    const videoInfoFound = this.cache.get(videoName)
+    const videoInfoFound = this.cache.get(hash)
+    const hashClass = 'senscritique_'+hash
 
-    if (!videoInfoFound) {
-      this.getVideoInfo(
-        service,
-        videoName,
-        this.getVideoYear(),
-        this.getVideoType(),
-        this.getSeasons(),
-        Provider.NETFLIX,
-        (videoInfo: VideoInfo) => {
-          this.renderRating(service, jawbone, videoInfo)
-        }
-      )
-    }
-    if (videoInfoFound) {
-      this.renderRating(service, jawbone, videoInfoFound)
+    if(!element.querySelector(`.${hashClass}`)) {
+      const mainDiv = document.createElement('div')
+      mainDiv.style.display = 'flex'
+      mainDiv.classList.add(hashClass)
+      element.prepend(mainDiv);
+
+      if (!videoInfoFound) {
+        this.getVideoInfo(
+          service,
+          videoName,
+          this.getVideoYear(),
+          this.getVideoType(),
+          this.getSeasons(),
+          Provider.NETFLIX,
+          (videoInfo: VideoInfo) => {
+            this.renderRating(service, element, videoInfo)
+          }
+        )
+      }
+      if (videoInfoFound) {
+        this.renderRating(service, element, videoInfoFound)
+      }
     }
   }
 
@@ -155,15 +178,11 @@ export default class Netflix extends Manager {
     videoInfo: VideoInfo,
   ): void {
     this.cache.save(videoInfo)
+    // Rating element not found, create it
+    const serviceRating = new SensCritiqueRating(videoInfo)
+    serviceRating.render(element)
 
-    if(!element.querySelector(`.senscritique_${videoInfo.hash}`)){
-      // Rating element not found, create it
-      const serviceRating = new SensCritiqueRating(videoInfo)
-      const ratingElement = serviceRating.render(Provider.NETFLIX)
-  
-      element.prepend(ratingElement)
-      this.logVideoInfo(videoInfo.name, serviceRating.rating, service)
-    }
+    this.logVideoInfo(videoInfo.name, serviceRating.rating, service)
   }
 
   logVideoInfo(videoName: string, rating: string, service: Service): void {

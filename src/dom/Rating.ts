@@ -1,4 +1,3 @@
-import { Provider } from '../enum/Provider'
 import { VideoInfo } from '../http/Client'
 
 export const COLOR = {
@@ -8,7 +7,7 @@ export const COLOR = {
   GREEN: '#2EB33B',
   BLACK: '#1A1A1A',
   WHITE: '#FFFFFF',
-} 
+}
 
 export class Rating {
   public rating: string
@@ -32,19 +31,20 @@ export class Rating {
     }
   }
 
-  render(mainDiv: Element) {
+  render(mainDiv: Element): void {
     const divBackground = document.createElement('div')
     divBackground.style.width = '95px'
     divBackground.style.height = '44px'
     divBackground.style.background = 'rgba(52, 52, 52, 0.8)'
     divBackground.style.borderRadius = '20px'
+    divBackground.style.marginBottom = '4px'
     divBackground.style.display = 'flex'
     divBackground.style.justifyContent = 'space-between'
     divBackground.style.position = 'relative'
 
     const a = document.createElement('a')
     a.style.position = 'absolute'
-    a.setAttribute('href', this.videoInfo.redirect)
+    a.setAttribute('href', this.videoInfo.url)
     a.setAttribute('target', '_blank')
     a.style.display = 'block'
     a.style.height = '100%'
@@ -98,6 +98,8 @@ export class Rating {
     divSmallCircle.appendChild(textRating)
     divLogo.appendChild(logo)
 
-    mainDiv.querySelector(`.senscritique_${this.videoInfo.hash}`).appendChild(divBackground)
+    mainDiv
+      .querySelector(`.senscritique_${this.videoInfo.hash}`)
+      .appendChild(divBackground)
   }
 }

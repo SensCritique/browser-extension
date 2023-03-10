@@ -8,10 +8,12 @@ import { BrowserExtensionProduct } from '../type/BrowserExtensionProduct'
 export default class Manager {
   protected cache: Cache
   protected logger: Logger
+  protected baseUrl: string
 
   constructor() {
     this.cache = new Cache()
     this.logger = new Logger()
+    this.baseUrl = 'https://www.senscritique.com'
   }
 
   getVideoInfo(
@@ -40,10 +42,10 @@ export default class Manager {
 
   getRatingsByPlatformId(
     service: string,
-    platformProductIds: number[],
+    platformProductIds: string[],
     callback: (browserExtensionProducts: BrowserExtensionProduct[]) => void
   ): void {
-    if(platformProductIds.length) {
+    if (platformProductIds.length) {
       chrome.runtime.sendMessage(
         {
           type: MessageEvent.INFO,

@@ -11,7 +11,6 @@ import { BrowserExtensionProduct } from '../type/BrowserExtensionProduct'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const app = require('../../package.json')
 
-
 const searchQuery = [
   {
     operationName: 'Results',
@@ -36,7 +35,7 @@ const searchByPlatformIdQuery = [
       provider: '%provider%',
     },
     query:
-      'query productByPlatform($platformIds: [Int], $provider: String) {\n  productByPlatform(platformIds: $platformIds, provider: $provider) {\n    platformId\n    rating\n  }\n}\n',
+      'query productByPlatform($platformIds: [String]!, $provider: String) {\n  productByPlatform(platformIds: $platformIds, provider: $provider) {\n    platformId\n    rating\n  slug\n typeId\n productId\n  }\n}\n',
   },
 ]
 
@@ -141,7 +140,7 @@ const SensCritique = class SensCritique implements Client {
   }
 
   async getProductRatingsByPlatformId(
-    platformProductIds: number[],
+    platformProductIds: string[],
     provider: Provider
   ): Promise<BrowserExtensionProduct[]> {
     const headers = new Headers()

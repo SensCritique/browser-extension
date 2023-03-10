@@ -1,4 +1,4 @@
 export enum VideoType {
-  MOVIE = 'movie',
+  MOVIE = 'film',
   TVSHOW = 'series',
 }

@@ -1,4 +1,7 @@
 export type BrowserExtensionProduct = {
   rating?: number
-  platformId: number
+  platformId: string
+  slug?: string
+  typeId?: number
+  productId?: number
 }

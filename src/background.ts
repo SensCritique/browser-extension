@@ -15,7 +15,7 @@ export interface Message {
 }
 
 export interface ProductPlatformMessage extends Message {
-  platformProductIds: number[]
+  platformProductIds: string[]
 }
 
 export interface ProductMessage extends Message {
@@ -34,31 +34,38 @@ const fetchInfo = async (message: ProductMessage): Promise<VideoInfo> =>
     message.seasons,
     message.provider
   )
+
 const fetchInfoByPlatformId = async (
   message: ProductPlatformMessage
 ): Promise<BrowserExtensionProduct[]> => {
-  const browserExtensionProducts = await senscritique.getProductRatingsByPlatformId(
-    message.platformProductIds,
-    message.service
-  )
-  browserExtensionProducts.forEach(product => {
-    if(product.rating === null) {
-      Logger.error(`Rating missing for product platform ID:${product.platformId}`, {
-        messageEvent: message,
-        platformProductId: product.platformId,
-        error: 'missing_rating'
-      })
+  const browserExtensionProducts =
+    await senscritique.getProductRatingsByPlatformId(
+      message.platformProductIds,
+      message.service
+    )
+  browserExtensionProducts.forEach((product) => {
+    if (product.rating === null) {
+      Logger.error(
+        `Rating missing for product platform ID:${product.platformId}`,
+        {
+          messageEvent: message,
+          platformProductId: product.platformId,
+          error: 'missing_rating',
+        }
+      )
     }
   })
 
-
   return browserExtensionProducts
 }
-  
 
 // Receive events from front
 chrome.runtime.onMessage.addListener(
-  (message: Message, sender: void, callback: (response: VideoInfo | BrowserExtensionProduct[]) => void) => {
+  (
+    message: Message,
+    sender: void,
+    callback: (response: VideoInfo | BrowserExtensionProduct[]) => void
+  ) => {
     if (message?.type !== MessageEvent.INFO) {
       return true
     }

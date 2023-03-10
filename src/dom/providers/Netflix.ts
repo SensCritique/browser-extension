@@ -4,8 +4,10 @@ import { Provider } from '../../enum/Provider'
 import Manager from '../Manager'
 import { VideoType } from '../../enum/VideoType'
 import { VideoInfo } from '../../http/Client'
+import { UniverseTypeId } from '../../enum/UniverseTypeId'
 import { BrowserExtensionProduct } from '../../type/BrowserExtensionProduct'
 import { SensCritiqueRating } from '../SensCritiqueRating'
+import { constructUrl } from './../../helper/ContructUrlHelper'
 
 export default class Netflix extends Manager {
   refreshRatings(): void {
@@ -15,14 +17,14 @@ export default class Netflix extends Manager {
 
   refreshWallRatings(): void {
     const productCards = document.querySelectorAll('.title-card a[href]')
-    let platformProductIds: number[] = []
+    let platformProductIds: string[] = []
     productCards.forEach((card) => {
       const url = decodeURI(card.getAttribute('href'))
       if (url) {
         // Find all PlatformIds on current page
         const regexpResult = url.match(/\/watch\/(\d+)/)
         if (regexpResult[1]) {
-          platformProductIds.push(parseInt(regexpResult[1]))
+          platformProductIds.push(regexpResult[1])
         }
       }
     })
@@ -34,14 +36,14 @@ export default class Netflix extends Manager {
       // Check if products platform IDs are present in cache
       platformProductIds.forEach((platformId) => {
         const cachedProduct = this.cache.get(md5(platformId.toString()))
-        if(cachedProduct) {
-         platformProductsInCached.push(cachedProduct)
+        if (cachedProduct) {
+          platformProductsInCached.push(cachedProduct)
         } else {
           platformProductsIdsMissing.push(platformId)
         }
       })
 
-      if(platformProductsIdsMissing.length) {
+      if (platformProductsIdsMissing.length) {
         this.getRatingsByPlatformId(
           Provider.NETFLIX,
           platformProductsIdsMissing,
@@ -55,17 +57,17 @@ export default class Netflix extends Manager {
   }
 
   renderWallRatings(browserExtensionProducts: BrowserExtensionProduct[]): void {
-     // Response from API with all browserExtensionProducts
-     browserExtensionProducts.forEach((browserExtensionProduct) => { 
+    // Response from API with all browserExtensionProducts
+    browserExtensionProducts.forEach((browserExtensionProduct) => {
       const hash = md5(browserExtensionProduct.platformId.toString())
       const platformId = browserExtensionProduct.platformId
       const cardElements = document.querySelectorAll(
         `.title-card a[href*="/watch/${platformId}"]`
       )
 
-      cardElements.forEach(cardElement => {
-        const hashClass = 'senscritique_'+hash
-        if(!cardElement.querySelector(`.${hashClass}`)) {
+      cardElements.forEach((cardElement) => {
+        const hashClass = 'senscritique_' + hash
+        if (!cardElement.querySelector(`.${hashClass}`)) {
           const mainDiv = document.createElement('div')
           mainDiv.style.position = 'absolute'
           mainDiv.style.zIndex = '100'
@@ -73,32 +75,31 @@ export default class Netflix extends Manager {
           mainDiv.style.bottom = '2px'
           mainDiv.style.display = 'flex'
           mainDiv.classList.add(hashClass)
-          cardElement.prepend(mainDiv);
+          cardElement.prepend(mainDiv)
 
-
-          this.renderRating(
-            Service.SENSCRITIQUE,
-            cardElement,
-            {
-              name: '',
-              redirect: '',
-              id: '',
-              url: '',
-              type: VideoType.MOVIE,
-              rating: browserExtensionProduct?.rating?.toString(),
-              hash,
-              platformId: browserExtensionProduct?.platformId
-            }
-          )
+          this.renderRating(Service.SENSCRITIQUE, cardElement, {
+            name: '',
+            redirect: '',
+            id: '',
+            url: '',
+            type: VideoType.MOVIE,
+            rating: browserExtensionProduct?.rating?.toString(),
+            hash,
+            platformId: browserExtensionProduct?.platformId,
+          })
         }
       })
     })
   }
 
   refreshModalRating(): void {
-    const platformIdRegex = new URL(window.location.href)?.pathname?.match(/\/title\/(\d+)/)
-    const platformId = new URL(window.location.href)?.searchParams.get('jbv') || platformIdRegex?.[1] 
-    
+    const platformIdRegex = new URL(window.location.href)?.pathname?.match(
+      /\/title\/(\d+)/
+    )
+    const platformId =
+      new URL(window.location.href)?.searchParams.get('jbv') ||
+      platformIdRegex?.[1]
+
     const modal = document.querySelector('.detail-modal')
     const hash = md5(platformId)
 
@@ -107,45 +108,55 @@ export default class Netflix extends Manager {
       const infoElement = modal.querySelector(
         '.previewModal--detailsMetadata-info'
       )
-      this.getRating(parseInt(platformId), infoElement, Service.SENSCRITIQUE, hash)
+      this.getRating(platformId, infoElement, Service.SENSCRITIQUE, hash)
     }
   }
 
   getRating(
-    platformId: number,
+    platformId: string,
     element: Element,
     service: Service,
     hash: string
   ): void {
     const videoInfoFound = this.cache.get(hash)
-    const hashClass = 'senscritique_'+hash
+    const hashClass = 'senscritique_' + hash
 
-    if(!element.querySelector(`.${hashClass}`)) {
+    if (!element.querySelector(`.${hashClass}`)) {
       const mainDiv = document.createElement('div')
       mainDiv.style.display = 'flex'
       mainDiv.classList.add(hashClass)
-      element.prepend(mainDiv);
+      element.prepend(mainDiv)
 
       if (!videoInfoFound) {
-          this.getRatingsByPlatformId(
-            Provider.NETFLIX,
-            [platformId],
-            (browserExtensionProducts: BrowserExtensionProduct[]) => {
-              const browserExtensionProduct = browserExtensionProducts?.[0]
-              if (browserExtensionProduct) {
-                this.renderRating(service, element, {
-                  name: '',
-                  hash,
-                  id: '',
-                  platformId,
-                  redirect: '',
-                  type: VideoType.MOVIE,
-                  rating: browserExtensionProduct.rating.toString(),
-                  url: ''
-                })
-              }
+        this.getRatingsByPlatformId(
+          Provider.NETFLIX,
+          [platformId],
+          (browserExtensionProducts: BrowserExtensionProduct[]) => {
+            const browserExtensionProduct = browserExtensionProducts?.[0]
+            const type =
+              browserExtensionProduct.typeId === UniverseTypeId.MOVIE
+                ? VideoType.MOVIE
+                : VideoType.TVSHOW
+
+            if (browserExtensionProduct) {
+              this.renderRating(service, element, {
+                name: '',
+                hash,
+                id: '',
+                platformId,
+                redirect: '',
+                type: VideoType.MOVIE,
+                rating: browserExtensionProduct.rating.toString(),
+                url: constructUrl(
+                  this.baseUrl,
+                  type,
+                  browserExtensionProduct.slug,
+                  browserExtensionProduct.productId
+                ),
+              })
             }
-          )
+          }
+        )
       }
       if (videoInfoFound) {
         this.renderRating(service, element, videoInfoFound)
@@ -153,11 +164,7 @@ export default class Netflix extends Manager {
     }
   }
 
-  renderRating(
-    service: Service,
-    element: Element,
-    videoInfo: VideoInfo,
-  ): void {
+  renderRating(service: Service, element: Element, videoInfo: VideoInfo): void {
     this.cache.save(videoInfo)
     // Rating element not found, create it
     const serviceRating = new SensCritiqueRating(videoInfo)

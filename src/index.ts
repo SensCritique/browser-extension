@@ -12,7 +12,7 @@ setInterval(() => {
   if (domain) {
     switch (domain) {
       case ProviderUrlDomain.DISNEY:
-        disney.refreshRatings()
+        disney.refreshModalRatings()
         break
       default:
         netflix.refreshRatings()
@@ -25,21 +25,21 @@ setInterval(() => {
 chrome.runtime.onMessage.addListener((event) => {
   const logger = new Logger()
   const { context, message, severity } = event
-  
+
   switch (severity) {
     case LogSeverityId.ERROR:
       logger.error(message, {
-        ...context
+        ...context,
       })
       break
     case LogSeverityId.DEBUG:
       logger.debug(message, {
-        ...context
+        ...context,
       })
       break
     default:
       logger.info(message, {
-        ...context
+        ...context,
       })
   }
 })

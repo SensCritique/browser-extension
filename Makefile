@@ -13,7 +13,7 @@ build-chrome:
 	cd dist/chrome/main && zip -r ../latest_chrome.zip * && mv ../latest_chrome.zip ../../../releases/
 .PHONY: watch-chrome
 watch-chrome:
-	${RUN_NODE} npx webpack --mode=development --config=webpack_chrome.config.js --watc
+	${RUN_NODE} npx webpack --mode=development --config=webpack_chrome.config.js --watch
 .PHONY: fix
 fix:
 	${RUN_NODE} npx eslint --fix src/*

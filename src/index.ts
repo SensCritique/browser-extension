@@ -1,11 +1,13 @@
 import Netflix from './dom/providers/Netflix'
 import Disney from './dom/providers/Disney'
+import PrimeVideo from './dom/providers/PrimeVideo'
 import { ProviderUrlDomain } from './enum/ProviderUrlDomain'
 import { LogSeverityId } from './enum/LogSeverity'
 import Logger from './logging/Logger'
 
 const netflix = new Netflix()
 const disney = new Disney()
+const primeVideo = new PrimeVideo()
 const domain = window.location.hostname
 
 setInterval(() => {
@@ -13,6 +15,9 @@ setInterval(() => {
     switch (domain) {
       case ProviderUrlDomain.DISNEY:
         disney.refreshModalRatings()
+        break
+      case ProviderUrlDomain.PRIMEVIDEO:
+        primeVideo.refreshRatings()
         break
       default:
         netflix.refreshRatings()

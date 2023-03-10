@@ -15,15 +15,16 @@ export default class Disney extends Manager {
       // eslint-disable-next-line no-useless-escape
       /[^\/]+$/
     )
+    if (platformIdRegex) {
+      const platformId = platformIdRegex?.[0]
 
-    const platformId = platformIdRegex?.[0]
+      const infoElement = document.querySelector(
+        "[data-gv2containerkey='contentMeta']"
+      )
+      const hash = md5(platformId)
 
-    const infoElement = document.querySelector(
-      "[data-gv2containerkey='contentMeta']"
-    )
-    const hash = md5(platformId)
-
-    this.getRating(platformId, infoElement, Service.SENSCRITIQUE, hash)
+      this.getRating(platformId, infoElement, Service.SENSCRITIQUE, hash)
+    }
   }
 
   getRating(

@@ -1,7 +1,7 @@
 {
   "name": "senscritique-extension",
   "version": "1.3.0",
-  "description": "Permet d'avoir les scores SensCritique sur Netflix/Disney+/PrimeVideo",
+  "description": "Permet d'avoir les scores SensCritique sur Netflix/Disney+/PrimeVideo et CanalPlus",
   "author": "SensCritique",
   "repository": {
     "url": "https://github.com/senscritique/SensCritique-extension"
@@ -13,7 +13,8 @@
   "keywords": [
     "netflix",
     "disney",
-    "PrimeVideo",
+    "primeVideo",
+    "canalplus",
     "senscritique",
     "score",
     "avis",

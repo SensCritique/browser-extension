@@ -36,7 +36,7 @@ export default class Disney extends Manager {
     const videoInfoFound = this.cache.get(hash)
     const hashClass = 'senscritique_' + hash
 
-    if (!element.querySelector(`.${hashClass}`)) {
+    if (!element?.querySelector(`.${hashClass}`)) {
       const mainDiv = document.createElement('div')
       mainDiv.style.display = 'flex'
       mainDiv.classList.add(hashClass)

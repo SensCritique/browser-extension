@@ -17,16 +17,14 @@ export default class Canal extends Manager {
 
   refreshWallRatings(): void {
     const productCards = document.querySelectorAll(
-      '.contentRow__itemLink___eVg4N'
+      '.contentRow__innerItem___mU7c_ a[href]'
     )
 
     let platformProductIds: string[] = []
     productCards.forEach((card) => {
       const url = decodeURI(card.getAttribute('href'))
-
       if (url) {
         // Find all PlatformIds on current page
-
         const regexpResult = url.match(/\/h\/(\d+ *_\d+)/)
         if (regexpResult?.[1]) {
           platformProductIds.push(regexpResult[1])
@@ -67,7 +65,7 @@ export default class Canal extends Manager {
       const hash = md5(browserExtensionProduct.platformId.toString())
       const platformId = browserExtensionProduct.platformId
       const cardElements = document.querySelectorAll(
-        `a[href*="/h/${platformId}"]`
+        `.contentRow__innerItem___mU7c_ a[href*="/h/${platformId}"]`
       )
 
       cardElements.forEach((cardElement) => {

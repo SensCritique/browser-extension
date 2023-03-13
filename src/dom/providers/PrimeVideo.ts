@@ -16,7 +16,7 @@ export default class PrimeVideo extends Manager {
   }
 
   refreshWallRatings(): void {
-    const productCards = document.querySelectorAll('.RnerZq a[href]')
+    const productCards = document.querySelectorAll('.tst-packshot-link a[href]')
 
     let platformProductIds: string[] = []
     productCards.forEach((card) => {
@@ -63,7 +63,7 @@ export default class PrimeVideo extends Manager {
       const hash = md5(browserExtensionProduct.platformId.toString())
       const platformId = browserExtensionProduct.platformId
       const cardElements = document.querySelectorAll(
-        `.RnerZq a[href*="/detail/${platformId}"]`
+        `.tst-packshot-link a[href*="/detail/${platformId}"]`
       )
 
       cardElements.forEach((cardElement) => {

@@ -2,12 +2,10 @@ import md5 from 'blueimp-md5'
 import { Service } from '../../enum/Service'
 import { Provider } from '../../enum/Provider'
 import Manager from '../Manager'
-import { VideoType } from '../../enum/VideoType'
 import { VideoInfo } from '../../http/Client'
-import { UniverseTypeId } from '../../enum/UniverseTypeId'
 import { BrowserExtensionProduct } from '../../type/BrowserExtensionProduct'
 import { SensCritiqueRating } from '../SensCritiqueRating'
-import { constructUrl } from './../../helper/ContructUrlHelper'
+import { generateRedirectUrl } from '../../helper/UrlGenerator'
 
 export default class PrimeVideo extends Manager {
   refreshRatings(): void {
@@ -16,14 +14,19 @@ export default class PrimeVideo extends Manager {
   }
 
   refreshWallRatings(): void {
-    const productCards = document.querySelectorAll('.tst-packshot-link a[href]')
-
+    const wallElements = document.querySelectorAll(
+      `a[href*="/detail/"][role="button"],[data-testid="super-carousel-card"]>a[href*="/detail/"]`
+    )
+    const heroCarouselElements = document.querySelectorAll(
+      `[data-testid="standard-hero"] li[data-index]>article a[href*="/detail/"]`
+    )
+    const productCards = [...wallElements, ...heroCarouselElements]
     let platformProductIds: string[] = []
     productCards.forEach((card) => {
       const url = decodeURI(card.getAttribute('href'))
       if (url) {
         // Find all PlatformIds on current page
-        const regexpResult = url.match(/\/detail\/(\d+ *[a-zA-Z_]\w*)/)
+        const regexpResult = url.match(/\/detail\/([\d\w]+)/)
         if (regexpResult?.[1]) {
           platformProductIds.push(regexpResult[1])
         }
@@ -46,7 +49,7 @@ export default class PrimeVideo extends Manager {
 
       if (platformProductsIdsMissing.length) {
         this.getRatingsByPlatformId(
-          Provider.PRIMEVIDEO,
+          Provider.AMAZON,
           platformProductsIdsMissing,
           (browserExtensionProducts: BrowserExtensionProduct[]) => {
             this.renderWallRatings(browserExtensionProducts)
@@ -62,13 +65,18 @@ export default class PrimeVideo extends Manager {
     browserExtensionProducts.forEach((browserExtensionProduct) => {
       const hash = md5(browserExtensionProduct.platformId.toString())
       const platformId = browserExtensionProduct.platformId
-      const cardElements = document.querySelectorAll(
-        `.tst-packshot-link a[href*="/detail/${platformId}"]`
+      const wallElements = document.querySelectorAll(
+        `a[href*="/detail/${platformId}"][role="button"],[data-testid="super-carousel-card"] a[href*="/detail/${platformId}"]`
       )
+      const heroCarouselElements = document.querySelectorAll(
+        `[data-testid="standard-hero"] li[data-index]>article>a[href*="/detail/${platformId}"]`
+      )
+      const cardElements = [...wallElements, ...heroCarouselElements]
 
-      cardElements.forEach((cardElement) => {
+      cardElements.forEach(async (cardElement: HTMLElement) => {
         const hashClass = 'senscritique_' + hash
         if (!cardElement.querySelector(`.${hashClass}`)) {
+          const name = cardElement.innerText
           const mainDiv = document.createElement('div')
           mainDiv.style.position = 'absolute'
           mainDiv.style.zIndex = '100'
@@ -79,11 +87,11 @@ export default class PrimeVideo extends Manager {
           cardElement.prepend(mainDiv)
 
           this.renderRating(Service.SENSCRITIQUE, cardElement, {
-            name: '',
-            redirect: '',
+            name: name,
+            redirect: await generateRedirectUrl(name),
             id: '',
-            url: '',
-            type: VideoType.MOVIE,
+            url: browserExtensionProduct.url,
+            type: browserExtensionProduct.type,
             rating: browserExtensionProduct?.rating?.toString(),
             hash,
             platformId: browserExtensionProduct?.platformId,
@@ -95,15 +103,16 @@ export default class PrimeVideo extends Manager {
 
   refreshModalRating(): void {
     const platformIdRegex = new URL(window.location.href)?.pathname?.match(
-      /\/detail\/(\d+ *[a-zA-Z_]\w*)/
+      /\/detail\/([\w\d]+)/
     )
     if (platformIdRegex) {
       const platformId = platformIdRegex?.[1]
       const hash = md5(platformId)
+      const name = document.querySelector('h1')?.innerText
 
       // Create main div for Ratings
       const infoElement = document.querySelector('.dv-node-dp-badges')
-      this.getRating(platformId, infoElement, Service.SENSCRITIQUE, hash)
+      this.getRating(platformId, infoElement, Service.SENSCRITIQUE, hash, name)
     }
   }
 
@@ -111,7 +120,8 @@ export default class PrimeVideo extends Manager {
     platformId: string,
     element: Element,
     service: Service,
-    hash: string
+    hash: string,
+    name: string = null
   ): void {
     const videoInfoFound = this.cache.get(hash)
     const hashClass = 'senscritique_' + hash
@@ -124,30 +134,20 @@ export default class PrimeVideo extends Manager {
 
       if (!videoInfoFound) {
         this.getRatingsByPlatformId(
-          Provider.PRIMEVIDEO,
+          Provider.AMAZON,
           [platformId],
-          (browserExtensionProducts: BrowserExtensionProduct[]) => {
+          async (browserExtensionProducts: BrowserExtensionProduct[]) => {
             const browserExtensionProduct = browserExtensionProducts?.[0]
-            const type =
-              browserExtensionProduct.typeId === UniverseTypeId.MOVIE
-                ? VideoType.MOVIE
-                : VideoType.TVSHOW
-
             if (browserExtensionProduct) {
               this.renderRating(service, element, {
-                name: '',
+                name: name,
                 hash,
                 id: '',
                 platformId,
-                redirect: '',
-                type,
+                redirect: await generateRedirectUrl(name),
+                type: browserExtensionProduct.type,
                 rating: browserExtensionProduct.rating.toString(),
-                url: constructUrl(
-                  this.baseUrl,
-                  type,
-                  browserExtensionProduct.slug,
-                  browserExtensionProduct.productId
-                ),
+                url: browserExtensionProduct.url,
               })
             }
           }
@@ -175,14 +175,14 @@ export default class PrimeVideo extends Manager {
         rating: rating,
         serviceWebsite: service,
         netflix_id: this.currentVideoId(),
-        provider: Provider.PRIMEVIDEO,
+        provider: Provider.AMAZON,
       })
     } else {
       this.logger.error(`Cannot fetch rating for video ${videoName}`, {
         name: videoName,
         serviceWebsite: service,
         netflix_id: this.currentVideoId(),
-        provider: Provider.PRIMEVIDEO,
+        provider: Provider.AMAZON,
       })
     }
   }

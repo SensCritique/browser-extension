@@ -18,10 +18,10 @@ setInterval(() => {
       case ProviderUrlDomain.DISNEY:
         disney.refreshModalRatings()
         break
-      case ProviderUrlDomain.PRIMEVIDEO:
+      case ProviderUrlDomain.AMAZON:
         primeVideo.refreshRatings()
         break
-      case ProviderUrlDomain.CANAL:
+      case ProviderUrlDomain.CANALPLUS:
         canal.refreshRatings()
         break
       default:

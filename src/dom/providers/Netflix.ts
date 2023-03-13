@@ -2,12 +2,10 @@ import md5 from 'blueimp-md5'
 import { Service } from '../../enum/Service'
 import { Provider } from '../../enum/Provider'
 import Manager from '../Manager'
-import { VideoType } from '../../enum/VideoType'
 import { VideoInfo } from '../../http/Client'
-import { UniverseTypeId } from '../../enum/UniverseTypeId'
 import { BrowserExtensionProduct } from '../../type/BrowserExtensionProduct'
 import { SensCritiqueRating } from '../SensCritiqueRating'
-import { constructUrl } from './../../helper/ContructUrlHelper'
+import { generateRedirectUrl } from '../../helper/UrlGenerator'
 
 export default class Netflix extends Manager {
   refreshRatings(): void {
@@ -16,7 +14,9 @@ export default class Netflix extends Manager {
   }
 
   refreshWallRatings(): void {
-    const productCards = document.querySelectorAll('.title-card a[href]')
+    const productCards = document.querySelectorAll(
+      '.title-card a[href^="/watch"]'
+    )
     let platformProductIds: string[] = []
     productCards.forEach((card) => {
       const url = decodeURI(card.getAttribute('href'))
@@ -56,7 +56,9 @@ export default class Netflix extends Manager {
     }
   }
 
-  renderWallRatings(browserExtensionProducts: BrowserExtensionProduct[]): void {
+  async renderWallRatings(
+    browserExtensionProducts: BrowserExtensionProduct[]
+  ): Promise<void> {
     // Response from API with all browserExtensionProducts
     browserExtensionProducts.forEach((browserExtensionProduct) => {
       const hash = md5(browserExtensionProduct.platformId.toString())
@@ -65,7 +67,8 @@ export default class Netflix extends Manager {
         `.title-card a[href*="/watch/${platformId}"]`
       )
 
-      cardElements.forEach((cardElement) => {
+      cardElements.forEach(async (cardElement) => {
+        const videoName = cardElement?.getAttribute('aria-label')
         const hashClass = 'senscritique_' + hash
         if (!cardElement.querySelector(`.${hashClass}`)) {
           const mainDiv = document.createElement('div')
@@ -79,10 +82,10 @@ export default class Netflix extends Manager {
 
           this.renderRating(Service.SENSCRITIQUE, cardElement, {
             name: '',
-            redirect: '',
+            redirect: await generateRedirectUrl(videoName),
             id: '',
-            url: '',
-            type: VideoType.MOVIE,
+            url: browserExtensionProduct.url,
+            type: browserExtensionProduct.type,
             rating: browserExtensionProduct?.rating?.toString(),
             hash,
             platformId: browserExtensionProduct?.platformId,
@@ -102,13 +105,22 @@ export default class Netflix extends Manager {
 
     const modal = document.querySelector('.detail-modal')
     const hash = md5(platformId)
+    const videoName = document
+      .querySelector('.detail-modal img[title]')
+      ?.getAttribute('title')
 
     if (modal?.getElementsByClassName(hash).length === 0) {
       // Create main div for Ratings
       const infoElement = modal.querySelector(
         '.previewModal--detailsMetadata-info'
       )
-      this.getRating(platformId, infoElement, Service.SENSCRITIQUE, hash)
+      this.getRating(
+        platformId,
+        infoElement,
+        Service.SENSCRITIQUE,
+        hash,
+        videoName
+      )
     }
   }
 
@@ -116,7 +128,8 @@ export default class Netflix extends Manager {
     platformId: string,
     element: Element,
     service: Service,
-    hash: string
+    hash: string,
+    name: string = null
   ): void {
     const videoInfoFound = this.cache.get(hash)
     const hashClass = 'senscritique_' + hash
@@ -131,28 +144,19 @@ export default class Netflix extends Manager {
         this.getRatingsByPlatformId(
           Provider.NETFLIX,
           [platformId],
-          (browserExtensionProducts: BrowserExtensionProduct[]) => {
+          async (browserExtensionProducts: BrowserExtensionProduct[]) => {
             const browserExtensionProduct = browserExtensionProducts?.[0]
-            const type =
-              browserExtensionProduct.typeId === UniverseTypeId.MOVIE
-                ? VideoType.MOVIE
-                : VideoType.TVSHOW
 
             if (browserExtensionProduct) {
               this.renderRating(service, element, {
-                name: '',
+                name: name,
                 hash,
                 id: '',
                 platformId,
-                redirect: '',
-                type: VideoType.MOVIE,
+                redirect: await generateRedirectUrl(name),
+                type: browserExtensionProduct.type,
                 rating: browserExtensionProduct.rating.toString(),
-                url: constructUrl(
-                  this.baseUrl,
-                  type,
-                  browserExtensionProduct.slug,
-                  browserExtensionProduct.productId
-                ),
+                url: browserExtensionProduct.url,
               })
             }
           }

@@ -44,7 +44,7 @@ export class Rating {
 
     const a = document.createElement('a')
     a.style.position = 'absolute'
-    a.setAttribute('href', this.videoInfo.url)
+    a.setAttribute('href', this.videoInfo.url || this.videoInfo.redirect)
     a.setAttribute('target', '_blank')
     a.style.display = 'block'
     a.style.height = '100%'

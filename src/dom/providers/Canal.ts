@@ -4,10 +4,9 @@ import { Provider } from '../../enum/Provider'
 import Manager from '../Manager'
 import { VideoType } from '../../enum/VideoType'
 import { VideoInfo } from '../../http/Client'
-import { UniverseTypeId } from '../../enum/UniverseTypeId'
 import { BrowserExtensionProduct } from '../../type/BrowserExtensionProduct'
 import { SensCritiqueRating } from '../SensCritiqueRating'
-import { constructUrl } from './../../helper/ContructUrlHelper'
+import { generateRedirectUrl } from '../../helper/UrlGenerator'
 
 export default class Canal extends Manager {
   refreshRatings(): void {
@@ -16,9 +15,7 @@ export default class Canal extends Manager {
   }
 
   refreshWallRatings(): void {
-    const productCards = document.querySelectorAll(
-      '.contentRow__innerItem___mU7c_ a[href]'
-    )
+    const productCards = document.querySelectorAll('.contentRow a[href]')
 
     let platformProductIds: string[] = []
     productCards.forEach((card) => {
@@ -48,7 +45,7 @@ export default class Canal extends Manager {
 
       if (platformProductsIdsMissing.length) {
         this.getRatingsByPlatformId(
-          Provider.PRIMEVIDEO,
+          Provider.CANALPLUS,
           platformProductsIdsMissing,
           (browserExtensionProducts: BrowserExtensionProduct[]) => {
             this.renderWallRatings(browserExtensionProducts)
@@ -65,31 +62,39 @@ export default class Canal extends Manager {
       const hash = md5(browserExtensionProduct.platformId.toString())
       const platformId = browserExtensionProduct.platformId
       const cardElements = document.querySelectorAll(
-        `.contentRow__innerItem___mU7c_ a[href*="/h/${platformId}"]`
+        `[class*="contentRow__"] a[href*="/h/${platformId}"]`
       )
 
-      cardElements.forEach((cardElement) => {
+      cardElements.forEach(async (cardElement) => {
         const hashClass = 'senscritique_' + hash
         if (!cardElement.querySelector(`.${hashClass}`)) {
-          const mainDiv = document.createElement('div')
-          mainDiv.style.position = 'absolute'
-          mainDiv.style.zIndex = '100'
-          mainDiv.style.right = '8px'
-          mainDiv.style.bottom = '4px'
-          mainDiv.style.display = 'flex'
-          mainDiv.classList.add(hashClass)
-          cardElement.prepend(mainDiv)
+          const name = cardElement.getAttribute('title')
+          const posterElement = cardElement.querySelector(
+            '[class*="cardContent__"]'
+          )
+          if (posterElement) {
+            const mainDiv = document.createElement('div')
+            mainDiv.style.position = 'absolute'
+            mainDiv.style.zIndex = '100'
+            mainDiv.style.right = '8px'
+            mainDiv.style.left = 'unset'
+            mainDiv.style.bottom = '4px'
+            mainDiv.style.top = 'unset'
+            mainDiv.style.display = 'flex'
+            mainDiv.classList.add(hashClass)
+            posterElement.prepend(mainDiv)
 
-          this.renderRating(Service.SENSCRITIQUE, cardElement, {
-            name: '',
-            redirect: '',
-            id: '',
-            url: '',
-            type: VideoType.MOVIE,
-            rating: browserExtensionProduct?.rating?.toString(),
-            hash,
-            platformId: browserExtensionProduct?.platformId,
-          })
+            this.renderRating(Service.SENSCRITIQUE, posterElement, {
+              name,
+              redirect: await generateRedirectUrl(name),
+              id: '',
+              url: browserExtensionProduct.url,
+              type: VideoType.MOVIE,
+              rating: browserExtensionProduct?.rating?.toString(),
+              hash,
+              platformId: browserExtensionProduct?.platformId,
+            })
+          }
         }
       })
     })
@@ -99,6 +104,7 @@ export default class Canal extends Manager {
     const platformIdRegex = new URL(window.location.href)?.pathname?.match(
       /\/h\/(\d+ *_\d+)/
     )
+    const name = document.querySelector('h1')?.innerText
 
     if (platformIdRegex) {
       const platformId = platformIdRegex?.[1]
@@ -106,9 +112,9 @@ export default class Canal extends Manager {
 
       // Create main div for Ratings
       const infoElement = document.querySelector(
-        '.detailV5__actionLayout___ePmq5'
+        '[class*="detailV5__actionLayout__"]'
       )
-      this.getRating(platformId, infoElement, Service.SENSCRITIQUE, hash)
+      this.getRating(platformId, infoElement, Service.SENSCRITIQUE, hash, name)
     }
   }
 
@@ -116,11 +122,11 @@ export default class Canal extends Manager {
     platformId: string,
     element: Element,
     service: Service,
-    hash: string
+    hash: string,
+    name: string = null
   ): void {
     const videoInfoFound = this.cache.get(hash)
     const hashClass = 'senscritique_' + hash
-
     if (!element.querySelector(`.${hashClass}`)) {
       const mainDiv = document.createElement('div')
       mainDiv.style.display = 'flex'
@@ -129,30 +135,21 @@ export default class Canal extends Manager {
 
       if (!videoInfoFound) {
         this.getRatingsByPlatformId(
-          Provider.PRIMEVIDEO,
+          Provider.CANALPLUS,
           [platformId],
-          (browserExtensionProducts: BrowserExtensionProduct[]) => {
+          async (browserExtensionProducts: BrowserExtensionProduct[]) => {
             const browserExtensionProduct = browserExtensionProducts?.[0]
-            const type =
-              browserExtensionProduct.typeId === UniverseTypeId.MOVIE
-                ? VideoType.MOVIE
-                : VideoType.TVSHOW
 
             if (browserExtensionProduct) {
               this.renderRating(service, element, {
-                name: '',
+                name,
                 hash,
                 id: '',
                 platformId,
-                redirect: '',
-                type,
+                redirect: await generateRedirectUrl(name),
+                type: browserExtensionProduct.type,
                 rating: browserExtensionProduct.rating.toString(),
-                url: constructUrl(
-                  this.baseUrl,
-                  type,
-                  browserExtensionProduct.slug,
-                  browserExtensionProduct.productId
-                ),
+                url: browserExtensionProduct.url,
               })
             }
           }
@@ -180,14 +177,14 @@ export default class Canal extends Manager {
         rating: rating,
         serviceWebsite: service,
         netflix_id: this.currentVideoId(),
-        provider: Provider.PRIMEVIDEO,
+        provider: Provider.CANALPLUS,
       })
     } else {
       this.logger.error(`Cannot fetch rating for video ${videoName}`, {
         name: videoName,
         serviceWebsite: service,
         netflix_id: this.currentVideoId(),
-        provider: Provider.PRIMEVIDEO,
+        provider: Provider.CANALPLUS,
       })
     }
   }

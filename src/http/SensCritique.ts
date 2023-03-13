@@ -6,7 +6,16 @@ import { compare } from '../helper/ComparatorHelper'
 import { Logger } from '../../src/background'
 import { Product } from '../type/Product'
 import { Provider } from '../enum/Provider'
-import { BrowserExtensionProduct } from '../type/BrowserExtensionProduct'
+import {
+  ApolloBrowserExtensionProduct,
+  BrowserExtensionProduct,
+} from '../type/BrowserExtensionProduct'
+import {
+  generateProductUrl,
+  generateRedirectUrl,
+  getSearchUrl,
+} from '../helper/UrlGenerator'
+import { getVideoType } from '../helper/TypeHelper'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const app = require('../../package.json')
@@ -40,25 +49,12 @@ const searchByPlatformIdQuery = [
 ]
 
 const SensCritique = class SensCritique implements Client {
-  private baseUrl = 'https://www.senscritique.com'
-  private searchUrl: string
-  private errorSearchUrl: string
-
-  constructor() {
-    this.searchUrl = 'https://apollo.senscritique.local/'
-    this.errorSearchUrl = this.baseUrl + '/search?query=%search%'
-  }
-
-  buildErrorUrl(videoName: string): string {
-    return this.errorSearchUrl.replace('%search%', videoName)
-  }
-
   async search(title: string): Promise<Product> {
     const headers = new Headers()
     headers.append('User-Agent', `senscritique-extension v${app.version}`)
     headers.append('Content-Type', 'application/json')
 
-    const response = await fetch(this.searchUrl, {
+    const response = await fetch(await getSearchUrl(), {
       headers,
       method: 'POST',
       body: JSON.stringify(searchQuery).replace('%query%', title),
@@ -87,7 +83,7 @@ const SensCritique = class SensCritique implements Client {
   ): Promise<VideoInfo | null> {
     const defaultVideoInfos = {
       name: title,
-      redirect: this.buildErrorUrl(title),
+      redirect: await generateRedirectUrl(title),
       id: null,
       type: null,
     }
@@ -152,15 +148,28 @@ const SensCritique = class SensCritique implements Client {
       provider
     )
 
-    const response = await fetch(this.searchUrl, {
+    const response = await fetch(await getSearchUrl(), {
       headers,
       method: 'POST',
       body: request,
     })
 
     if (response?.ok) {
-      return (await response.json())[0]?.data?.productByPlatform
+      return this.mapBrowserExtensionProduct(
+        (await response.json())[0]?.data?.productByPlatform
+      )
     }
+  }
+
+  mapBrowserExtensionProduct(
+    browserExtensionProducts: ApolloBrowserExtensionProduct[]
+  ): BrowserExtensionProduct[] {
+    return browserExtensionProducts.map((product) => ({
+      rating: product.rating,
+      platformId: product.platformId,
+      url: generateProductUrl(product.typeId, product.slug, product.productId),
+      type: getVideoType(product.typeId),
+    }))
   }
 }
 

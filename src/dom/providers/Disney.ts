@@ -1,13 +1,11 @@
-import { constructUrl } from './../../helper/ContructUrlHelper'
 import md5 from 'blueimp-md5'
 import { Service } from '../../enum/Service'
 import { Provider } from '../../enum/Provider'
 import Manager from '../Manager'
-import { VideoType } from '../../enum/VideoType'
-import { UniverseTypeId } from '../../enum/UniverseTypeId'
 import { VideoInfo } from '../../http/Client'
 import { SensCritiqueRating } from '../SensCritiqueRating'
 import { BrowserExtensionProduct } from '../../type/BrowserExtensionProduct'
+import { generateRedirectUrl } from '../../helper/UrlGenerator'
 
 export default class Disney extends Manager {
   refreshModalRatings(): void {
@@ -22,8 +20,11 @@ export default class Disney extends Manager {
         "[data-gv2containerkey='contentMeta']"
       )
       const hash = md5(platformId)
+      const name = document
+        .querySelector('#details_index img[alt]')
+        ?.getAttribute('alt')
 
-      this.getRating(platformId, infoElement, Service.SENSCRITIQUE, hash)
+      this.getRating(platformId, infoElement, Service.SENSCRITIQUE, hash, name)
     }
   }
 
@@ -31,12 +32,13 @@ export default class Disney extends Manager {
     platformId: string,
     element: Element,
     service: Service,
-    hash: string
+    hash: string,
+    name: string = null
   ): void {
     const videoInfoFound = this.cache.get(hash)
     const hashClass = 'senscritique_' + hash
 
-    if (!element?.querySelector(`.${hashClass}`)) {
+    if (element && !element.querySelector(`.${hashClass}`)) {
       const mainDiv = document.createElement('div')
       mainDiv.style.display = 'flex'
       mainDiv.classList.add(hashClass)
@@ -46,28 +48,18 @@ export default class Disney extends Manager {
         this.getRatingsByPlatformId(
           Provider.DISNEY,
           [platformId],
-          (browserExtensionProducts: BrowserExtensionProduct[]) => {
+          async (browserExtensionProducts: BrowserExtensionProduct[]) => {
             const browserExtensionProduct = browserExtensionProducts?.[0]
-            const type =
-              browserExtensionProduct.typeId === UniverseTypeId.MOVIE
-                ? VideoType.MOVIE
-                : VideoType.TVSHOW
-
             if (browserExtensionProduct) {
               this.renderRating(service, element, {
-                name: '',
+                name,
                 hash,
                 id: '',
                 platformId,
-                redirect: '',
-                type,
-                rating: browserExtensionProduct.rating.toString(),
-                url: constructUrl(
-                  this.baseUrl,
-                  type,
-                  browserExtensionProduct.slug,
-                  browserExtensionProduct.productId
-                ),
+                redirect: await generateRedirectUrl(name),
+                type: browserExtensionProduct.type,
+                rating: browserExtensionProduct?.rating?.toString(),
+                url: browserExtensionProduct.url,
               })
             }
           }

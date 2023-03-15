@@ -23,10 +23,14 @@ export default class PrimeVideo extends Manager {
     const heroCarouselElements = document.querySelectorAll(
       `[data-testid="standard-hero"] li[data-index]>article section`
     )
+    const legacyElements = document.querySelectorAll(
+      `li > .tst-title-card a[href*="/detail/"]`
+    )
     const productCards = [
       ...wallElements,
       ...heroCarouselElements,
       ...superCarouselCardElements,
+      ...legacyElements,
     ]
     let platformProductIds: string[] = []
     productCards.forEach((cardElement) => {
@@ -86,15 +90,22 @@ export default class PrimeVideo extends Manager {
       const heroCarouselElements = document.querySelectorAll(
         `[data-testid="standard-hero"] li[data-index]>article section`
       )
+      const legacyElements = document.querySelectorAll(
+        `li > .tst-title-card a[href*="/detail/${platformId}"]:not([role="button"], .tst-play-button, .tst-trailer-button)`
+      )
       const cardElements = [
         ...wallElements,
         ...heroCarouselElements,
         ...superCarouselCardElements,
+        ...legacyElements,
       ]
 
       cardElements.forEach(async (cardElement: HTMLElement) => {
         // Only keep carousel and wall elements (without episode URL)
         if (
+          cardElement
+            .getAttribute('href')
+            .match(`^/region/[^/]+/detail/${platformId}.*`) ||
           cardElement.querySelector(
             `a[href*="/detail/${platformId}"]:not([data-testid="play"])`
           ) ||

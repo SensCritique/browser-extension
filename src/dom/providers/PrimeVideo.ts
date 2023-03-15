@@ -15,15 +15,27 @@ export default class PrimeVideo extends Manager {
 
   refreshWallRatings(): void {
     const wallElements = document.querySelectorAll(
-      `a[href*="/detail/"][role="button"],[data-testid="super-carousel-card"]>a[href*="/detail/"]`
+      `a[href*="/detail/"][role="button"]`
+    )
+    const superCarouselCardElements = document.querySelectorAll(
+      '[data-testid="super-carousel-card"] a[href*="/detail/"]'
     )
     const heroCarouselElements = document.querySelectorAll(
-      `[data-testid="standard-hero"] li[data-index]>article a[href*="/detail/"]`
+      `[data-testid="standard-hero"] li[data-index]>article section`
     )
-    const productCards = [...wallElements, ...heroCarouselElements]
+    const productCards = [
+      ...wallElements,
+      ...heroCarouselElements,
+      ...superCarouselCardElements,
+    ]
     let platformProductIds: string[] = []
-    productCards.forEach((card) => {
-      const url = decodeURI(card.getAttribute('href'))
+    productCards.forEach((cardElement) => {
+      let url = cardElement.getAttribute('href')
+      if (!url) {
+        const linkElement = cardElement.querySelector('a[href*="/detail/"]')
+        url = linkElement?.getAttribute('href')
+      }
+      url = decodeURI(url)
       if (url) {
         // Find all PlatformIds on current page
         const regexpResult = url.match(/\/detail\/([\d\w]+)/)
@@ -66,36 +78,60 @@ export default class PrimeVideo extends Manager {
       const hash = md5(browserExtensionProduct.platformId.toString())
       const platformId = browserExtensionProduct.platformId
       const wallElements = document.querySelectorAll(
-        `a[href*="/detail/${platformId}"][role="button"],[data-testid="super-carousel-card"] a[href*="/detail/${platformId}"]`
+        `a[href*="/detail/${platformId}"][role="button"]`
+      )
+      const superCarouselCardElements = document.querySelectorAll(
+        `[data-testid="super-carousel-card"] a[href*="/detail/${platformId}"]`
       )
       const heroCarouselElements = document.querySelectorAll(
-        `[data-testid="standard-hero"] li[data-index]>article>a[href*="/detail/${platformId}"]`
+        `[data-testid="standard-hero"] li[data-index]>article section`
       )
-      const cardElements = [...wallElements, ...heroCarouselElements]
+      const cardElements = [
+        ...wallElements,
+        ...heroCarouselElements,
+        ...superCarouselCardElements,
+      ]
 
       cardElements.forEach(async (cardElement: HTMLElement) => {
-        const hashClass = 'senscritique_' + hash
-        if (!cardElement.querySelector(`.${hashClass}`)) {
-          const name = cardElement.innerText
-          const mainDiv = document.createElement('div')
-          mainDiv.style.position = 'absolute'
-          mainDiv.style.zIndex = '100'
-          mainDiv.style.right = '2px'
-          mainDiv.style.bottom = '2px'
-          mainDiv.style.display = 'flex'
-          mainDiv.classList.add(hashClass)
-          cardElement.prepend(mainDiv)
+        // Only keep carousel and wall elements (without episode URL)
+        if (
+          cardElement.querySelector(
+            `a[href*="/detail/${platformId}"]:not([data-testid="play"])`
+          ) ||
+          (cardElement
+            ?.getAttribute('href')
+            ?.startsWith(`/detail/${platformId}`) &&
+            (cardElement.getAttribute('role') === 'button' ||
+              cardElement.getAttribute('data-testid') === 'image-link')) ||
+          cardElement.getAttribute('data-testid') === 'preroll-player-link'
+        ) {
+          const hashClass = 'senscritique_' + hash
+          if (!cardElement.querySelector(`.${hashClass}`)) {
+            let name = cardElement.innerText
+            const mainDiv = document.createElement('div')
+            mainDiv.style.position = 'absolute'
+            mainDiv.style.zIndex = '100'
+            mainDiv.style.right = '2px'
+            mainDiv.style.bottom = '2px'
+            mainDiv.style.display = 'flex'
+            if (cardElement.nodeName === 'SECTION') {
+              mainDiv.style.right = 'inherit'
+              name = cardElement.querySelector('img')?.getAttribute('alt')
+            }
+            mainDiv.classList.add(hashClass)
+            cardElement.append(mainDiv)
 
-          this.renderRating(Service.SENSCRITIQUE, cardElement, {
-            name: name,
-            redirect: await generateRedirectUrl(name),
-            id: '',
-            url: browserExtensionProduct.url,
-            type: browserExtensionProduct.type,
-            rating: browserExtensionProduct?.rating?.toString(),
-            hash,
-            platformId: browserExtensionProduct?.platformId,
-          })
+            this.renderRating(Service.SENSCRITIQUE, cardElement, {
+              name: name,
+              redirect: await generateRedirectUrl(name),
+              id: '',
+              url: browserExtensionProduct.url,
+              type: browserExtensionProduct.type,
+              rating: browserExtensionProduct?.rating?.toString(),
+              hash,
+              platformId: browserExtensionProduct?.platformId,
+            })
+          }
         }
       })
     })
@@ -111,26 +147,28 @@ export default class PrimeVideo extends Manager {
       const name = document.querySelector('h1')?.innerText
 
       // Create main div for Ratings
-      const infoElement = document.querySelector('.dv-node-dp-badges')
+      const infoElement = document.querySelector(
+        '.dv-node-dp-badges'
+      ) as HTMLElement
       this.getRating(platformId, infoElement, Service.SENSCRITIQUE, hash, name)
     }
   }
 
   getRating(
     platformId: string,
-    element: Element,
+    element: HTMLElement,
     service: Service,
     hash: string,
     name: string = null
   ): void {
     const videoInfoFound = this.cache.get(hash)
     const hashClass = 'senscritique_' + hash
-
     if (!element.querySelector(`.${hashClass}`)) {
+      element.style.backgroundColor = 'none'
       const mainDiv = document.createElement('div')
       mainDiv.style.display = 'flex'
       mainDiv.classList.add(hashClass)
-      element.prepend(mainDiv)
+      element.append(mainDiv)
 
       if (!videoInfoFound) {
         this.getRatingsByPlatformId(

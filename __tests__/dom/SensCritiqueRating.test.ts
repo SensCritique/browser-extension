@@ -59,17 +59,15 @@ test('It should render node with rights info', () => {
     hash: 'XXX',
     name: 'test',
   })
-  const sensCritiqueRatingRendered = sensCritiqueRating.render()
+  const mainDiv = document.createElement('div')
+  const ratingElement = document.createElement('div')
+  ratingElement.classList.add('senscritique_XXX')
+  mainDiv.appendChild(ratingElement)
+  sensCritiqueRating.render(mainDiv)
 
-  expect(sensCritiqueRatingRendered).not.toBeNull()
-  expect(sensCritiqueRatingRendered.children[1].getAttribute('href')).toBe(
+  expect(mainDiv).not.toBeNull()
+  expect(mainDiv.querySelector('a').getAttribute('href')).toBe(
     'https://google.fr'
   )
-  expect(sensCritiqueRatingRendered.children[1].getAttribute('id')).toBe('XXX')
-  expect(
-    (
-      sensCritiqueRatingRendered.childNodes[2].childNodes[0].childNodes[0]
-        .childNodes[0] as HTMLElement
-    ).innerText
-  ).toBe('8,5')
+  expect((mainDiv.querySelector('span') as HTMLElement)?.innerText).toBe('8,5')
 })

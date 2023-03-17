@@ -12,7 +12,7 @@ test('It should return mapped product', () => {
   )
   expect(result.flattenedTitle).toEqual('test 34')
   expect(result.title).toEqual('Test 34()!!!')
-  expect(result.type).toEqual('film')
+  expect(result.type).toEqual('movie')
   expect(result.year).toEqual(2000)
   expect(result.nbrSeasons).toEqual(2)
   expect(result.providers).toEqual([Provider.NETFLIX])

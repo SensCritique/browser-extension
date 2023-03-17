@@ -24,8 +24,9 @@ export default class PrimeVideo extends Manager {
       `[data-testid="standard-hero"] li[data-index]>article section`
     )
     const legacyElements = document.querySelectorAll(
-      `li > .tst-title-card a[href*="/detail/"]`
+      `li .tst-packshot > a[href*="/detail/"]`
     )
+
     const productCards = [
       ...wallElements,
       ...heroCarouselElements,
@@ -82,21 +83,25 @@ export default class PrimeVideo extends Manager {
       const hash = md5(browserExtensionProduct.platformId.toString())
       const platformId = browserExtensionProduct.platformId
       const wallElements = document.querySelectorAll(
-        `a[href*="/detail/${platformId}"][role="button"]`
+        `[data-testid="packshot"] a[href*="/detail/${platformId}"][role="button"]:not([class*="tst-"])`
       )
       const superCarouselCardElements = document.querySelectorAll(
-        `[data-testid="super-carousel-card"] a[href*="/detail/${platformId}"]`
+        `[data-testid="super-carousel-card"] > div > a[href*="/detail/${platformId}"]`
+      )
+      const superCarouselVideoCardElements = document.querySelectorAll(
+        `[data-testid="super-carousel-card"] a[href*="/detail/${platformId}"].tst-preroll-player `
       )
       const heroCarouselElements = document.querySelectorAll(
         `[data-testid="standard-hero"] li[data-index]>article section`
       )
       const legacyElements = document.querySelectorAll(
-        `li > .tst-title-card a[href*="/detail/${platformId}"]:not([role="button"], .tst-play-button, .tst-trailer-button)`
+        `li .tst-packshot > a[href*="/detail/${platformId}"]`
       )
       const cardElements = [
         ...wallElements,
         ...heroCarouselElements,
         ...superCarouselCardElements,
+        ...superCarouselVideoCardElements,
         ...legacyElements,
       ]
 
@@ -105,7 +110,7 @@ export default class PrimeVideo extends Manager {
         if (
           cardElement
             .getAttribute('href')
-            .match(`^/region/[^/]+/detail/${platformId}.*`) ||
+            ?.match(`^/region/[^/]+/detail/${platformId}.*`) ||
           cardElement.querySelector(
             `a[href*="/detail/${platformId}"]:not([data-testid="play"])`
           ) ||
@@ -126,7 +131,8 @@ export default class PrimeVideo extends Manager {
             mainDiv.style.bottom = '2px'
             mainDiv.style.display = 'flex'
             if (cardElement.nodeName === 'SECTION') {
-              mainDiv.style.right = 'inherit'
+              mainDiv.style.position = 'relative'
+              mainDiv.style.marginTop = '6px'
               name = cardElement.querySelector('img')?.getAttribute('alt')
             }
             mainDiv.classList.add(hashClass)

@@ -90,26 +90,26 @@ chrome.runtime.onMessage.addListener(
 )
 
 export class Logger {
-  static info(message: string, context: object = {}): void {
+  static info(message: string, context: unknown = {}): void {
     Logger.log(LogSeverity.INFO, message, context)
   }
 
-  static error(message: string, context: object = {}): void {
+  static error(message: string, context: unknown = {}): void {
     Logger.log(LogSeverity.ERROR, message, context)
   }
 
-  static warning(message: string, context: object = {}): void {
+  static warning(message: string, context: unknown = {}): void {
     Logger.log(LogSeverity.WARNING, message, context)
   }
 
-  static debug(message: string, context: object = {}): void {
+  static debug(message: string, context: unknown = {}): void {
     Logger.log(LogSeverity.DEBUG, message, context)
   }
 
   static log(
     severity: LogSeverity,
     message: string,
-    context: object = {}
+    context: unknown = {}
   ): void {
     const userAgent = navigator.userAgent
     if (userAgent.includes('Chrome')) {

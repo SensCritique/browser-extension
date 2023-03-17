@@ -49,27 +49,42 @@ const searchByPlatformIdQuery = [
 ]
 
 const SensCritique = class SensCritique implements Client {
+  protected requestInError = 0
+
+  hasTooManyErrorResponses(): boolean {
+    return this.requestInError > 3
+  }
+
   async search(title: string): Promise<Product> {
+    if (this.hasTooManyErrorResponses()) {
+      Logger.error('Too many error responses from SensCritique', {
+        name: title,
+      })
+      return null
+    }
     const headers = new Headers()
     headers.append('User-Agent', `senscritique-extension v${app.version}`)
     headers.append('Content-Type', 'application/json')
 
-    const response = await fetch(await getSearchUrl(), {
-      headers,
-      method: 'POST',
-      body: JSON.stringify(searchQuery).replace('%query%', title),
-    })
+    try {
+      const response = await fetch(await getSearchUrl(), {
+        headers,
+        method: 'POST',
+        body: JSON.stringify(searchQuery).replace('%query%', title),
+      })
 
-    if (response.ok) {
-      return response?.json()
-    }
-
-    Logger.error(
-      'An error occured when trying to fetch product on SensCritique',
-      {
-        name: title,
+      if (response.ok) {
+        return response?.json()
       }
-    )
+    } catch (e) {
+      this.requestInError++
+      Logger.error(
+        'An error occured when trying to fetch product on SensCritique',
+        {
+          name: title,
+        }
+      )
+    }
 
     return null
   }
@@ -139,26 +154,45 @@ const SensCritique = class SensCritique implements Client {
     platformProductIds: string[],
     provider: Provider
   ): Promise<BrowserExtensionProduct[]> {
-    const headers = new Headers()
-    headers.append('User-Agent', `senscritique-extension v${app.version}`)
-    headers.append('Content-Type', 'application/json')
-    searchByPlatformIdQuery[0].variables.platformIds = platformProductIds
-    const request = JSON.stringify(searchByPlatformIdQuery).replace(
-      '%provider%',
-      provider
-    )
+    if (this.hasTooManyErrorResponses()) {
+      Logger.error('Too many error responses from SensCritique', {
+        platformProductIds,
+        provider,
+      })
+      return []
+    }
+    try {
+      const headers = new Headers()
+      headers.append('User-Agent', `senscritique-extension v${app.version}`)
+      headers.append('Content-Type', 'application/json')
+      searchByPlatformIdQuery[0].variables.platformIds = platformProductIds
+      const request = JSON.stringify(searchByPlatformIdQuery).replace(
+        '%provider%',
+        provider
+      )
 
-    const response = await fetch(await getSearchUrl(), {
-      headers,
-      method: 'POST',
-      body: request,
-    })
+      const response = await fetch(await getSearchUrl(), {
+        headers,
+        method: 'POST',
+        body: request,
+      })
 
-    if (response?.ok) {
-      return this.mapBrowserExtensionProduct(
-        (await response.json())[0]?.data?.productByPlatform
+      if (response?.ok) {
+        return this.mapBrowserExtensionProduct(
+          (await response.json())[0]?.data?.productByPlatform
+        )
+      }
+    } catch (e) {
+      this.requestInError++
+      Logger.error(
+        'An error occured when trying to fetch product on SensCritique',
+        {
+          platformProductIds,
+          provider,
+        }
       )
     }
+    return []
   }
 
   mapBrowserExtensionProduct(

@@ -12,7 +12,7 @@ const primeVideo = new PrimeVideo()
 const canal = new Canal()
 const domain = window.location.hostname
 
-setInterval(() => {
+setInterval(async () => {
   if (domain) {
     switch (domain) {
       case ProviderUrlDomain.DISNEY:

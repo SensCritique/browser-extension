@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+      - name: Install dependencies
+        run: npm install
       - name: Build
         run: npx webpack --mode=production --env=production --config=webpack_firefox.config.js
       - uses: trmcnvn/firefox-addon@v1

@@ -1,4 +1,4 @@
-RUN_NODE = docker-compose run --rm node
+RUN_NODE = docker-compose run --rm -Ti node
 
 .PHONY: build-firefox
 build-firefox:

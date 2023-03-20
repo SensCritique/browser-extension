@@ -1,5 +1,6 @@
 const path = require('path')
 const CopyPlugin = require('copy-webpack-plugin')
+const { EnvironmentPlugin } = require('webpack')
 
 module.exports = {
   devtool: 'source-map',
@@ -7,24 +8,25 @@ module.exports = {
     rules: [
       { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' },
       { test: /\.tsx?$/, loader: 'ts-loader' },
-      { test: /\.js$/, loader: 'source-map-loader' }
-    ]
+      { test: /\.js$/, loader: 'source-map-loader' },
+    ],
   },
   entry: {
     index: './src/index.ts',
-    background: './src/background.ts'
+    background: './src/background.ts',
   },
   resolve: {
-    extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js']
+    extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js'],
   },
   plugins: [
+    new EnvironmentPlugin({ NODE_ENV: 'development' }),
     new CopyPlugin([
       { from: 'images/logo*', to: '.' },
-      { from: 'manifest_firefox.json', to: 'manifest.json' }
-    ])
+      { from: 'manifest_firefox.json', to: 'manifest.json' },
+    ]),
   ],
   output: {
     path: path.resolve(__dirname, 'dist/firefox/main'),
-    filename: '[name]/index.js'
-  }
+    filename: '[name]/index.js',
+  },
 }

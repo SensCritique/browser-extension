@@ -24,7 +24,7 @@ describe('findVideoTypeFromUniverse tests', () => {
   })
 
   test('It should return movie', () => {
-    expect(findVideoTypeFromUniverse(4)).toBe('series')
+    expect(findVideoTypeFromUniverse(4)).toBe('serie')
   })
 
   test('It should return movie', () => {

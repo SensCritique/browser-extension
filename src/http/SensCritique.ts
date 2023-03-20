@@ -5,6 +5,17 @@ import { mapSensCritiqueProduct } from '../mapper/SensCritiqueProductMapper'
 import { compare } from '../helper/ComparatorHelper'
 import { Logger } from '../../src/background'
 import { Product } from '../type/Product'
+import { Provider } from '../enum/Provider'
+import {
+  ApolloBrowserExtensionProduct,
+  BrowserExtensionProduct,
+} from '../type/BrowserExtensionProduct'
+import {
+  generateProductUrl,
+  generateRedirectUrl,
+  getSearchUrl,
+} from '../helper/UrlGenerator'
+import { getVideoType } from '../helper/TypeHelper'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const app = require('../../package.json')
@@ -25,41 +36,55 @@ const searchQuery = [
   },
 ]
 
+const searchByPlatformIdQuery = [
+  {
+    operationName: 'productByPlatform',
+    variables: {
+      platformIds: [],
+      provider: '%provider%',
+    },
+    query:
+      'query productByPlatform($platformIds: [String]!, $provider: String) {\n  productByPlatform(platformIds: $platformIds, provider: $provider) {\n    platformId\n    rating\n  slug\n typeId\n productId\n  }\n}\n',
+  },
+]
+
 const SensCritique = class SensCritique implements Client {
-  private baseUrl = 'https://www.senscritique.com'
-  private searchUrl: string
-  private errorSearchUrl: string
+  protected requestInError = 0
 
-  constructor() {
-    this.searchUrl = 'https://apollo.senscritique.com/'
-    this.errorSearchUrl = this.baseUrl + '/search?query=%search%'
-  }
-
-  buildErrorUrl(videoName: string): string {
-    return this.errorSearchUrl.replace('%search%', videoName)
+  hasTooManyErrorResponses(): boolean {
+    return this.requestInError > 3
   }
 
   async search(title: string): Promise<Product> {
+    if (this.hasTooManyErrorResponses()) {
+      Logger.error('Too many error responses from SensCritique', {
+        name: title,
+      })
+      return null
+    }
     const headers = new Headers()
     headers.append('User-Agent', `senscritique-extension v${app.version}`)
     headers.append('Content-Type', 'application/json')
 
-    const response = await fetch(this.searchUrl, {
-      headers,
-      method: 'POST',
-      body: JSON.stringify(searchQuery).replace('%query%', title),
-    })
+    try {
+      const response = await fetch(await getSearchUrl(), {
+        headers,
+        method: 'POST',
+        body: JSON.stringify(searchQuery).replace('%query%', title),
+      })
 
-    if (response.ok) {
-      return response?.json()
-    }
-
-    Logger.error(
-      'An error occured when trying to fetch product on SensCritique',
-      {
-        name: title,
+      if (response.ok) {
+        return response?.json()
       }
-    )
+    } catch (e) {
+      this.requestInError++
+      Logger.error(
+        'An error occured when trying to fetch product on SensCritique',
+        {
+          name: title,
+        }
+      )
+    }
 
     return null
   }
@@ -73,7 +98,7 @@ const SensCritique = class SensCritique implements Client {
   ): Promise<VideoInfo | null> {
     const defaultVideoInfos = {
       name: title,
-      redirect: this.buildErrorUrl(title),
+      redirect: await generateRedirectUrl(title),
       id: null,
       type: null,
     }
@@ -107,7 +132,7 @@ const SensCritique = class SensCritique implements Client {
               return videoInfos
             }
           }
-          Logger.error('Cannot match product', {
+          Logger.warning('Cannot match product', {
             error: 'matching-error',
             platformProduct,
           })
@@ -115,7 +140,8 @@ const SensCritique = class SensCritique implements Client {
           return defaultVideoInfos
         }
 
-        Logger.error('Product not found on SensCritique', {
+        Logger.warning('Product not found on SensCritique', {
+          error: 'product-missing',
           platformProduct,
         })
         return defaultVideoInfos
@@ -123,6 +149,62 @@ const SensCritique = class SensCritique implements Client {
 
       return defaultVideoInfos
     }
+  }
+
+  async getProductRatingsByPlatformId(
+    platformProductIds: string[],
+    provider: Provider
+  ): Promise<BrowserExtensionProduct[]> {
+    if (this.hasTooManyErrorResponses()) {
+      Logger.error('Too many error responses from SensCritique', {
+        platformProductIds,
+        provider,
+      })
+      return []
+    }
+    try {
+      const headers = new Headers()
+      headers.append('User-Agent', `senscritique-extension v${app.version}`)
+      headers.append('Content-Type', 'application/json')
+      searchByPlatformIdQuery[0].variables.platformIds = platformProductIds
+      const request = JSON.stringify(searchByPlatformIdQuery).replace(
+        '%provider%',
+        provider
+      )
+
+      const response = await fetch(await getSearchUrl(), {
+        headers,
+        method: 'POST',
+        body: request,
+      })
+
+      if (response?.ok) {
+        return this.mapBrowserExtensionProduct(
+          (await response.json())[0]?.data?.productByPlatform
+        )
+      }
+    } catch (e) {
+      this.requestInError++
+      Logger.error(
+        'An error occured when trying to fetch product on SensCritique',
+        {
+          platformProductIds,
+          provider,
+        }
+      )
+    }
+    return []
+  }
+
+  mapBrowserExtensionProduct(
+    browserExtensionProducts: ApolloBrowserExtensionProduct[]
+  ): BrowserExtensionProduct[] {
+    return browserExtensionProducts.map((product) => ({
+      rating: product.rating,
+      platformId: product.platformId,
+      url: generateProductUrl(product.typeId, product.slug, product.productId),
+      type: getVideoType(product.typeId),
+    }))
   }
 }
 

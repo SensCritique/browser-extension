@@ -13,3 +13,9 @@ export type Product = {
   distance?: number
   providers?: string[]
 }
+
+export type MinimalProduct = {
+  redirect?: string
+  rating?: string
+  hash: string
+}

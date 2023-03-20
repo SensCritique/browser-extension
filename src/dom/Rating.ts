@@ -31,20 +31,20 @@ export class Rating {
     }
   }
 
-  render(): Element {
+  render(mainDiv: Element): void {
     const divBackground = document.createElement('div')
     divBackground.style.width = '95px'
     divBackground.style.height = '44px'
     divBackground.style.background = 'rgba(52, 52, 52, 0.8)'
     divBackground.style.borderRadius = '20px'
+    divBackground.style.marginBottom = '4px'
     divBackground.style.display = 'flex'
     divBackground.style.justifyContent = 'space-between'
     divBackground.style.position = 'relative'
 
     const a = document.createElement('a')
     a.style.position = 'absolute'
-    a.setAttribute('id', this.videoInfo.hashId)
-    a.setAttribute('href', this.videoInfo.redirect)
+    a.setAttribute('href', this.videoInfo.url || this.videoInfo.redirect)
     a.setAttribute('target', '_blank')
     a.style.display = 'block'
     a.style.height = '100%'
@@ -82,6 +82,7 @@ export class Rating {
     divSmallCircle.style.backgroundColor = COLOR.BLACK
     divSmallCircle.style.display = 'flex'
     divSmallCircle.style.justifyContent = 'center'
+    divSmallCircle.style.alignItems = 'center'
 
     const textRating = document.createElement('span')
     textRating.style.fontSize = '16px'
@@ -97,6 +98,8 @@ export class Rating {
     divSmallCircle.appendChild(textRating)
     divLogo.appendChild(logo)
 
-    return divBackground
+    mainDiv
+      .querySelector(`.senscritique_${this.videoInfo.hash}`)
+      .appendChild(divBackground)
   }
 }

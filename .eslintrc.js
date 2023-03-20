@@ -16,6 +16,7 @@ module.exports = {
   ],
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint', 'prettier'],
+  ignorePatterns: ['src/globals.d.ts'],
   parserOptions: {
     ecmaVersion: 11,
     sourceType: 'module',

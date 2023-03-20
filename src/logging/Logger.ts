@@ -13,6 +13,7 @@ export default class Logger {
       clientToken: 'pub1f890f3f4bba51239626c87fd4e723a4',
       datacenter: Datacenter.US,
       forwardErrorsToLogs: false,
+      silentMultipleInit: true,
       sampleRate: 100,
     })
 

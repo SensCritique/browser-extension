@@ -43,7 +43,7 @@ export const ABTestModal = (): Element => {
   button.href = 'https://www.netflix.com/DoNotTest'
   text.innerHTML = `
   Votre compte Netflix semble faire parti d'une phase de test, ce qui le rend incompatible avec SensCritique-extension.<br />
-  ${button.outerHTML} pour que SensCritique-extension fonctionne. 
+  ${button.outerHTML} pour que SensCritique-extension fonctionne.
   `
   return Modal(AbTestModalId, text)
 }
@@ -56,7 +56,7 @@ export const NotSupportedModal = (): Element => {
 
   text.innerHTML = `
   L'interface de Netflix ne semble plus être supportée par SensCritique-extension pour le moment. <br />
-  Aucune crainte, nous sommes déjà sur le coup...🚀 <br /> 
+  Aucune crainte, nous sommes déjà sur le coup...🚀 <br />
   `
   return Modal(NotSupportedModalId, text)
 }

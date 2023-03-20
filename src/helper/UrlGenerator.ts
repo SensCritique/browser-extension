@@ -1,4 +1,4 @@
-import { getVideoType } from './TypeHelper'
+import { getSensCritiqueVideoType } from './TypeHelper'
 
 const devMode = process.env.NODE_ENV === 'development'
 
@@ -7,7 +7,7 @@ export const generateProductUrl = (
   slug: string,
   productId: number
 ): string => {
-  const type = getVideoType(typeId)
+  const type = getSensCritiqueVideoType(typeId)
 
   if (!type || !slug || !productId) return ''
   return `https://senscritique.com/${type}/${slug}/${productId}`

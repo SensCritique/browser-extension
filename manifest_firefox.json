@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "SensCritique",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Permet d'avoir les scores et avis SensCritique sur Netflix/Disney+/PrimeVideo et CanalPlus",
   "icons": {
     "48": "images/logo-48.png",

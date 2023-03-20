@@ -17,7 +17,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Build
-        run: npx webpack --mode=production --env=production --config=webpack_chrome.config.js
+        run: NODE_OPTIONS=--openssl-legacy-provider npx webpack --mode=production --env=production --config=webpack_chrome.config.js
       - uses: trmcnvn/chrome-addon@v2
         with:
           extension: enficnaijgnbdbdcpbplmbnhoenehllk

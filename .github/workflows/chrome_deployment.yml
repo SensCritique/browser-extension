@@ -12,7 +12,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Build
-        run: make build-chrome
+        run: npx webpack --mode=production --env=production --config=webpack_chrome.config.js
       - uses: trmcnvn/chrome-addon@v2
         with:
           extension: enficnaijgnbdbdcpbplmbnhoenehllk

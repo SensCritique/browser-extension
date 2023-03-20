@@ -12,7 +12,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Build
-        run: make build-all
+        run: make build-chrome
       - uses: trmcnvn/chrome-addon@v2
         with:
           extension: enficnaijgnbdbdcpbplmbnhoenehllk

@@ -132,7 +132,7 @@ const SensCritique = class SensCritique implements Client {
               return videoInfos
             }
           }
-          Logger.error('Cannot match product', {
+          Logger.warning('Cannot match product', {
             error: 'matching-error',
             platformProduct,
           })
@@ -140,7 +140,8 @@ const SensCritique = class SensCritique implements Client {
           return defaultVideoInfos
         }
 
-        Logger.error('Product not found on SensCritique', {
+        Logger.warning('Product not found on SensCritique', {
+          error: 'product-missing',
           platformProduct,
         })
         return defaultVideoInfos

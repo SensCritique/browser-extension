@@ -45,12 +45,12 @@ const fetchInfoByPlatformId = async (
     )
   browserExtensionProducts.forEach((product) => {
     if (product.rating === null) {
-      Logger.error(
+      Logger.warning(
         `Rating missing for product platform ID:${product.platformId}`,
         {
           messageEvent: message,
           platformProductId: product.platformId,
-          error: 'missing_rating',
+          error: 'missing-rating',
         }
       )
     }

@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+      - name: Build
+        run: make build-all
       - uses: trmcnvn/firefox-addon@v1
         with:
           uuid: '{d08a826c-3581-4f5a-a1c6-39b4b22ca6e7}'

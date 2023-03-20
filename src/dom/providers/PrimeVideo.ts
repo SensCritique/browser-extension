@@ -124,7 +124,7 @@ export default class PrimeVideo extends Manager {
             let name = cardElement.innerText
             const mainDiv = document.createElement('div')
             mainDiv.style.position = 'absolute'
-            mainDiv.style.zIndex = '100'
+            mainDiv.style.zIndex = '2'
             mainDiv.style.right = '2px'
             mainDiv.style.bottom = '2px'
             mainDiv.style.display = 'flex'

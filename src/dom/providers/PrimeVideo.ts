@@ -108,9 +108,7 @@ export default class PrimeVideo extends Manager {
       cardElements.forEach(async (cardElement: HTMLElement) => {
         // Only keep carousel and wall elements (without episode URL)
         if (
-          cardElement
-            .getAttribute('href')
-            ?.match(`^/region/[^/]+/detail/${platformId}.*`) ||
+          cardElement.getAttribute('href')?.match(`/detail/${platformId}.*`) ||
           cardElement.querySelector(
             `a[href*="/detail/${platformId}"]:not([data-testid="play"])`
           ) ||

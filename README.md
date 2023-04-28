@@ -22,18 +22,18 @@ Si le score n'est pas trouvé, un point d'interrogation sera affiché. L'indicat
 
 ## **[NETFLIX](https://www.netflix.com)**
 
-![](images/screenshots/netflix/1.png)
-![](images/screenshots/netflix/2.png)
-![](images/screenshots/netflix/3.png)
+![](images/screenshots/netflix/1.jpg)
+![](images/screenshots/netflix/2.jpg)
+![](images/screenshots/netflix/3.jpg)
 
 ## **[DISNEY+](https://www.disneyplus.com)**
 
-![](images/screenshots/disney/1.png)
+![](images/screenshots/disney/1.jpg)
 
 ## **[PRIME VIDEO](https://www.primevideo.com/)**
 
-![](images/screenshots/prime/1.png)
-![](images/screenshots/prime/2.png)
+![](images/screenshots/prime/1.jpg)
+![](images/screenshots/prime/2.jpg)
 
 # Téléchargement
 

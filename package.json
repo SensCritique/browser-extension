@@ -1,7 +1,7 @@
 {
   "name": "senscritique-extension",
   "version": "1.4.2",
-  "description": "Permet d'avoir les scores SensCritique sur Netflix/Disney+/PrimeVideo et CanalPlus",
+  "description": "La note SensCritique est une boussole pour arrêter de perdre votre temps, et s’invite sur Netflix, Prime Video et Disney+ pour vous permettre de choisir de manière éclairée vos programmes.",
   "author": "SensCritique",
   "repository": {
     "url": "https://github.com/senscritique/SensCritique-extension"
@@ -14,7 +14,6 @@
     "netflix",
     "disney",
     "primeVideo",
-    "canalplus",
     "senscritique",
     "score",
     "avis",

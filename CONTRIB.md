@@ -10,7 +10,6 @@ All the code is the same for Chrome and Firefox except for the event system whic
 - Netflix: Fetch video info (name)
 - Disney: Fetch video info (name)
 - PrimeVideo: Fetch video info (name)
-- Canal: Fetch video info (name)
 
 ##### Background
 

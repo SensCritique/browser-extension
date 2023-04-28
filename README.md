@@ -1,12 +1,12 @@
 <img src="/images/logo-128.png" height=50/>
 
 # SensCritique-extension
-Permet d'avoir un score SensCritique sur les pages de descriptions __[Netflix](https://www.netflix.com)__ et __[Disney+](https://www.disneyplus.com)__
+Permet d'avoir un score SensCritique sur le wall les pages de descriptions __[Netflix](https://www.netflix.com)__ et __[Disney+](https://www.disneyplus.com)__
 
 ## Fonctionnement du score
 Le score correspond à la note globale des spectateurs SensCritique en pourcentage plutôt qu'une note sur 5 ou sur 10.
 
-Exemples : 
+Exemples :
 - À partir de 6,5/10 le cercle sera vert
 - De 5,5/10 à 6,4/10 le cercle sera jaune
 - En dessous de 5,5/10 le cercle sera rouge

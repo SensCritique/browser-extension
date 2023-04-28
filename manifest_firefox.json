@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "SensCritique",
   "version": "1.4.2",
-  "description": "Permet d'avoir les scores et avis SensCritique sur Netflix/Disney+/PrimeVideo et CanalPlus",
+  "description": "Permet d'avoir les scores et avis SensCritique sur Netflix/Disney+ et PrimeVideo",
   "icons": {
     "48": "images/logo-48.png",
     "64": "images/logo-64.png",
@@ -16,8 +16,7 @@
       "matches": [
         "*://*.netflix.com/*",
         "*://*.disneyplus.com/*",
-        "*://*.primevideo.com/*",
-        "*://*.canalplus.com/*"
+        "*://*.primevideo.com/*"
       ],
       "js": ["index/index.js"]
     }

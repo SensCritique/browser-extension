@@ -1,8 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SensCritique",
-  "version": "1.4.4",
-  "description": "La note SensCritique s’invite sur Netflix, Prime Video et Disney+ pour vous permettre de choisir de manière éclairée vos programmes.",
+  "version": "1.4.5",
   "icons": {
     "48": "images/logo-48.png",
     "64": "images/logo-64.png",

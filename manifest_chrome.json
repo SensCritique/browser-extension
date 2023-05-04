@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SensCritique",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "description": "",
   "icons": {
     "48": "images/logo-48.png",

@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "SensCritique",
-  "version": "1.4.6",
+  "version": "1.4.7",
   "description": "La note SensCritique est une boussole pour arrêter de perdre votre temps, et s’invite sur Netflix, Prime Video et Disney+ pour vous permettre de choisir de manière éclairée vos programmes.",
   "icons": {
     "48": "images/logo-48.png",

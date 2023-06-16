@@ -14,6 +14,13 @@ build-chrome:
 .PHONY: watch-chrome
 watch-chrome:
 	${RUN_NODE} npx webpack --mode=development --env=development --config=webpack_chrome.config.js --watch
+.PHONY: build-opera
+build-opera:
+	${RUN_NODE} npx webpack --mode=production --env=production --config=webpack_opera.config.js
+	cd dist/opera/main && zip -r ../latest_opera.zip * && mv ../latest_opera.zip ../../../releases/
+.PHONY: watch-opera
+watch-opera:
+	${RUN_NODE} npx webpack --mode=development --env=development --config=webpack_opera.config.js --watch
 .PHONY: fix
 fix:
 	${RUN_NODE} npx eslint --fix src/*

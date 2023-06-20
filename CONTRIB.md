@@ -6,9 +6,9 @@ Ce projet contient deux extensions (Firefox et Chrome), les deux extensions part
 
 La partie client du code, permet de parcourir les différentes plateformes (Netflix, Disney et Prime). Elle analyse le DOM pour trouver l'emplacement où afficher la note et récupèrer l'id des produits disponibles sur la plateforme. Le scrapping est différent en fonction de chaque plateformes.
 
-- Netflix: Emplacement de la note sur le wall et sur chaque produits (on trouve facilement l'id de chaque produits pour l'envoyer côté serveur).
-- Disney+: Pour l'instant, seulement possible d'afficher la note sur les pages produits, mais impossible de l'afficher sur le wall car l'id du produit n'est pas récupérable dans le DOM.
-- Prime: Possible d'afficher la note sur les wall et toutes les pages produits, mais on rencontre beaucoup de subtilité lors du scrapping.
+- Netflix: Notes sur le wall et sur chaque produits (on trouve facilement l'id de chaque produits pour l'envoyer côté serveur).
+- Disney+: Notes sur les pages produits, mais impossible de l'afficher sur le wall car l'id du produit n'est pas récupérable dans le DOM.
+- Prime: Notes sur le wall et toutes les pages produits, intégration plus complexe dans le DOM.
 
 ### **SERVEUR (background)**
 

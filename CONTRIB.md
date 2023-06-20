@@ -33,9 +33,9 @@ query productByPlatform($platformIds: [String]!, $provider: String)
 - _platformIds: tableau de différents ids de produit de la plateforme_
 - _provider: nom de la plateforme (ex: Netflix)_
 
-Le matching est fait en amont, à l'aide de différents scrapper qui tournent quotidiennent sur chaque plateforme et matchent l'id du produit de la plateforme avec l'id du produit SensCritique, ces data sont insérées dans une table au sein de notre BDD.
+Le matching est fait en amont, à l'aide de différents scrapper qui tournent quotidiennent sur chaque plateforme et matchent l'id du produit de la plateforme avec l'id du produit SensCritique, ces données sont insérées dans une table au sein de notre BDD.
 
-La requête (ci-dessous) va faire appel à cette table qui va nous retourner la note et les différentes informations utilent pour l'affichage côté client (ex: Disney+).
+La requête (ci-dessus) va faire appel à cette table qui va nous retourner la note et les différentes informations utilent pour l'affichage côté client (ex: Disney+).
 
 Avantages
 
@@ -45,7 +45,7 @@ Avantages
 Inconvénients
 
 - Erreurs de matching (fiablilité)
-- Problème au niveau du multi-plateforme, par exemple Canal affiche les produits Disney+ sur sa plateforme mais avec une autre id que celle présente sur Disney+.
+- Problème au niveau du multi-plateforme, par exemple Canal+ affiche les produits Disney+ sur sa plateforme mais avec une autre id que celle présente sur Disney+.
 
 # Workflow
 

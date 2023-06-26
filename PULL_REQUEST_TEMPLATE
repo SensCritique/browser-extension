@@ -1,0 +1,16 @@
+# Description
+
+_Explicatif de la PR_
+
+# Checklist
+
+- [ ] J'ai bien review mon code
+- [ ] Mes changements ne provoquent pas de warning
+- [ ] J'ai lancé `make test`
+- [ ] Faire un `make build-all` (génère un nouveau fichier .zip pour chrome et .xpi pour firefox)
+
+
+# Screenshot (optionnnel)
+
+_Screenshots si nécessaire_
+

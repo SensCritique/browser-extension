@@ -166,7 +166,10 @@ const SensCritique = class SensCritique implements Client {
       const headers = new Headers()
       headers.append('User-Agent', `senscritique-extension v${app.version}`)
       headers.append('Content-Type', 'application/json')
-      searchByPlatformIdQuery[0].variables.platformIds = platformProductIds
+
+      searchByPlatformIdQuery[0].variables.platformIds =
+        platformProductIds.filter((id) => id !== null)
+
       const request = JSON.stringify(searchByPlatformIdQuery).replace(
         '%provider%',
         provider

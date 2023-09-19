@@ -6,5 +6,5 @@ export const getVideoType = (typeId: number): VideoType => {
 }
 
 export const getSensCritiqueVideoType = (typeId: number): string => {
-  return typeId === UniverseTypeId.MOVIE ? 'film' : 'series'
+  return typeId === UniverseTypeId.MOVIE ? 'film' : 'serie'
 }

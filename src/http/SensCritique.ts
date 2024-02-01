@@ -79,9 +79,10 @@ const SensCritique = class SensCritique implements Client {
     } catch (e) {
       this.requestInError++
       Logger.error(
-        'An error occured when trying to fetch product on SensCritique',
+        'An error occurred when trying to fetch product on SensCritique',
         {
           name: title,
+          error: e
         }
       )
     }
@@ -186,10 +187,11 @@ const SensCritique = class SensCritique implements Client {
     } catch (e) {
       this.requestInError++
       Logger.error(
-        'An error occured when trying to fetch product on SensCritique',
+        'An error occurred when trying to fetch product on SensCritique',
         {
           platformProductIds,
           provider,
+          error: e
         }
       )
     }

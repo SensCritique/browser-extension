@@ -82,7 +82,7 @@ const SensCritique = class SensCritique implements Client {
         'An error occurred when trying to fetch product on SensCritique',
         {
           name: title,
-          error: e
+          error: e,
         }
       )
     }
@@ -191,7 +191,7 @@ const SensCritique = class SensCritique implements Client {
         {
           platformProductIds,
           provider,
-          error: e
+          error: e,
         }
       )
     }

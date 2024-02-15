@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SensCritique",
-  "version": "1.4.9",
+  "version": "1.5.0",
   "description": "Vous avez du mal à trouver des bons programmes sur vos plateformes de streaming ?",
   "icons": {
     "48": "images/logo-48.png",

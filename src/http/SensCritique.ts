@@ -36,17 +36,15 @@ const searchQuery = [
   },
 ]
 
-const searchByPlatformIdQuery = [
-  {
-    operationName: 'productByPlatform',
-    variables: {
-      platformIds: [],
-      provider: '%provider%',
-    },
-    query:
-      'query productByPlatform($platformIds: [String]!, $provider: String) {\n  productByPlatform(platformIds: $platformIds, provider: $provider) {\n    platformId\n    rating\n  slug\n typeId\n productId\n  }\n}\n',
+const searchByPlatformIdQuery = {
+  operationName: 'productByPlatform',
+  variables: {
+    platformIds: [],
+    provider: '%provider%',
   },
-]
+  query:
+    'query productByPlatform($platformIds: [String]!, $provider: String) {\n  productByPlatform(platformIds: $platformIds, provider: $provider) {\n    platformId\n    rating\n  slug\n typeId\n productId\n  }\n}\n',
+}
 
 const SensCritique = class SensCritique implements Client {
   protected requestInError = 0
@@ -167,7 +165,7 @@ const SensCritique = class SensCritique implements Client {
       const headers = new Headers()
       headers.append('User-Agent', `senscritique-extension v${app.version}`)
       headers.append('Content-Type', 'application/json')
-      searchByPlatformIdQuery[0].variables.platformIds = platformProductIds
+      searchByPlatformIdQuery.variables.platformIds = platformProductIds
       const request = JSON.stringify(searchByPlatformIdQuery).replace(
         '%provider%',
         provider
@@ -181,7 +179,7 @@ const SensCritique = class SensCritique implements Client {
 
       if (response?.ok) {
         return this.mapBrowserExtensionProduct(
-          (await response.json())[0]?.data?.productByPlatform
+          (await response.json())?.data?.productByPlatform
         )
       }
     } catch (e) {

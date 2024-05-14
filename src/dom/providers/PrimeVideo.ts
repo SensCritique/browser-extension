@@ -199,7 +199,7 @@ export default class PrimeVideo extends Manager {
                 platformId,
                 redirect: await generateRedirectUrl(name),
                 type: browserExtensionProduct.type,
-                rating: browserExtensionProduct.rating.toString(),
+                rating: browserExtensionProduct.rating?.toString(),
                 url: browserExtensionProduct.url,
               })
             }

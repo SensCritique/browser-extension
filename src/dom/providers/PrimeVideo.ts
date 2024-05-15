@@ -79,8 +79,22 @@ export default class PrimeVideo extends Manager {
 
   renderWallRatings(browserExtensionProducts: BrowserExtensionProduct[]): void {
     // Response from API with all browserExtensionProducts
-    browserExtensionProducts.forEach((browserExtensionProduct) => {
+    browserExtensionProducts.forEach(async (browserExtensionProduct) => {
+      // Note : Save in cache product information before rendering to prevent UI bugs
       const hash = md5(browserExtensionProduct.platformId.toString())
+      const videoInfo = {
+        name: name,
+        redirect: await generateRedirectUrl(name),
+        id: '',
+        url: browserExtensionProduct.url,
+        type: browserExtensionProduct.type,
+        rating: browserExtensionProduct?.rating?.toString(),
+        hash,
+        platformId: browserExtensionProduct?.platformId,
+      }
+
+      this.cache.save(videoInfo)
+
       const platformId = browserExtensionProduct.platformId
       const wallElements = document.querySelectorAll(
         `[data-testid="packshot"] a[href*="/detail/${platformId}"][role="button"]:not([class*="tst-"])`
@@ -105,7 +119,7 @@ export default class PrimeVideo extends Manager {
         ...legacyElements,
       ]
 
-      cardElements.forEach(async (cardElement: HTMLElement) => {
+      for (const cardElement of cardElements) {
         // Only keep carousel and wall elements (without episode URL)
         if (
           cardElement.getAttribute('href')?.match(`/detail/${platformId}.*`) ||
@@ -121,7 +135,7 @@ export default class PrimeVideo extends Manager {
         ) {
           const hashClass = 'senscritique_' + hash
           if (!cardElement.querySelector(`.${hashClass}`)) {
-            let name = cardElement.innerText
+            let name = (cardElement as HTMLElement).innerText
             const mainDiv = document.createElement('div')
             mainDiv.style.position = 'absolute'
             mainDiv.style.zIndex = '2'
@@ -148,7 +162,7 @@ export default class PrimeVideo extends Manager {
             })
           }
         }
-      })
+      }
     })
   }
 

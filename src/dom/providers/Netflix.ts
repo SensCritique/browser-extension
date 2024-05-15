@@ -60,14 +60,26 @@ export default class Netflix extends Manager {
     browserExtensionProducts: BrowserExtensionProduct[]
   ): Promise<void> {
     // Response from API with all browserExtensionProducts
-    browserExtensionProducts.forEach((browserExtensionProduct) => {
+    for (const browserExtensionProduct of browserExtensionProducts) {
       const hash = md5(browserExtensionProduct.platformId.toString())
+      const videoInfo = {
+        name: name,
+        redirect: await generateRedirectUrl(name),
+        id: '',
+        url: browserExtensionProduct.url,
+        type: browserExtensionProduct.type,
+        rating: browserExtensionProduct?.rating?.toString(),
+        hash,
+        platformId: browserExtensionProduct?.platformId,
+      }
+
+      this.cache.save(videoInfo)
       const platformId = browserExtensionProduct.platformId
       const cardElements = document.querySelectorAll(
         `.title-card a[href*="/watch/${platformId}"]`
       )
 
-      cardElements.forEach(async (cardElement) => {
+      for (const cardElement of cardElements) {
         const videoName = cardElement?.getAttribute('aria-label')
         const hashClass = 'senscritique_' + hash
         if (!cardElement.querySelector(`.${hashClass}`)) {
@@ -91,8 +103,8 @@ export default class Netflix extends Manager {
             platformId: browserExtensionProduct?.platformId,
           })
         }
-      })
-    })
+      }
+    }
   }
 
   refreshModalRating(): void {

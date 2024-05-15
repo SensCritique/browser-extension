@@ -119,7 +119,7 @@ export default class PrimeVideo extends Manager {
         ...legacyElements,
       ]
 
-      cardElements.forEach(async (cardElement: HTMLElement) => {
+      for (const cardElement of cardElements) {
         // Only keep carousel and wall elements (without episode URL)
         if (
           cardElement.getAttribute('href')?.match(`/detail/${platformId}.*`) ||
@@ -135,7 +135,7 @@ export default class PrimeVideo extends Manager {
         ) {
           const hashClass = 'senscritique_' + hash
           if (!cardElement.querySelector(`.${hashClass}`)) {
-            let name = cardElement.innerText
+            let name = (cardElement as HTMLElement).innerText
             const mainDiv = document.createElement('div')
             mainDiv.style.position = 'absolute'
             mainDiv.style.zIndex = '2'
@@ -162,7 +162,7 @@ export default class PrimeVideo extends Manager {
             })
           }
         }
-      })
+      }
     })
   }
 
